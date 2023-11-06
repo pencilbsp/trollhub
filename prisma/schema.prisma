@@ -1,0 +1,172 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                 String  @id @default(cuid()) @map("_id")
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  oauth_token_secret String?
+  oauth_token        String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid()) @map("_id")
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid()) @map("_id")
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  Account       Account[]
+  Session       Session[]
+  // channel       Creator?  @relation(fields: [creatorId], references: [id])
+  // creatorId     String?   @unique @db.ObjectId
+  comments      Comment[]
+  replies       Reply[]
+}
+
+model Creator {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  fid       String?
+  name      String
+  // user      User?
+  userName  String    @unique
+  avatar    String?
+  cover     String?
+  bio       String?
+  chapers   Chapter[]
+  contents  Content[]
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Category {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  slug       String    @unique
+  contentIds String[]  @db.ObjectId
+  contents   Content[] @relation(fields: [contentIds], references: [id])
+}
+
+model Country {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  code       String    @unique
+  name       String
+  contentIds String[]  @db.ObjectId
+  contents   Content[] @relation(fields: [contentIds], references: [id])
+}
+
+enum ChapterStatus {
+  ready
+  error
+  pending
+}
+
+model Chapter {
+  id         String        @id @default(auto()) @map("_id") @db.ObjectId
+  fid        String?
+  title      String?
+  images     String[]
+  mobileOnly Boolean
+  type       ContentType
+  status     ChapterStatus @default(pending)
+  contentId  String        @db.ObjectId
+  comments   Comment[]
+  content    Content       @relation(fields: [contentId], references: [id])
+  creatorId  String        @db.ObjectId
+  creator    Creator       @relation(fields: [creatorId], references: [id])
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+enum ContentType {
+  movie
+  comic
+  novel
+}
+
+enum ContentStatus {
+  complete
+  updating
+}
+
+model Content {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  fid         String?
+  title       String
+  akaTitle    String[]
+  type        ContentType
+  author      String?
+  thumbUrl    String?
+  description String?
+  chapter     Chapter[]
+  totalChap   Int?          @default(0)
+  comments    Comment[]
+  status      ContentStatus @default(updating)
+  categoryIds String[]      @db.ObjectId
+  categories  Category[]    @relation(fields: [categoryIds], references: [id])
+  countryIds  String[]      @db.ObjectId
+  countries   Country[]     @relation(fields: [countryIds], references: [id])
+  creatorId   String        @db.ObjectId
+  creator     Creator       @relation(fields: [creatorId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Reply {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String
+  sticker   String?
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  likeIds   String[] @db.ObjectId
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId String?  @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String
+  sticker   String?
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  likeIds   String[] @db.ObjectId
+  content   Content  @relation(fields: [contentId], references: [id])
+  contentId String   @db.ObjectId
+  chapter   Chapter? @relation(fields: [chapterId], references: [id])
+  chapterId String?  @db.ObjectId
+  replies   Reply[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
