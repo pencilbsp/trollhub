@@ -3,24 +3,25 @@
 import { User } from "next-auth";
 import { ClipboardEvent, FormEvent, useRef, useState, useTransition } from "react";
 
+import { SendHorizonalIcon, StickerIcon, ImagePlusIcon } from "lucide-react";
+
 import { avatarNameFallback } from "@/lib/utils";
 import createComment from "@/actions/createComment";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 
-import { SendHorizonalIcon, StickerIcon, ImagePlusIcon } from "lucide-react";
-
 interface Props {
   user: User;
   contentId: string;
+  onNewComment: (newComment: any) => void;
 }
 
-export default function CommentEditor({ user, contentId }: Props) {
+export default function CommentEditor({ user, contentId, onNewComment }: Props) {
   const [send, setSend] = useState(false);
   const inputRef = useRef<HTMLDivElement>(null);
   const [isPending, startTransition] = useTransition();
 
   const handlePostComment = async () => {
-    if (inputRef.current?.innerText) {
+    if (inputRef.current?.innerText && !isPending) {
       const result = await createComment({
         contentId,
         userId: user.id,
@@ -30,6 +31,7 @@ export default function CommentEditor({ user, contentId }: Props) {
       if (result.error) return console.log(result.error);
 
       setSend(false);
+      onNewComment(result.data);
       inputRef.current.innerText = "";
     }
   };
@@ -40,7 +42,7 @@ export default function CommentEditor({ user, contentId }: Props) {
     document.execCommand("insertHTML", false, addText);
   };
 
-  const handleInput = (event: FormEvent<HTMLDivElement>) => {
+  const handleInput = (_: FormEvent<HTMLDivElement>) => {
     if (inputRef.current) {
       const text = Boolean(inputRef.current.textContent);
       send !== text && setSend(text);
@@ -71,7 +73,7 @@ export default function CommentEditor({ user, contentId }: Props) {
             </button>
           </div>
           <button
-            disabled={!send}
+            disabled={!send || isPending}
             onClick={() => startTransition(handlePostComment)}
             className="flex items-center px-2 py-1 border rounded-md text-blue-500 text-sm disabled:cursor-not-allowed disabled:text-foreground/60"
           >

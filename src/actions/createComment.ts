@@ -26,7 +26,10 @@ export default async function createComment(data: NewComment) {
     data.text = escape(data.text.trim());
     await commentSchema.validate(data, { strict: true, stripUnknown: true });
 
-    const newComment = await prisma.comment.create({ data });
+    const newComment = await prisma.comment.create({
+      data,
+      include: { user: { select: { id: true, name: true, image: true } } },
+    });
 
     return { data: newComment };
   } catch (error: any) {

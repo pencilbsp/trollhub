@@ -43,7 +43,7 @@ export default function Header() {
 
             <ToggleTheme />
 
-            <Button variant="outline" className="flex-shrink">
+            <Button variant="outline" className="flex-shrink-0">
               Yêu cầu
             </Button>
 
