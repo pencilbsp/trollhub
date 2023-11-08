@@ -1,14 +1,13 @@
 "use client";
 
-import slug from "slug";
-import useSWR from "swr";
-import Link from "next/link";
-import { motion } from "framer-motion";
 import { ContentType } from "@prisma/client";
+import { motion } from "framer-motion";
 import { ArrowUpIcon, ListIcon } from "lucide-react";
+import useSWR from "swr";
+import { Drawer } from "vaul";
 
-import { cn } from "@/lib/utils";
 import useOffSetTop from "@/hooks/useOffSetTop";
+import { cn } from "@/lib/utils";
 
 import getChapters from "@/actions/getChapters";
 import ChapterIcon from "@/components/icons/ChapterIcon";
@@ -16,8 +15,9 @@ import CircleProgressIcon from "@/components/icons/CircleProgressIcon";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { Tooltip, TooltipArrow, TooltipContent, TooltipTrigger } from "@/components/ui/Tooltip";
 
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
+import useResponsive from "@/hooks/useResponsive";
+import ChapterList from "./sections/ChapterList";
+import { useEffect, useState } from "react";
 
 interface Props {
   id: string;
@@ -30,6 +30,7 @@ interface Props {
 const fetcher = (id: string) => getChapters(id, { orderBy: { createdAt: "desc" } });
 
 export default function ChapterNav({ id, title, contentTitle, contentId, contentType }: Props) {
+  const [drawer, setDrawer] = useState(false);
   const { data: chapters } = useSWR(`${contentId}|chapter`, fetcher, {
     fallbackData: [],
     revalidateOnFocus: false,
@@ -38,6 +39,8 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
   const offset = useOffSetTop(64);
   const chapterIndex = chapters.findIndex((chapter) => id === chapter.id);
   const percent = ((chapters.length - chapterIndex) / chapters.length) * 100;
+
+  const isMobile = useResponsive("down", "md");
 
   const scrollToTop = (smooth: boolean = false) => {
     if (typeof window === "undefined" || typeof document === "undefined") return;
@@ -51,6 +54,10 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
     }
   };
 
+  useEffect(() => {
+    setDrawer(isMobile);
+  }, [isMobile]);
+
   return (
     <motion.aside
       className={cn(
@@ -59,46 +66,37 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
       )}
     >
       <nav>
-        <Popover>
-          <PopoverTrigger asChild>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-500/25 transition-colors">
-              <ListIcon size={20} />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            sideOffset={26}
-            alignOffset={-12}
-            className="rounded-xl shadow w-[540px]  p-0 overflow-hidden backdrop-blur-xl bg-background/80"
-          >
-            <div className="m-3">
-              <h4 className="font-bold text-xl uppercase">Danh sách chương</h4>
-            </div>
-            <div className="max-h-80 w-full overflow-y-auto mb-3">
-              <ul className="px-3 w-full text-sm font-mono flex flex-col divide-y">
-                {chapters.map((chap) => {
-                  const isCurrent = chap.id === id;
-                  return (
-                    <li
-                      key={chap.id}
-                      className={cn(
-                        "flex justify-between p-2 gap-x-4 hover:bg-foreground/10",
-                        isCurrent && "bg-foreground/10 text-blue-500"
-                      )}
-                    >
-                      <Link className="truncate" href={`/chapter/${slug(contentTitle)}-${chap.id}`}>
-                        {chap.title}
-                      </Link>
-                      <time className="font-mono font-light text-sm flex-shrink-0">
-                        {format(chap.createdAt, "dd/MM/yyyy HH:mm", { locale: vi })}
-                      </time>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </PopoverContent>
-        </Popover>
+        {drawer ? (
+          <Drawer.Root shouldScaleBackground>
+            <Drawer.Trigger>
+              <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-500/25 transition-colors">
+                <ListIcon size={20} />
+              </button>
+            </Drawer.Trigger>
+            <Drawer.Portal>
+              <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+              <Drawer.Content className="drop-blur-xl bg-background/80 flex flex-col rounded-t-[10px] mt-24 fixed bottom-0 left-0 right-0">
+                <ChapterList chapters={chapters} currentId={id} contentId={contentId} contentTitle={contentTitle} />
+              </Drawer.Content>
+            </Drawer.Portal>
+          </Drawer.Root>
+        ) : (
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-500/25 transition-colors">
+                <ListIcon size={20} />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              sideOffset={26}
+              alignOffset={-12}
+              className="rounded-xl shadow w-[540px]  p-0 overflow-hidden backdrop-blur-xl bg-background/80"
+            >
+              <ChapterList chapters={chapters} currentId={id} contentId={contentId} contentTitle={contentTitle} />
+            </PopoverContent>
+          </Popover>
+        )}
       </nav>
 
       <div className="h-8 mr-2 ml-1 w-[1px] bg-gray-400/25 hidden md:block"></div>
