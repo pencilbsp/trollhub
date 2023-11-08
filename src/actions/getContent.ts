@@ -16,6 +16,7 @@ export default function getContent(id: string) {
       status: true,
       type: true,
       chapter: {
+        skip: 0,
         take: INIT_CHAPTER,
         orderBy: {
           createdAt: "desc",

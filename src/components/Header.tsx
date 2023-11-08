@@ -3,6 +3,7 @@
 import Link from "next/link";
 import * as React from "react";
 
+import Headroom from "react-headroom";
 import { ViewVerticalIcon } from "@radix-ui/react-icons";
 
 import NavLink from "./NavLink";
@@ -20,43 +21,45 @@ export default function Header() {
   const session = useSession();
 
   return (
-    <header className="sticky top-0 flex flex-col justify-around items-center w-full border-b bg-background/80 backdrop-blur-xl z-50">
-      <div className="container flex h-16 items-center px-4">
-        <div className="flex flex-1 items-center justify-between">
-          <Sheet>
-            <SheetTrigger asChild>
-              <button className="block md:hidden p-0 mr-3">
-                <ViewVerticalIcon className="h-5 w-5" />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="left"></SheetContent>
-          </Sheet>
+    <Headroom className="z-50 relative">
+      <header className="sticky top-0 flex flex-col justify-around items-center w-full border-b bg-background/80 backdrop-blur-xl z-50">
+        <div className="container flex h-16 items-center px-4">
+          <div className="flex flex-1 items-center justify-between">
+            <Sheet>
+              <SheetTrigger asChild>
+                <button className="block md:hidden p-0 mr-3">
+                  <ViewVerticalIcon className="h-5 w-5" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="left"></SheetContent>
+            </Sheet>
 
-          <nav className="gap-6 hidden md:flex">
-            <NavLink href="/">Trang chủ</NavLink>
-            <NavLink href="/developer">Nhà phát triển</NavLink>
-            <NavLink href="/help">Hướng dẫn</NavLink>
-          </nav>
+            <nav className="gap-6 hidden md:flex">
+              <NavLink href="/">Trang chủ</NavLink>
+              <NavLink href="/developer">Nhà phát triển</NavLink>
+              <NavLink href="/help">Hướng dẫn</NavLink>
+            </nav>
 
-          <div className="flex gap-3 w-full sm:w-auto">
-            <SearchModel />
+            <div className="flex gap-3 w-full sm:w-auto">
+              <SearchModel />
 
-            <ToggleTheme />
+              <ToggleTheme />
 
-            <Button variant="outline" className="flex-shrink-0">
-              Yêu cầu
-            </Button>
-
-            {session && session.data?.user ? (
-              <UserNav user={session.data.user as User} />
-            ) : (
-              <Button className="hidden lg:block" asChild>
-                <Link href="/login">Đăng nhập</Link>
+              <Button variant="outline" className="flex-shrink-0">
+                Yêu cầu
               </Button>
-            )}
+
+              {session && session.data?.user ? (
+                <UserNav user={session.data.user as User} />
+              ) : (
+                <Button className="hidden lg:block" asChild>
+                  <Link href="/login">Đăng nhập</Link>
+                </Button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </Headroom>
   );
 }

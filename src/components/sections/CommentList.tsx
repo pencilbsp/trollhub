@@ -1,8 +1,9 @@
 "use client";
 
 import useSWR from "swr";
-import { useMemo, useTransition } from "react";
+import { Prisma } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import { useMemo, useTransition } from "react";
 
 import getComments from "@/actions/getComments";
 
@@ -17,14 +18,13 @@ interface Props {
   contentId: string;
 }
 
-const defaultData: any = { list: [], isMore: false, options: { take: 6, skip: 0, sort: "desc" } };
+const fallbackData: any = { list: [], isMore: false, options: { take: 6, skip: 0, sort: "desc" } };
 
 export const fetcher = (id: string) => getComments(id);
 
 export default function CommentList({ contentId }: Props) {
   const { data: session } = useSession();
-  const { data, isLoading, mutate } = useSWR(contentId, fetcher);
-  const comment = useMemo(() => data || defaultData, [data]);
+  const { data: comment, isLoading, mutate } = useSWR(contentId, fetcher, { revalidateOnFocus: false, fallbackData });
   const [isPending, startTransition] = useTransition();
 
   const handleAddCommnet = (newComment: any) => {
@@ -35,16 +35,16 @@ export default function CommentList({ contentId }: Props) {
     mutate({ ...comment, list: comment.list.filter((c: any) => c.id !== did) }, { revalidate: false });
   };
 
-  const handleSortCommnet = async (sort: any) => {
+  const handleSortCommnet = async (sort: Prisma.SortOrder) => {
     const sorted = await getComments(contentId, { sort });
     mutate(sorted, { revalidate: false });
   };
 
   const handleLoadMoreCommnet = async () => {
     if (isPending) return;
-    const sortComments = await getComments(contentId, { sort: comment.sort as any, skip: comment.list.length });
+    const moreComments = await getComments(contentId, { ...comment.options, skip: comment.list.length });
     mutate(
-      { ...comment, list: [...comment.list, ...sortComments.list], isMore: sortComments.isMore },
+      { ...comment, list: [...comment.list, ...moreComments.list], isMore: moreComments.isMore },
       { revalidate: false }
     );
   };
@@ -68,7 +68,7 @@ export default function CommentList({ contentId }: Props) {
         {session && <CommentEditor user={session.user} contentId={contentId} onNewComment={handleAddCommnet} />}
 
         <div className="flex flex-col gap-y-4 mb-4">
-          {comment.list.map((comment: any) => (
+          {comment.list?.map((comment: any) => (
             <Comment
               // @ts-ignore
               data={comment}

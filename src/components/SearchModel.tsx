@@ -3,7 +3,8 @@
 import slug from "slug";
 import Link from "next/link";
 import Image from "next/image";
-import { MouseEvent, useState, useTransition } from "react";
+import { UAParser } from "ua-parser-js";
+import { MouseEvent, useEffect, useState, useTransition } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/Dialog";
@@ -28,10 +29,11 @@ const defaultState = { contents: [], creators: [] };
 
 export default function SearchModel() {
   const [isOpen, setOpen] = useState(false);
+  const [isMacOS, setMacOS] = useState(false);
   const [result, setResult] = useState(defaultState);
 
   const [isPending, startTransition] = useTransition();
-  useKeyPress("k", () => setOpen(!isOpen), { metaKey: true });
+  useKeyPress("k", () => setOpen(!isOpen), isMacOS ? { metaKey: true } : { altKey: true });
 
   const handleGoto = (_: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>) => {
     setOpen(!isOpen);
@@ -50,13 +52,20 @@ export default function SearchModel() {
     }
   }, 500);
 
+  useEffect(() => {
+    if (typeof navigator !== "undefined") {
+      const parser = new UAParser(navigator.userAgent);
+      setMacOS(parser.getOS().name === "Mac OS");
+    }
+  }, []);
+
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger className="inline-flex items-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 relative justify-start text-sm text-muted-foreground sm:pr-12 w-full sm:w-64">
         <span className="hidden lg:inline-flex">Tìm kiếm kênh, nội dung...</span>
         <span className="inline-flex lg:hidden">Tìm kiếm...</span>
         <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] opacity-100 sm:flex">
-          <span className="text-xs">⌘</span>K
+          <span className="text-xs">{isMacOS ? "⌘" : "Alt"}</span>K
         </kbd>
       </DialogTrigger>
 

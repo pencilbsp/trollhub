@@ -60,7 +60,7 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
           <AvatarFallback>{avatarNameFallback(creator.name)}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col justify-center">
-          <span className="truncate text-gray-700 dark:text-gray-400">{creator.name}</span>
+          <Link href={`/channel/${creator.userName.slice(1)}`} className="truncate text-gray-700 dark:text-gray-400">{creator.name}</Link>
           <time className="text-xs text-gray-700">
             {formatDistanceToNow(updatedAt, { locale: vi, includeSeconds: true, addSuffix: true })}
           </time>

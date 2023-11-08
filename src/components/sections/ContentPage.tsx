@@ -145,7 +145,7 @@ export default async function ContentPage({ data }: Props) {
             </div>
           )}
 
-          <ChapterTable contentId={data.id} data={data.chapter} contentTitle={data.title} contentType={data.type} />
+          <ChapterTable contentId={data.id} chapters={data.chapter} contentTitle={data.title} contentType={data.type} />
 
           <CommentList contentId={data.id} />
         </div>

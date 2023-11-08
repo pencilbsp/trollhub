@@ -1,21 +1,20 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 interface Options {
   take?: number;
   skip?: number;
-  sort?: "desc" | "asc";
+  sort?: Prisma.SortOrder;
 }
 
-const defaultOptions = {
-  take: 6,
-  skip: 0,
-  sort: "desc",
-};
+const defaultOptions: Options = { take: 6, skip: 0, sort: "desc" };
 
 export default async function getComments(contentId: string, options?: Options) {
   let { take, sort, skip } = options || defaultOptions;
+
+  if (!sort) sort = "desc";
   if (!take || take < 1) take = defaultOptions.take;
   if (!skip || skip < 0) skip = defaultOptions.skip;
 
@@ -28,7 +27,7 @@ export default async function getComments(contentId: string, options?: Options) 
     take,
     skip,
     orderBy: {
-      createdAt: sort as any,
+      createdAt: sort,
     },
     include: {
       user: {
@@ -41,7 +40,7 @@ export default async function getComments(contentId: string, options?: Options) 
     },
   });
 
-  const isMore = total > comments.length + skip;
+  const isMore = total > comments.length + skip!;
 
-  return { list: comments, isMore, options };
+  return { list: comments, isMore, total, options: { take, skip, sort } };
 }

@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
-import { ListIcon, ArrowUpIcon } from "lucide-react";
 
+import Image from "next/image";
 import prisma from "@/lib/prisma";
-import ChapterIcon from "@/components/icons/ChapterIcon";
-import CircleProgressIcon from "@/components/icons/CircleProgressIcon";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipArrow } from "@/components/ui/Tooltip";
+
+import ChapterNav from "@/components/ChapterNav";
+import { TooltipProvider } from "@/components/ui/Tooltip";
 
 interface Props {
   params: { slug: string };
@@ -15,6 +15,14 @@ async function getChapter(id: string) {
     where: {
       id,
     },
+    include: {
+      content: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
   });
 }
 
@@ -24,65 +32,34 @@ export default async function ChapterPage({ params }: Props) {
 
   if (!chapter) return notFound();
 
-  let chapterName, chapterDescription;
-  const chapTitle = chapter.title?.split(":");
-  if (chapTitle) (chapterName = chapTitle[0]), (chapterDescription = chapTitle[1]);
-
   return (
-    <div className="container p-2 sm:px-4 xl:max-w-5xl">
-      <div className="xl:-mx-12 mb-8 h-[67px] mt-6">
-        <aside className="bg-gray-100 dark:bg-background dark:border flex p-3 rounded-full items-center">
-          <nav>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-500/25 transition-colors">
-                    <ListIcon size={20} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Danh sách các chương</p>
-                  <TooltipArrow className="dark:fill-white" />
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </nav>
-          <div className="h-8 mr-4 ml-3 w-[1px] bg-gray-400/25"></div>
-          <div className="flex items-center gap-3 w-full">
-            <ChapterIcon className="hidden md:block" />
+    <TooltipProvider>
+      <div className="container px-4 xl:max-w-6xl">
+        <div className="mb-4 md:mb-8 mt-3 md:mt-4 relative">
+          <ChapterNav
+            id={chapter.id}
+            title={chapter.title!}
+            contentType={chapter.type}
+            contentId={chapter.content.id}
+            contentTitle={chapter.content.title}
+          />
+        </div>
 
-            <div className="">
-              <h3>{chapterName}</h3>
-              <h2 className="text-foreground/60 text-sm">{chapterDescription}</h2>
-            </div>
-
-            <div className="ml-auto flex-col items-end hidden md:flex">
-              <p>25%</p>
-              <p className="text-foreground/60 text-sm font-light">4/16 chapters</p>
-            </div>
-
-            <div className="ml-auto md:ml-0 w-9 h-9">
-              <CircleProgressIcon />
-            </div>
-          </div>
-          <div className="h-8 mr-3 ml-4 w-[1px] bg-gray-400/25"></div>
-          <div className="">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-500/25 transition-colors">
-                    <ArrowUpIcon size={20} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Lên đầu trang</p>
-                  <TooltipArrow className="dark:fill-white" />
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        </aside>
+        <div className="max-w-3xl mx-auto border rounded-xl overflow-hidden">
+          {chapter.images.map((img, index) => (
+            <Image
+              className="w-full"
+              unoptimized
+              key={chapter.id + index}
+              src={img}
+              alt={""}
+              sizes="100vh"
+              width={0}
+              height={0}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }

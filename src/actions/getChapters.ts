@@ -18,6 +18,7 @@ export default async function getChapters(
   contentId: string,
   options: any = { take: 12, skip: 0, orderBy: { createdAt: "desc" } }
 ) {
+  contentId = contentId.split("|")[0];
   return prisma.chapter.findMany({
     where: {
       contentId,

@@ -86,10 +86,12 @@ export default function Comment({ data, currentUser, onCommentDeleted }: Props) 
         <div>
           <p className="text-foreground/70">{text}</p>
         </div>
-        <div className="flex gap-x-3 text-sm text-foreground/70 font-semibold">
-          <button className="hover:underline">Thích</button>
-          <button className="hover:underline">Trả lời</button>
-        </div>
+        {currentUser && (
+          <div className="flex gap-x-3 text-sm text-foreground/70 font-semibold">
+            <button className="hover:underline">Thích</button>
+            <button className="hover:underline">Trả lời</button>
+          </div>
+        )}
       </div>
     </div>
   );

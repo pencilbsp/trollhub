@@ -3,10 +3,10 @@
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-export default function CircleProgressIcon() {
+export default function CircleProgressIcon({ value }: { value: number }) {
   return (
     <CircularProgressbar
-      value={25}
+      value={value}
       strokeWidth={10}
     />
   );
