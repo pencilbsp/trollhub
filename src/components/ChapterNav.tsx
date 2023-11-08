@@ -1,10 +1,14 @@
 "use client";
 
+import slug from "slug";
 import useSWR from "swr";
+import Link from "next/link";
 import { motion } from "framer-motion";
+import { ContentType } from "@prisma/client";
 import { ArrowUpIcon, ListIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import useOffSetTop from "@/hooks/useOffSetTop";
 
 import getChapters from "@/actions/getChapters";
 import ChapterIcon from "@/components/icons/ChapterIcon";
@@ -12,8 +16,8 @@ import CircleProgressIcon from "@/components/icons/CircleProgressIcon";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { Tooltip, TooltipArrow, TooltipContent, TooltipTrigger } from "@/components/ui/Tooltip";
 
-import { ContentType } from "@prisma/client";
-import useOffSetTop from "@/hooks/useOffSetTop";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 interface Props {
   id: string;
@@ -31,7 +35,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
     revalidateOnFocus: false,
   });
 
-  const offset = useOffSetTop(97 - 16);
+  const offset = useOffSetTop(64);
   const chapterIndex = chapters.findIndex((chapter) => id === chapter.id);
   const percent = ((chapters.length - chapterIndex) / chapters.length) * 100;
 
@@ -50,7 +54,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
   return (
     <motion.aside
       className={cn(
-        "h-[52px] md:h-[67px] bg-muted dark:bg-background dark:border flex px-3 py-1 md:p-3 rounded-full items-center w-full gap-x-2",
+        "h-[52px] md:h-[67px] bg-muted/80 dark:bg-background/80 dark:border flex px-3 py-1 md:p-3 rounded-full items-center w-full gap-x-2 backdrop-blur-xl",
         offset && "fixed top-4 border shadow-lg max-w-[calc(100%-32px)] xl:max-w-[1120px]"
       )}
     >
@@ -61,8 +65,38 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
               <ListIcon size={20} />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="rounded-xl shadow min-w-[540px]" align="start" alignOffset={-12} sideOffset={28}>
-            
+          <PopoverContent
+            align="start"
+            sideOffset={26}
+            alignOffset={-12}
+            className="rounded-xl shadow w-[540px]  p-0 overflow-hidden backdrop-blur-xl bg-background/80"
+          >
+            <div className="m-3">
+              <h4 className="font-bold text-xl uppercase">Danh sách chương</h4>
+            </div>
+            <div className="max-h-80 w-full overflow-y-auto mb-3">
+              <ul className="px-3 w-full text-sm font-mono flex flex-col divide-y">
+                {chapters.map((chap) => {
+                  const isCurrent = chap.id === id;
+                  return (
+                    <li
+                      key={chap.id}
+                      className={cn(
+                        "flex justify-between p-2 gap-x-4 hover:bg-foreground/10",
+                        isCurrent && "bg-foreground/10 text-blue-500"
+                      )}
+                    >
+                      <Link className="truncate" href={`/chapter/${slug(contentTitle)}-${chap.id}`}>
+                        {chap.title}
+                      </Link>
+                      <time className="font-mono font-light text-sm flex-shrink-0">
+                        {format(chap.createdAt, "dd/MM/yyyy HH:mm", { locale: vi })}
+                      </time>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </PopoverContent>
         </Popover>
       </nav>
@@ -72,8 +106,8 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
       <ChapterIcon className="hidden lg:block mr-3" />
       <div className="flex items-center gap-3 w-full overflow-hidden">
         <div className="flex-shrink-0 flex-grow w-full">
-          <h1 className="truncate text-sm md:text-base">{contentTitle}</h1>
-          <h2 className="truncate text-foreground/60 text-xs md:text-sm">{title}</h2>
+          <h2 className="truncate text-sm md:text-base">{contentTitle}</h2>
+          <h1 className="truncate text-foreground/60 text-xs md:text-sm">{title}</h1>
         </div>
       </div>
 

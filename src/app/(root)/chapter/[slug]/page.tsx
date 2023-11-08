@@ -35,7 +35,7 @@ export default async function ChapterPage({ params }: Props) {
   return (
     <TooltipProvider>
       <div className="container px-4 xl:max-w-6xl">
-        <div className="mb-4 md:mb-8 mt-3 md:mt-4 relative">
+        <div className="my-4 md:my-3 relative">
           <ChapterNav
             id={chapter.id}
             title={chapter.title!}
