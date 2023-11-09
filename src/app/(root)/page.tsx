@@ -23,7 +23,7 @@ const contentSelector: any = {
         },
       },
       orderBy: {
-        updatedAt: "asc",
+        updatedAt: "desc",
       },
     },
   },
