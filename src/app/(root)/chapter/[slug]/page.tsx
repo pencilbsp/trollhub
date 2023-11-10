@@ -45,17 +45,17 @@ export default async function ChapterPage({ params }: Props) {
           />
         </div>
 
-        <div className="max-w-3xl mx-auto border rounded-xl overflow-hidden">
+        <div className="-mx-4 sm:mx-auto max-w-3xl border rounded-xl overflow-hidden">
           {chapter.images.map((img, index) => (
             <Image
-              className="w-full"
-              unoptimized
-              key={chapter.id + index}
-              src={img}
               alt={""}
-              sizes="100vh"
+              src={img}
               width={0}
               height={0}
+              unoptimized
+              sizes="100vh"
+              className="w-full"
+              key={chapter.id + index}
             />
           ))}
         </div>
