@@ -10,6 +10,14 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/comic-chapter/:path*",
+        destination: "/chapter/:path*",
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

@@ -1,6 +1,8 @@
 "use client";
 
+import slug from "slug";
 import useSWR from "swr";
+import Link from "next/link";
 import { Drawer } from "vaul";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -34,6 +36,8 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
     fallbackData: [],
     revalidateOnFocus: false,
   });
+
+  const href = `/${contentType}/${slug(contentTitle)}-${contentId}`;
 
   const offset = useOffSetTop(64);
   const chapterIndex = chapters.findIndex((chapter) => id === chapter.id);
@@ -103,7 +107,9 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
       <ChapterIcon className="hidden lg:block mr-3" />
       <div className="flex items-center gap-3 w-full overflow-hidden">
         <div className="flex-shrink-0 flex-grow w-full">
-          <h2 className="truncate text-sm md:text-base">{contentTitle}</h2>
+          <Link href={href}>
+            <h2 className="truncate text-sm md:text-base">{contentTitle}</h2>
+          </Link>
           <h1 className="truncate text-foreground/60 text-xs md:text-sm">{title}</h1>
         </div>
       </div>

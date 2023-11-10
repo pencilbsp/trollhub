@@ -11,23 +11,32 @@ interface Props {
 }
 
 async function getChapter(id: string) {
-  return prisma.chapter.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      content: {
-        select: {
-          id: true,
-          title: true,
+  try {
+    const where = id.length !== 24 ? { fid: id } : { id };
+    const data = await prisma.chapter.findFirst({
+      where,
+      include: {
+        content: {
+          select: {
+            id: true,
+            title: true,
+          },
         },
       },
-    },
-  });
+    });
+
+    return data;
+  } catch (error) {
+    return null;
+  }
 }
 
 export default async function ChapterPage({ params }: Props) {
-  const chapterId = params.slug.slice(-24);
+  let chapterId = params.slug.slice(-24);
+  if (params.slug.endsWith(".html")) {
+    chapterId = params.slug.replace(".html", "").split("_")?.[1];
+  }
+
   const chapter = await getChapter(chapterId);
 
   if (!chapter) return notFound();
