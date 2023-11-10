@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { INIT_CREATER_CONTENT } from "@/config";
 
 export const contentQuery = (options: any): any => ({
   select: {
@@ -25,11 +26,9 @@ export const contentQuery = (options: any): any => ({
   },
 });
 
-export async function getContentsByCategoryId(id: string, options = { take: 12, skip: 0 }) {
+export async function getContentsByCategoryId(id: string, options = { take: INIT_CREATER_CONTENT, skip: 0 }) {
   const contents = await prisma.category.findUnique({
-    where: {
-      id,
-    },
+    where: { id },
     ...contentQuery(options),
   });
 

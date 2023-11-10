@@ -10,6 +10,7 @@ import NavLink from "./NavLink";
 import { ToggleTheme } from "./ToggleTheme";
 
 import { User } from "next-auth";
+import { usePathname } from "next/navigation";
 
 import { UserNav } from "./UserNav";
 import SearchModel from "./SearchModel";
@@ -20,6 +21,7 @@ import { HomeIcon, HammerIcon, LifeBuoyIcon } from "lucide-react";
 
 export default function Header() {
   const session = useSession();
+  const pathname = usePathname();
 
   return (
     <Headroom className="z-50 relative">
@@ -47,7 +49,9 @@ export default function Header() {
                 <div className="flex w-full gap-x-3 justify-end">
                   {!session.data && (
                     <Button asChild>
-                      <Link className=" flex-1" href="/login">Đăng nhập</Link>
+                      <Link className=" flex-1" href="/login">
+                        Đăng nhập
+                      </Link>
                     </Button>
                   )}
                   <ToggleTheme className="inline-flex" />
@@ -74,7 +78,7 @@ export default function Header() {
                 <UserNav user={session.data.user as User} />
               ) : (
                 <Button className="hidden lg:block" asChild>
-                  <Link href="/login">Đăng nhập</Link>
+                  <Link href={"/login?next=" + encodeURIComponent(pathname)}>Đăng nhập</Link>
                 </Button>
               )}
             </div>

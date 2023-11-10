@@ -20,7 +20,7 @@ export default async function CategoryPage({ params }: Props) {
           {/* @ts-ignore */}
           <CategoryContents id={category.id} contents={category.contents} />
         </div>
-        <div className="col-span-3 md:col-span-1">Category List</div>
+        <div className="col-span-3 md:col-span-1"></div>
       </div>
     </div>
   );

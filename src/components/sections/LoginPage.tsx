@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { LiteralUnion, signIn } from "next-auth/react";
 
 import MetaIcon from "@/components/icons/MetaIcon";
@@ -7,9 +8,12 @@ import GoogleIcon from "@/components/icons/GoogleIcon";
 import { BuiltInProviderType } from "next-auth/providers/index";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("next") || "/";
+
   const handleLogin = async (providerName: LiteralUnion<BuiltInProviderType>) => {
     try {
-      await signIn(providerName, { callbackUrl: "/" });
+      await signIn(providerName, { callbackUrl });
     } catch (error) {
       console.log(error);
     }

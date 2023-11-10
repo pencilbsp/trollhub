@@ -1,9 +1,9 @@
 "use client";
 
 import useSWR from "swr";
+import { useTransition } from "react";
 import { Prisma } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useMemo, useTransition } from "react";
 
 import getComments from "@/actions/getComments";
 
@@ -65,19 +65,25 @@ export default function CommentList({ contentId }: Props) {
       </div>
       <Card className="p-4 mt-4">
         {/* @ts-ignore */}
-        {session && <CommentEditor user={session.user} contentId={contentId} onNewComment={handleAddCommnet} />}
+        {session ? (
+          <CommentEditor user={session.user} contentId={contentId} onNewComment={handleAddCommnet} />
+        ) : (
+          <p className="text-center text-lg">Đăng nhập để gửi bình luận!!!</p>
+        )}
 
-        <div className="flex flex-col gap-y-4 mb-4">
-          {comment.list?.map((comment: any) => (
-            <Comment
-              // @ts-ignore
-              data={comment}
-              key={comment.id}
-              currentUser={session?.user}
-              onCommentDeleted={handleDeleteCommnet}
-            />
-          ))}
-        </div>
+        {
+          <div className="flex flex-col gap-y-4 mb-4">
+            {comment.list?.map((comment: any) => (
+              <Comment
+                // @ts-ignore
+                data={comment}
+                key={comment.id}
+                currentUser={session?.user}
+                onCommentDeleted={handleDeleteCommnet}
+              />
+            ))}
+          </div>
+        }
 
         <div className="flex w-full flex-col justify-center items-center">
           {isLoading || isPending ? (

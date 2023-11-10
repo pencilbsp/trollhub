@@ -33,14 +33,13 @@ interface Props {
 
 function ContentHorizontal({ data }: { data: ContentWithCreator }) {
   const descriptionRef = useRef<HTMLDivElement>(null);
-  const [showMore, setShowMore] = useState(false);
 
-  const { id, type, creator, thumbUrl, title, updatedAt, description } = data;
+  const { id, type, creator, thumbUrl, title, updatedAt, description, status } = data;
   let thumbHdUrl = thumbUrl;
   if (thumbHdUrl) thumbHdUrl = thumbHdUrl.replace("_256x", "_720x");
-  const href = `/${type}/${slug(title)}-${id}`;
 
-  const handleShowMore = () => {};
+  const ContentIcon = getContentIcon(type);
+  const href = `/${type}/${slug(title)}-${id}`;
 
   useEffect(() => {
     if (descriptionRef.current) {
@@ -60,7 +59,9 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
           <AvatarFallback>{avatarNameFallback(creator.name)}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col justify-center">
-          <Link href={`/channel/${creator.userName.slice(1)}`} className="truncate text-gray-700 dark:text-gray-400">{creator.name}</Link>
+          <Link href={`/channel/${creator.userName.slice(1)}`} className="truncate text-gray-700 dark:text-gray-400">
+            {creator.name}
+          </Link>
           <time className="text-xs text-gray-700">
             {formatDistanceToNow(updatedAt, { locale: vi, includeSeconds: true, addSuffix: true })}
           </time>
@@ -75,9 +76,6 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
             <div className="flex flex-col relative">
               <div ref={descriptionRef} className="text-gray-700 dark:text-gray-400 mt-2 line-clamp-3">
                 {description}
-                {/* <span className="" onClick={handleShowMore}>
-                  Xem thêm
-                </span> */}
               </div>
             </div>
           )}
@@ -92,13 +90,21 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
                 }}
               />
               <Image
-                className="w-full h-full object-contain relative"
-                alt={title}
-                src={thumbHdUrl}
-                sizes="100vh"
                 width={0}
                 height={0}
+                alt={title}
+                sizes="100vh"
+                src={thumbHdUrl}
+                className="w-full h-full object-contain relative"
               />
+              <div className="flex flex-col items-end absolute top-0 right-5">
+                <Badge className="bg-stone-950/30 backdrop-blur text-white border-none mb-3">
+                  <ContentIcon size={28} />
+                </Badge>
+                <Badge variant="destructive">
+                  {status === ContentStatus.complete ? "Đã hoàn thành" : "Đang xuất bản"}
+                </Badge>
+              </div>
             </div>
           </Link>
         )}

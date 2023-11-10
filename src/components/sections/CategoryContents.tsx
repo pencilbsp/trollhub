@@ -1,9 +1,11 @@
 "use client";
 
+import useSWR from "swr";
+import { useEffect, useTransition } from "react";
 import { useInView } from "react-intersection-observer";
-import { useEffect, useState, useTransition } from "react";
 
 import SpinerIcon from "../icons/SpinerIcon";
+import { INIT_CREATER_CONTENT } from "@/config";
 import { getContentsByCategoryId } from "@/actions/getContents";
 import ContentCard, { ContentWithCreator } from "../ContentCard";
 
@@ -14,22 +16,36 @@ interface Props {
 
 interface LoadMoreContentProps {
   id: string;
+  skip?: number;
 }
+
+const fallbackData = { contents: [], take: INIT_CREATER_CONTENT, page: 1, hasMore: true };
+const fetcher = async (id: string) => {
+  const searchParams = new URLSearchParams(id);
+  const page = Number(searchParams.get("page") || fallbackData.page);
+  const take = Number(searchParams.get("take") || fallbackData.take);
+  const category: any = await getContentsByCategoryId(id, { take, skip: page * take });
+  const contents = category?.contents || [];
+  return { contents, take, page, hasMore: contents.length > 0 };
+};
 
 function LoadMoreContent({ id }: LoadMoreContentProps) {
   const { ref, inView } = useInView();
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [contents, setContents] = useState<ContentWithCreator[]>([]);
+  const {
+    data: { contents, hasMore, take, page },
+    mutate,
+  } = useSWR(id, fetcher, { fallbackData, revalidateOnFocus: false });
+
   const [isPending, startTransition] = useTransition();
 
   const loadContents = async () => {
-    const category: any = await getContentsByCategoryId(id, { take: 12, skip: 12 * page });
+    const nextPage = page + 1;
+    const category: any = await getContentsByCategoryId(id, { take, skip: take * nextPage });
     if (category && category.contents.length > 0) {
-      setPage(page + 1);
-      setContents((prevContents) => [...prevContents, ...category.contents]);
+      const hasMore = category.contents.length === INIT_CREATER_CONTENT;
+      mutate({ contents: [...contents, ...category.contents], page: nextPage, take, hasMore }, { revalidate: false });
     } else {
-      setHasMore(false);
+      mutate({ contents, page, take, hasMore: false }, { revalidate: false });
     }
   };
 
@@ -43,16 +59,18 @@ function LoadMoreContent({ id }: LoadMoreContentProps) {
   return (
     <>
       {contents &&
-        contents.map((content) => {
+        contents.map((content: any) => {
           // @ts-ignore
           return <ContentCard key={content.id} direction="horizontal" data={content} />;
         })}
-      <div ref={ref} className="">
-        <div className="flex items-center justify-center text-blue-600">
-          <SpinerIcon />
-          <span className="ml-2 text-lg">Đang tải thêm...</span>
+      {hasMore && (
+        <div ref={ref} className="">
+          <div className="flex items-center justify-center text-blue-600">
+            <SpinerIcon />
+            <span className="ml-2 text-lg">Đang tải thêm...</span>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
