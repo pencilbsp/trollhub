@@ -1,23 +1,22 @@
 "use client";
 
-import { ContentType } from "@prisma/client";
-import { motion } from "framer-motion";
-import { ArrowUpIcon, ListIcon } from "lucide-react";
 import useSWR from "swr";
 import { Drawer } from "vaul";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { ContentType } from "@prisma/client";
+import { ArrowUpIcon, ListIcon } from "lucide-react";
 
-import useOffSetTop from "@/hooks/useOffSetTop";
 import { cn } from "@/lib/utils";
+import useOffSetTop from "@/hooks/useOffSetTop";
+import useResponsive from "@/hooks/useResponsive";
 
 import getChapters from "@/actions/getChapters";
 import ChapterIcon from "@/components/icons/ChapterIcon";
+import ChapterList from "@/components/sections/ChapterList";
 import CircleProgressIcon from "@/components/icons/CircleProgressIcon";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { Tooltip, TooltipArrow, TooltipContent, TooltipTrigger } from "@/components/ui/Tooltip";
-
-import useResponsive from "@/hooks/useResponsive";
-import ChapterList from "./sections/ChapterList";
-import { useEffect, useState } from "react";
 
 interface Props {
   id: string;
