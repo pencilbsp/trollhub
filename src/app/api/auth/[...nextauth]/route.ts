@@ -25,7 +25,7 @@ export const authOptions: AuthOptions = {
       clientSecret: FACEBOOK_CLIENT_SECRET,
     }),
   ],
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma as any),
   callbacks: {
     async session({ session, user }) {
       return Promise.resolve({
