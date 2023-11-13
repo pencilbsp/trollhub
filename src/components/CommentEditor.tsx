@@ -6,8 +6,9 @@ import { ClipboardEvent, FormEvent, useRef, useState, useTransition } from "reac
 import { SendHorizonalIcon, StickerIcon, ImagePlusIcon } from "lucide-react";
 
 import { avatarNameFallback } from "@/lib/utils";
-import createComment from "@/actions/createComment";
+import { createComment } from "@/actions/commentActions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { toast } from "sonner";
 
 interface Props {
   user: User;
@@ -28,11 +29,13 @@ export default function CommentEditor({ user, contentId, onNewComment }: Props) 
         text: inputRef.current.innerText,
       });
 
-      if (result.error) return console.log(result.error);
-
-      setSend(false);
-      onNewComment(result.data);
-      inputRef.current.innerText = "";
+      if (result.error) {
+        toast.error(result.error.message);
+      } else {
+        setSend(false);
+        onNewComment(result.data);
+        inputRef.current.innerText = "";
+      }
     }
   };
 

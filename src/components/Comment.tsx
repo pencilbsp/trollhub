@@ -1,24 +1,27 @@
+import { toast } from "sonner";
 import { User } from "next-auth";
 import { vi } from "date-fns/locale";
+import { memo, useTransition } from "react";
 import { formatDistanceToNow } from "date-fns";
 
-import { Comment } from "@prisma/client";
-import deleteComment from "@/actions/deleteComment";
+import { Comment as IComment } from "@prisma/client";
+import { deleteComment, likeComment } from "@/actions/commentActions";
 import { AlertTriangleIcon, MoreHorizontalIcon, TrashIcon } from "lucide-react";
 
-import { avatarNameFallback } from "@/lib/utils";
+import { avatarNameFallback, cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuShortcut,
 } from "@/components/ui/DropdownMenu";
-import { useTransition } from "react";
 import SpinerIcon from "./icons/SpinerIcon";
 
-export interface CommentWithUser extends Comment {
+export interface CommentWithUser extends IComment {
+  liked: boolean;
+  totalLike: number;
   user: {
     id: string;
     name: string;
@@ -30,18 +33,30 @@ interface Props {
   currentUser?: User;
   data: CommentWithUser;
   onCommentDeleted: (id: string) => void;
+  onCommentLiked: (id: string, liked: boolean) => void;
 }
 
-export default function Comment({ data, currentUser, onCommentDeleted }: Props) {
-  const { id, user, createdAt, text } = data;
+function Comment({ data, currentUser, onCommentDeleted, onCommentLiked }: Props) {
+  const { id, user, createdAt, text, liked, totalLike } = data;
   const [isPending, startTransition] = useTransition();
 
   const handleDeleteComment = async () => {
-    if (isPending) return;
-    const result = await deleteComment(id);
-    if (result.error) return console.log(result.error);
-    onCommentDeleted(id);
+    if (!isPending && user) {
+      const result = await deleteComment(id);
+      if (result.error) toast.error(result.error.message);
+      else onCommentDeleted(id);
+    }
   };
+
+  const handleLikeCommnet = async () => {
+    if (!isPending && currentUser) {
+      const result = await likeComment(currentUser.id, id, liked);
+      if (result.error) toast.error(result.error.message);
+      else onCommentLiked(id, !liked);
+    }
+  };
+
+  console.log("Comment", data.text);
 
   return (
     <div className="flex gap-2">
@@ -88,11 +103,15 @@ export default function Comment({ data, currentUser, onCommentDeleted }: Props) 
         </div>
         {currentUser && (
           <div className="flex gap-x-3 text-sm text-foreground/70 font-semibold">
-            <button className="hover:underline">Thích</button>
-            <button className="hover:underline">Trả lời</button>
+            <button onClick={handleLikeCommnet} className={cn(["hover:underline", liked && "text-blue-500"])}>
+              Thích ({totalLike})
+            </button>
+            {/* <button className="hover:underline">Trả lời</button> */}
           </div>
         )}
       </div>
     </div>
   );
 }
+
+export default memo(Comment);

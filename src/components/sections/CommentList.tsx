@@ -5,7 +5,7 @@ import { useTransition } from "react";
 import { Prisma } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
-import getComments from "@/actions/getComments";
+import { getComments } from "@/actions/commentActions";
 
 import Comment from "@/components/Comment";
 import { Card } from "@/components/ui/Card";
@@ -24,15 +24,29 @@ export const fetcher = (id: string) => getComments(id);
 
 export default function CommentList({ contentId }: Props) {
   const { data: session } = useSession();
-  const { data: comment, isLoading, mutate } = useSWR(contentId, fetcher, { revalidateOnFocus: false, fallbackData });
   const [isPending, startTransition] = useTransition();
+  const { data: comment, isLoading, mutate } = useSWR(contentId, fetcher, { revalidateOnFocus: false, fallbackData });
 
   const handleAddCommnet = (newComment: any) => {
     mutate({ ...comment, list: [newComment, ...comment.list] }, { revalidate: false });
   };
 
-  const handleDeleteCommnet = (did: string) => {
-    mutate({ ...comment, list: comment.list.filter((c: any) => c.id !== did) }, { revalidate: false });
+  const handleLikeCommnet = (id: string, liked: boolean) => {
+    const list = [...comment.list];
+    const index = list.findIndex((comment) => comment.id === id);
+
+    const cComment = comment.list[index];
+    const totalLike = liked ? cComment.totalLike + 1 : cComment.totalLike - 1;
+    list[index] = { ...cComment, liked, totalLike };
+    mutate({ ...comment, list }, { revalidate: false });
+  };
+
+  const handleDeleteCommnet = (id: string) => {
+    const list = [...comment.list];
+    const index = list.findIndex((comment) => comment.id === id);
+
+    list.splice(index, 1);
+    mutate({ ...comment, list }, { revalidate: false });
   };
 
   const handleSortCommnet = async (sort: Prisma.SortOrder) => {
@@ -41,12 +55,13 @@ export default function CommentList({ contentId }: Props) {
   };
 
   const handleLoadMoreCommnet = async () => {
-    if (isPending) return;
-    const moreComments = await getComments(contentId, { ...comment.options, skip: comment.list.length });
-    mutate(
-      { ...comment, list: [...comment.list, ...moreComments.list], isMore: moreComments.isMore },
-      { revalidate: false }
-    );
+    if (!isPending) {
+      const moreComments = await getComments(contentId, { ...comment.options, skip: comment.list.length });
+      mutate(
+        { ...comment, list: [...comment.list, ...moreComments.list], isMore: moreComments.isMore },
+        { revalidate: false }
+      );
+    }
   };
 
   return (
@@ -64,7 +79,6 @@ export default function CommentList({ contentId }: Props) {
         </Select>
       </div>
       <Card className="p-4 mt-4">
-        {/* @ts-ignore */}
         {session ? (
           <CommentEditor user={session.user} contentId={contentId} onNewComment={handleAddCommnet} />
         ) : (
@@ -73,12 +87,12 @@ export default function CommentList({ contentId }: Props) {
 
         {
           <div className="flex flex-col gap-y-4 mb-4">
-            {comment.list?.map((comment: any) => (
+            {comment.list?.map((comment: any, index: number) => (
               <Comment
-                // @ts-ignore
                 data={comment}
                 key={comment.id}
                 currentUser={session?.user}
+                onCommentLiked={handleLikeCommnet}
                 onCommentDeleted={handleDeleteCommnet}
               />
             ))}

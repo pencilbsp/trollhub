@@ -40,17 +40,21 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid()) @map("_id")
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  Account       Account[]
-  Session       Session[]
+  id              String            @id @default(cuid()) @map("_id")
+  name            String?
+  email           String?           @unique
+  emailVerified   DateTime?
+  image           String?
+  Account         Account[]
+  Session         Session[]
   // channel       Creator?  @relation(fields: [creatorId], references: [id])
   // creatorId     String?   @unique @db.ObjectId
-  comments      Comment[]
-  replies       Reply[]
+  comments        Comment[]
+  replies         Reply[]
+  histories       History[]
+  userLikeContent UserLikeContent[]
+  userLikeComment UserLikeComment[]
+  userLikeReply   UserLikeReply[]
 }
 
 model Creator {
@@ -106,6 +110,7 @@ model Chapter {
   creator    Creator       @relation(fields: [creatorId], references: [id])
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
+  histories  History[]
 }
 
 enum ContentType {
@@ -120,53 +125,101 @@ enum ContentStatus {
 }
 
 model Content {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  fid         String?
-  title       String
-  akaTitle    String[]
-  type        ContentType
-  author      String?
-  thumbUrl    String?
-  description String?
-  chapter     Chapter[]
-  totalChap   Int?          @default(0)
-  comments    Comment[]
-  status      ContentStatus @default(updating)
-  categoryIds String[]      @db.ObjectId
-  categories  Category[]    @relation(fields: [categoryIds], references: [id])
-  countryIds  String[]      @db.ObjectId
-  countries   Country[]     @relation(fields: [countryIds], references: [id])
-  creatorId   String        @db.ObjectId
-  creator     Creator       @relation(fields: [creatorId], references: [id])
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  fid             String?
+  title           String
+  akaTitle        String[]
+  type            ContentType
+  author          String?
+  thumbUrl        String?
+  description     String?
+  chapter         Chapter[]
+  totalChap       Int?              @default(0)
+  comments        Comment[]
+  status          ContentStatus     @default(updating)
+  categoryIds     String[]          @db.ObjectId
+  categories      Category[]        @relation(fields: [categoryIds], references: [id])
+  countryIds      String[]          @db.ObjectId
+  countries       Country[]         @relation(fields: [countryIds], references: [id])
+  creatorId       String            @db.ObjectId
+  creator         Creator           @relation(fields: [creatorId], references: [id])
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  histories       History[]
+  userLikeContent UserLikeContent[]
 }
 
 model Reply {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  text      String
-  sticker   String?
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  likeIds   String[] @db.ObjectId
-  comment   Comment? @relation(fields: [commentId], references: [id])
-  commentId String?  @db.ObjectId
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  text          String
+  sticker       String?
+  user          User            @relation(fields: [userId], references: [id])
+  userId        String
+  comment       Comment?        @relation(fields: [commentId], references: [id])
+  commentId     String?         @db.ObjectId
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  userLikeReply UserLikeReply[]
 }
 
 model Comment {
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  text            String
+  sticker         String?
+  user            User              @relation(fields: [userId], references: [id])
+  userId          String
+  content         Content           @relation(fields: [contentId], references: [id])
+  contentId       String            @db.ObjectId
+  chapter         Chapter?          @relation(fields: [chapterId], references: [id])
+  chapterId       String?           @db.ObjectId
+  replies         Reply[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  userLikeComment UserLikeComment[]
+}
+
+model History {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  text      String
-  sticker   String?
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  likeIds   String[] @db.ObjectId
   content   Content  @relation(fields: [contentId], references: [id])
   contentId String   @db.ObjectId
-  chapter   Chapter? @relation(fields: [chapterId], references: [id])
-  chapterId String?  @db.ObjectId
-  replies   Reply[]
-  createdAt DateTime @default(now())
+  chapter   Chapter  @relation(fields: [chapterId], references: [id])
+  chapterId String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, contentId])
+}
+
+model UserLikeContent {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  content   Content  @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  contentId String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, contentId])
+}
+
+model UserLikeComment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, commentId])
+}
+
+model UserLikeReply {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  reply     Reply    @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  replyId   String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, replyId])
 }
