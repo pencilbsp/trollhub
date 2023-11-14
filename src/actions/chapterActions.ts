@@ -14,7 +14,7 @@ export const chapterQuery = (options: any): any => ({
   },
 });
 
-export default async function getChapters(
+export async function getChapters(
   contentId: string,
   options: any = { take: 12, skip: 0, orderBy: { createdAt: "desc" } }
 ) {

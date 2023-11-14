@@ -1,51 +1,39 @@
 "use client";
 
 import slug from "slug";
-import useSWR from "swr";
 import Link from "next/link";
 
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
-import getChapters from "@/actions/getChapters";
-
 import { TabletSmartphoneIcon } from "lucide-react";
 import { Chapter, ContentType, Prisma } from "@prisma/client";
+
+import useChapters from "@/hooks/useChapters";
 
 import { Card } from "@/components/ui/Card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/Table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
 
 interface Props {
-  chapters?: Chapter[];
+  data?: Chapter[];
   contentId: string;
   contentTitle: string;
   contentType: ContentType;
   createdAt?: Prisma.SortOrder;
   hiddenColumns?: ("view" | "update")[];
 }
-const fetcher = (id: string) => getChapters(id, { orderBy: { createdAt: "desc" } });
 
-export default function ChapterTable({
-  chapters,
-  contentId,
-  createdAt,
-  contentType,
-  contentTitle,
-  hiddenColumns,
-}: Props) {
+export default function ChapterTable({ data, contentId, createdAt, contentType, contentTitle, hiddenColumns }: Props) {
   if (!createdAt) createdAt = "desc";
   if (!hiddenColumns) hiddenColumns = [];
 
-  const { data, mutate } = useSWR(`${contentId}|chapter`, fetcher, {
-    fallbackData: chapters,
-    revalidateOnFocus: false,
-  });
+  const { chapters, mutate } = useChapters(contentId, data);
 
-  const handleSort = async (value: Prisma.SortOrder) => {
+  const handleSort = (value: Prisma.SortOrder) => {
     mutate(
       [
-        ...(data || []).sort((a, b) => {
+        ...chapters.sort((a, b) => {
           if (value === "desc") [a, b] = [b, a];
           return a.createdAt.getTime() - b.createdAt.getTime();
         }),
@@ -72,7 +60,7 @@ export default function ChapterTable({
       </div>
       <Card className="mt-4">
         <div className="max-h-80 overflow-y-auto">
-          {data && data.length > 0 && (
+          {chapters.length > 0 && (
             <Table>
               <TableHeader className="sticky top-0 dark:bg-gray-950 bg-gray-50 mx-4">
                 <TableRow>
@@ -86,7 +74,7 @@ export default function ChapterTable({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.map(({ id, title, createdAt, mobileOnly, type }) => {
+                {chapters.map(({ id, title, createdAt, mobileOnly, type }) => {
                   const href = `/${type === ContentType.movie ? "episode" : "chapter"}/${slug(contentTitle)}-${id}`;
 
                   return (

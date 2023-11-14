@@ -3,8 +3,10 @@
 import slug from "slug";
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 import { ThumbsUpIcon, MessageCircleIcon, ShareIcon, ImageIcon, FilmIcon, BookOpenTextIcon } from "lucide-react";
 
+import Thumbnail from "./Thumbnail";
 import { Badge } from "@/components/ui/Badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card";
@@ -14,7 +16,6 @@ import { Content, Creator, ContentStatus, ContentType } from "@prisma/client";
 
 import { vi } from "date-fns/locale";
 import { formatDistanceToNow } from "date-fns";
-import { useEffect, useRef, useState } from "react";
 
 function getContentIcon(type: ContentType) {
   if (type === ContentType.movie) return FilmIcon;
@@ -33,10 +34,7 @@ interface Props {
 
 function ContentHorizontal({ data }: { data: ContentWithCreator }) {
   const descriptionRef = useRef<HTMLDivElement>(null);
-
   const { id, type, creator, thumbUrl, title, updatedAt, description, status } = data;
-  let thumbHdUrl = thumbUrl;
-  if (thumbHdUrl) thumbHdUrl = thumbHdUrl.replace("_256x", "_720x");
 
   const ContentIcon = getContentIcon(type);
   const href = `/${type}/${slug(title)}-${id}`;
@@ -54,8 +52,7 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
     <Card className="w-full">
       <CardHeader className="p3 sm:p-6">
         <Avatar className="w-10 h-10 border mr-2">
-          {/* @ts-ignore */}
-          <AvatarImage src={creator.avatar} />
+          {creator.avatar && <AvatarImage src={creator.avatar} />}
           <AvatarFallback>{avatarNameFallback(creator.name)}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col justify-center">
@@ -80,34 +77,14 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
             </div>
           )}
         </div>
-        {thumbUrl && thumbHdUrl && (
-          <Link href={href}>
-            <div className="w-full aspect-video relative mt-6">
-              <div
-                className="absolute inset-0 blur-lg"
-                style={{
-                  background: `url(${thumbUrl}) center center / cover scroll no-repeat`,
-                }}
-              />
-              <Image
-                width={0}
-                height={0}
-                alt={title}
-                sizes="100vh"
-                src={thumbHdUrl}
-                className="w-full h-full object-contain relative"
-              />
-              <div className="flex flex-col items-end absolute top-0 right-5">
-                <Badge className="bg-stone-950/30 backdrop-blur text-white border-none mb-3">
-                  <ContentIcon size={28} />
-                </Badge>
-                <Badge variant="destructive">
-                  {status === ContentStatus.complete ? "Đã hoàn thành" : "Đang xuất bản"}
-                </Badge>
-              </div>
-            </div>
-          </Link>
-        )}
+        <Link href={href}>
+          <Thumbnail thumbUrl={thumbUrl!} alt={title} ratio="16/9">
+            <Badge className="bg-stone-950/30 backdrop-blur text-white border-none mb-3">
+              <ContentIcon size={28} />
+            </Badge>
+            <Badge variant="destructive">{status === ContentStatus.complete ? "Đã hoàn thành" : "Đang xuất bản"}</Badge>
+          </Thumbnail>
+        </Link>
       </CardContent>
       <CardFooter className="px3 sm:px-6 pb-3 sm:pb-6 mt-2 grid grid-cols-1 divide-y text-gray-700 dark:text-gray-400">
         <div className="flex justify-between text-sm pb-2">
@@ -146,8 +123,7 @@ function ContentVertical({ data }: { data: ContentWithCreator }) {
       <Card className="w-full">
         <CardHeader>
           <Avatar className="w-6 h-6 border mr-1">
-            {/* @ts-ignore */}
-            <AvatarImage src={creator.avatar} />
+            {creator.avatar && <AvatarImage src={creator.avatar} />}
             <AvatarFallback>{avatarNameFallback(creator.name)}</AvatarFallback>
           </Avatar>
           <span className="truncate text-sm text-gray-600">{creator.name}</span>

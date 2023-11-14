@@ -111,6 +111,7 @@ model Chapter {
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
   histories  History[]
+  view       Int?          @default(0)
 }
 
 enum ContentType {
@@ -147,15 +148,17 @@ model Content {
   updatedAt       DateTime          @updatedAt
   histories       History[]
   userLikeContent UserLikeContent[]
+  view            Int?              @default(0)
 }
 
 model Reply {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   text          String
   sticker       String?
+  image         String?
   user          User            @relation(fields: [userId], references: [id])
   userId        String
-  comment       Comment?        @relation(fields: [commentId], references: [id])
+  comment       Comment?        @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId     String?         @db.ObjectId
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
@@ -166,6 +169,7 @@ model Comment {
   id              String            @id @default(auto()) @map("_id") @db.ObjectId
   text            String
   sticker         String?
+  image           String?
   user            User              @relation(fields: [userId], references: [id])
   userId          String
   content         Content           @relation(fields: [contentId], references: [id])

@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { User } from "next-auth";
-import { LogOutIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { LogOutIcon, HistoryIcon, ThumbsUpIcon } from "lucide-react";
 
 import { avatarNameFallback } from "@/lib/utils";
 
@@ -38,6 +39,22 @@ export function UserNav({ user }: { user: User }) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>Kênh của tôi</DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/history">
+              Đã xem
+              <DropdownMenuShortcut>
+                <HistoryIcon size={20} />
+              </DropdownMenuShortcut>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/liked">
+              Đã thích
+              <DropdownMenuShortcut>
+                <ThumbsUpIcon size={20} />
+              </DropdownMenuShortcut>
+            </Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()} className="text-red-500 focus:text-red-500">

@@ -4,7 +4,6 @@ import { vi } from "date-fns/locale";
 import { memo, useTransition } from "react";
 import { formatDistanceToNow } from "date-fns";
 
-import { Comment as IComment } from "@prisma/client";
 import { deleteComment, likeComment } from "@/actions/commentActions";
 import { AlertTriangleIcon, MoreHorizontalIcon, TrashIcon } from "lucide-react";
 
@@ -18,20 +17,11 @@ import {
   DropdownMenuShortcut,
 } from "@/components/ui/DropdownMenu";
 import SpinerIcon from "./icons/SpinerIcon";
-
-export interface CommentWithUser extends IComment {
-  liked: boolean;
-  totalLike: number;
-  user: {
-    id: string;
-    name: string;
-    image?: string;
-  };
-}
+import { Comment } from "@/hooks/useComment";
 
 interface Props {
   currentUser?: User;
-  data: CommentWithUser;
+  data: Comment;
   onCommentDeleted: (id: string) => void;
   onCommentLiked: (id: string, liked: boolean) => void;
 }
@@ -55,8 +45,6 @@ function Comment({ data, currentUser, onCommentDeleted, onCommentLiked }: Props)
       else onCommentLiked(id, !liked);
     }
   };
-
-  console.log("Comment", data.text);
 
   return (
     <div className="flex gap-2">

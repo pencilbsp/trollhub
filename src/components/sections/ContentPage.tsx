@@ -37,8 +37,7 @@ export default async function ContentPage({ data }: Props) {
         <div className="flex flex-col gap-6 col-span-3 lg:col-span-2">
           <Card className="w-full flex items-center p-4">
             <Avatar className="w-14 h-14 border mr-1">
-              {/* @ts-ignore */}
-              <AvatarImage src={data.creator.avatar} />
+              {data.creator.avatar && <AvatarImage src={data.creator.avatar} />}
               <AvatarFallback>{avatarNameFallback(data.creator.name)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col ml-2">
@@ -145,7 +144,7 @@ export default async function ContentPage({ data }: Props) {
             </div>
           )}
 
-          <ChapterTable contentId={data.id} chapters={data.chapter} contentTitle={data.title} contentType={data.type} />
+          <ChapterTable contentId={data.id} data={data.chapter} contentTitle={data.title} contentType={data.type} />
 
           <CommentList contentId={data.id} />
         </div>

@@ -1,19 +1,22 @@
 "use client";
 
 import slug from "slug";
-import useSWR from "swr";
 import Link from "next/link";
 import { Drawer } from "vaul";
+import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { ContentType } from "@prisma/client";
 import { ArrowUpIcon, ListIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 import { cn } from "@/lib/utils";
+import useHistory from "@/hooks/useHistory";
+import useChapters from "@/hooks/useChapters";
 import useOffSetTop from "@/hooks/useOffSetTop";
 import useResponsive from "@/hooks/useResponsive";
 
-import getChapters from "@/actions/getChapters";
+import { createHistory } from "@/actions/historyActions";
 import ChapterIcon from "@/components/icons/ChapterIcon";
 import ChapterList from "@/components/sections/ChapterList";
 import CircleProgressIcon from "@/components/icons/CircleProgressIcon";
@@ -28,38 +31,45 @@ interface Props {
   contentType: ContentType;
 }
 
-const fetcher = (id: string) => getChapters(id, { orderBy: { createdAt: "desc" } });
+const scrollToTop = (smooth: boolean = false) => {
+  if (typeof document === "undefined") return;
+
+  if (smooth) window.scrollTo({ top: 0, behavior: "smooth" });
+  else document.documentElement.scrollTop = 0;
+};
 
 export default function ChapterNav({ id, title, contentTitle, contentId, contentType }: Props) {
+  const { data } = useSession();
+  const offset = useOffSetTop(64);
+  const { upadteHistory } = useHistory();
+
   const [drawer, setDrawer] = useState(false);
-  const { data: chapters } = useSWR(`${contentId}|chapter`, fetcher, {
-    fallbackData: [],
-    revalidateOnFocus: false,
-  });
+  const { chapters } = useChapters(contentId);
 
   const href = `/${contentType}/${slug(contentTitle)}-${contentId}`;
 
-  const offset = useOffSetTop(64);
-  const chapterIndex = chapters.findIndex((chapter) => id === chapter.id);
-  const percent = ((chapters.length - chapterIndex) / chapters.length) * 100;
+  const { percent, chapterIdx } = useMemo(() => {
+    const chapterIdx = chapters.findIndex((c) => id === c.id);
+    const percent = ((chapters.length - chapterIdx) / chapters.length) * 100;
+    return { chapterIdx, percent };
+  }, [chapters, id]);
 
   const isMobile = useResponsive("down", "md");
-
-  const scrollToTop = (smooth: boolean = false) => {
-    if (typeof window === "undefined" || typeof document === "undefined") return;
-    if (smooth) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    } else {
-      document.documentElement.scrollTop = 0;
-    }
-  };
 
   useEffect(() => {
     setDrawer(isMobile);
   }, [isMobile]);
+
+  useEffect(() => {
+    const handleHistory = async () => {
+      const { error, history } = await createHistory(contentId, id);
+      if (error) return toast.error(error.message);
+      upadteHistory(history);
+    };
+
+    data?.user.id && handleHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentId, id, data?.user.id]);
 
   return (
     <motion.aside
@@ -70,7 +80,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
     >
       <nav>
         {drawer ? (
-          <Drawer.Root shouldScaleBackground>
+          <Drawer.Root>
             <Drawer.Trigger>
               <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-500/25 transition-colors">
                 <ListIcon size={20} />
@@ -78,7 +88,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
             </Drawer.Trigger>
             <Drawer.Portal>
               <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-              <Drawer.Content className="drop-blur-xl bg-background/80 flex flex-col rounded-t-[10px] mt-24 fixed bottom-0 left-0 right-0">
+              <Drawer.Content className="backdrop-blur-xl bg-background/80 flex flex-col rounded-t-[10px] mt-24 fixed bottom-0 left-0 right-0">
                 <ChapterList chapters={chapters} currentId={id} contentId={contentId} contentTitle={contentTitle} />
               </Drawer.Content>
             </Drawer.Portal>
@@ -117,7 +127,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
       <div className="flex-shrink-0 flex-grow ml-auto mr-3 flex-col items-end hidden md:flex">
         <p>{percent.toFixed(0)}%</p>
         <p className="text-foreground/60 text-sm font-light">
-          {chapters.length - chapterIndex}/{chapters.length} chương
+          {chapters.length - chapterIdx}/{chapters.length} chương
         </p>
       </div>
 
