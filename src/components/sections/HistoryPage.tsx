@@ -18,7 +18,6 @@ interface Props {
 
 export default function HistoryPage({ data }: Props) {
   const { histories, removeHistory } = useHistory(data);
-  console.log(histories);
 
   return (
     <div className="container p-2 sm:px-8 xl:max-w-7xl">
