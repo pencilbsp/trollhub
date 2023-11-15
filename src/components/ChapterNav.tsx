@@ -72,12 +72,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
   }, [contentId, id, data?.user.id]);
 
   return (
-    <motion.aside
-      className={cn(
-        "h-[52px] md:h-[67px] bg-muted/80 dark:bg-background/80 dark:border flex px-3 py-1 md:p-3 rounded-full items-center w-full gap-x-2 backdrop-blur-xl",
-        offset && "fixed top-4 border shadow-lg max-w-[calc(100%-32px)] xl:max-w-[1120px]"
-      )}
-    >
+    <motion.aside className={cn("chapter-nav", offset && "stickied")}>
       <nav>
         {drawer ? (
           <Drawer.Root>

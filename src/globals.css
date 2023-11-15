@@ -79,6 +79,15 @@
   .icon-filter {
     @apply invert-[21%] sepia-[22%] saturate-[640%] hue-rotate-[178deg] brightness-[95%] contrast-[86%];
   }
+  .chapter-nav {
+    @apply h-[52px] md:h-[67px] bg-muted/80 dark:bg-background/80 dark:border flex px-3 py-1 md:p-3 rounded-full items-center w-full gap-x-2 backdrop-blur-xl;
+  }
+  .chapter-nav.stickied {
+    @apply fixed top-4 border shadow-lg max-w-[calc(100%-32px)] xl:max-w-[1120px] transition-[top];
+  }
+  body.header-pinned .stickied {
+    @apply top-20;
+  }
 }
 
 .CircularProgressbar-path {

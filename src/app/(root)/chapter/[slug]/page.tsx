@@ -1,34 +1,13 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import Image from "next/image";
-import prisma from "@/lib/prisma";
+import { getChapter } from "@/actions/chapterActions";
 
 import ChapterNav from "@/components/ChapterNav";
 import { TooltipProvider } from "@/components/ui/Tooltip";
 
 interface Props {
   params: { slug: string };
-}
-
-async function getChapter(id: string) {
-  try {
-    const where = id.length !== 24 ? { fid: id } : { id };
-    const data = await prisma.chapter.findFirst({
-      where,
-      include: {
-        content: {
-          select: {
-            id: true,
-            title: true,
-          },
-        },
-      },
-    });
-
-    return data;
-  } catch (error) {
-    return null;
-  }
 }
 
 export default async function ChapterPage({ params }: Props) {
@@ -54,20 +33,28 @@ export default async function ChapterPage({ params }: Props) {
           />
         </div>
 
-        <div className="-mx-4 sm:mx-auto max-w-3xl border rounded-xl overflow-hidden">
-          {chapter.images.map((img, index) => (
-            <Image
-              alt={""}
-              src={img}
-              width={0}
-              height={0}
-              unoptimized
-              sizes="100vh"
-              className="w-full"
-              key={chapter.id + index}
-            />
-          ))}
-        </div>
+        {chapter.type === "comic" && (
+          <div className="-mx-4 sm:mx-auto max-w-3xl border rounded-xl overflow-hidden">
+            {chapter.images.map((img, index) => (
+              <Image
+                alt={""}
+                src={img}
+                width={0}
+                height={0}
+                unoptimized
+                sizes="100vh"
+                className="w-full"
+                key={chapter.id + index}
+              />
+            ))}
+          </div>
+        )}
+
+        {chapter.type === "novel" && (
+          <div className="sm:mx-auto max-w-3xl font-semibold text-xl">
+            <p className="whitespace-pre-wrap text-stone-600 dark:text-stone-400">{chapter.text}</p>
+          </div>
+        )}
       </div>
     </TooltipProvider>
   );

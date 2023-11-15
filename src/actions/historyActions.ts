@@ -61,23 +61,35 @@ export async function createHistory(contentId: string, chapterId: string) {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) throw new Error("Tính năng lưu lịch sử yêu cầu đăng nhập");
 
-    const history = await prisma.history.upsert({
-      where: {
-        userId_contentId: {
+    const [history] = await Promise.all([
+      prisma.history.upsert({
+        where: {
+          userId_contentId: {
+            contentId,
+            userId: session.user.id,
+          },
+        },
+        create: {
+          chapterId,
           contentId,
           userId: session.user.id,
         },
-      },
-      create: {
-        chapterId,
-        contentId,
-        userId: session.user.id,
-      },
-      update: {
-        chapterId,
-      },
-      select,
-    });
+        update: {
+          chapterId,
+        },
+        select,
+      }),
+      prisma.chapter.update({
+        where: {
+          id: chapterId,
+        },
+        data: {
+          view: {
+            increment: 1,
+          },
+        },
+      }),
+    ]);
 
     return { history };
   } catch (error: any) {

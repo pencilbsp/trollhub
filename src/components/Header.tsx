@@ -5,6 +5,7 @@ import * as React from "react";
 
 import Headroom from "react-headroom";
 import { ViewVerticalIcon } from "@radix-ui/react-icons";
+import { HomeIcon, HammerIcon, LifeBuoyIcon } from "lucide-react";
 
 import NavLink from "./NavLink";
 import { ToggleTheme } from "./ToggleTheme";
@@ -17,14 +18,18 @@ import SearchModel from "./SearchModel";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/Button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet";
-import { HomeIcon, HammerIcon, LifeBuoyIcon } from "lucide-react";
 
 export default function Header() {
   const session = useSession();
   const pathname = usePathname();
 
   return (
-    <Headroom className="z-50 relative">
+    <Headroom
+      className="z-50 relative"
+      onPin={() => document.body.classList.add("header-pinned")}
+      onUnpin={() => document.body.classList.remove("header-pinned")}
+      onUnfix={() => document.body.classList.remove("header-pinned")}
+    >
       <header className="sticky top-0 flex flex-col justify-around items-center w-full border-b bg-background/80 backdrop-blur-xl z-50">
         <div className="container flex h-16 items-center px-4">
           <div className="flex flex-1 items-center justify-between">

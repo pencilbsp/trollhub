@@ -100,6 +100,7 @@ model Chapter {
   fid        String?
   title      String?
   images     String[]
+  text       String?
   mobileOnly Boolean
   type       ContentType
   status     ChapterStatus @default(pending)
