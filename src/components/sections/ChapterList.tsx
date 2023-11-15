@@ -1,22 +1,21 @@
 "use client";
 
-import Link from "next/link";
 import slug from "slug";
+import Link from "next/link";
 
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
 import { cn } from "@/lib/utils";
-import { Chapter } from "@prisma/client";
+import { ChapterList } from "@/actions/getContent";
 
 interface Props {
-  chapters: Chapter[];
-  contentId: string;
   currentId: string;
   contentTitle: string;
+  chapters: ChapterList;
 }
 
-export default function ChapterList({ chapters, contentId, contentTitle, currentId }: Props) {
+export default function ChapterList({ chapters, contentTitle, currentId }: Props) {
   return (
     <>
       <div className="m-4">

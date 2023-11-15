@@ -84,7 +84,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
             <Drawer.Portal>
               <Drawer.Overlay className="fixed inset-0 bg-black/40" />
               <Drawer.Content className="backdrop-blur-xl bg-background/80 flex flex-col rounded-t-[10px] mt-24 fixed bottom-0 left-0 right-0">
-                <ChapterList chapters={chapters} currentId={id} contentId={contentId} contentTitle={contentTitle} />
+                <ChapterList chapters={chapters} currentId={id} contentTitle={contentTitle} />
               </Drawer.Content>
             </Drawer.Portal>
           </Drawer.Root>
@@ -101,7 +101,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
               alignOffset={-12}
               className="rounded-xl shadow w-[540px]  p-0 overflow-hidden backdrop-blur-xl bg-background/80"
             >
-              <ChapterList chapters={chapters} currentId={id} contentId={contentId} contentTitle={contentTitle} />
+              <ChapterList chapters={chapters} currentId={id} contentTitle={contentTitle} />
             </PopoverContent>
           </Popover>
         )}
