@@ -81,7 +81,7 @@ export default function ChapterTable({ data, contentId, createdAt, contentType, 
 
                   return (
                     <TableRow key={id}>
-                      <TableCell className="font-medium font-mono max-w-lg">
+                      <TableCell className="font-medium font-mono max-w-md">
                         <Link href={href} className="flow-root max-w-full truncate">
                           {mobileOnly && <TabletSmartphoneIcon size={16} className="mr-2 text-red-400 inline-block" />}
                           {title}

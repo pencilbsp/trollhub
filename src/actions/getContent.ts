@@ -7,6 +7,7 @@ export type ChapterList = Content["chapter"];
 export default async function getContent(id: string) {
   try {
     const where = id.length !== 24 ? { fid: id } : { id };
+    const contentWhere = { [id.length !== 24 ? "fid" : "id"]: { notIn: [id] } };
     const content = await prisma.content.findFirst({
       where,
       select: {
@@ -48,11 +49,7 @@ export default async function getContent(id: string) {
             avatar: true,
             userName: true,
             contents: {
-              where: {
-                id: {
-                  notIn: [id],
-                },
-              },
+              where: contentWhere,
               select: {
                 id: true,
                 title: true,
