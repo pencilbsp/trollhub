@@ -16,6 +16,18 @@ const nextConfig = {
         source: "/comic-chapter/:path*",
         destination: "/chapter/:path*",
       },
+      {
+        source: "/novel-chapter/:path*",
+        destination: "/chapter/:path*",
+      },
+      {
+        source: "/novel/:path*",
+        destination: "/novel/:path*",
+      },
+      {
+        source: "/comic/:path*",
+        destination: "/comic/:path*",
+      },
     ];
   },
 };

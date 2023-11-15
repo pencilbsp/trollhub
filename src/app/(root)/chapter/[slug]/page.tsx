@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+import { getSlugId } from "@/lib/utils";
+
 import { getChapter } from "@/actions/chapterActions";
 
 import ChapterNav from "@/components/ChapterNav";
@@ -11,13 +13,8 @@ interface Props {
 }
 
 export default async function ChapterPage({ params }: Props) {
-  let chapterId = params.slug.slice(-24);
-  if (params.slug.endsWith(".html")) {
-    chapterId = params.slug.replace(".html", "").split("_")?.[1];
-  }
-
+  const chapterId = getSlugId(params.slug);
   const chapter = await getChapter(chapterId);
-
   if (!chapter) return notFound();
 
   return (
@@ -52,7 +49,7 @@ export default async function ChapterPage({ params }: Props) {
 
         {chapter.type === "novel" && (
           <div className="sm:mx-auto max-w-3xl font-semibold text-xl">
-            <p className="whitespace-pre-wrap text-stone-600 dark:text-stone-400">{chapter.text}</p>
+            <p className="select-none whitespace-pre-wrap text-stone-600 dark:text-stone-400">{chapter.text}</p>
           </div>
         )}
       </div>

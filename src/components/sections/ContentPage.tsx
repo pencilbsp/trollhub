@@ -8,21 +8,16 @@ import { vi } from "date-fns/locale";
 import { avatarNameFallback } from "@/lib/utils";
 import { ThumbsUpIcon, BellPlusIcon, AlertOctagonIcon } from "lucide-react";
 
+import { Content } from "@/actions/getContent";
+import { ContentStatus, ContentType } from "@prisma/client";
+
 import CommentList from "./CommentList";
 import ChapterTable from "./ChapterTable";
 import { Card } from "@/components/ui/Card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
-import { Category, Chapter, Content, ContentStatus, ContentType, Country, Creator } from "@prisma/client";
-
-interface IContent extends Content {
-  creator: Creator;
-  chapter: Chapter[];
-  countries: Country[];
-  categories: Category[];
-}
 
 interface Props {
-  data: IContent;
+  data: Content;
 }
 
 function getStatus(status: ContentStatus) {

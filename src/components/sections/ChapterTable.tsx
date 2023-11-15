@@ -7,7 +7,9 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
 import { TabletSmartphoneIcon } from "lucide-react";
-import { Chapter, ContentType, Prisma } from "@prisma/client";
+
+import { ChapterList } from "@/actions/getContent";
+import { ContentType, Prisma } from "@prisma/client";
 
 import useChapters from "@/hooks/useChapters";
 
@@ -16,8 +18,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
 
 interface Props {
-  data?: Chapter[];
   contentId: string;
+  data?: ChapterList;
   contentTitle: string;
   contentType: ContentType;
   createdAt?: Prisma.SortOrder;

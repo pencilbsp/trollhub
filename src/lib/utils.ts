@@ -1,7 +1,10 @@
 import slug from "slug";
+import { Metadata } from "next";
 import { twMerge } from "tailwind-merge";
 import { type ClassValue, clsx } from "clsx";
+
 import { ContentType } from "@prisma/client";
+import { Content } from "@/actions/getContent";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -39,4 +42,30 @@ export function generateKeywords(title: string, data: string[], userName: string
   );
 
   return keywords;
+}
+
+export function getSlugId(slug: string) {
+  if (slug.endsWith(".html")) {
+    return slug.replace(".html", "").split("_")?.[1];
+  } else {
+    return slug.slice(-24);
+  }
+}
+
+export function generateContentMetadata(data: Content): Metadata {
+  return {
+    title: data.title + " - " + data.creator.name,
+    description: data.description?.slice(0, 255),
+    keywords: generateKeywords(data.title, data.akaTitle, data.creator.name, data.type),
+    openGraph: {
+      type: data.type === "movie" ? "video.movie" : "website",
+      title: data.title,
+      siteName: "fuhuzz.rip",
+      locale: "vi_VN",
+      description: data.description?.slice(0, 255),
+      images: {
+        url: data.thumbUrl!,
+      },
+    },
+  };
 }
