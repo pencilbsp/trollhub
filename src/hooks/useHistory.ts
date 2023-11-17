@@ -1,3 +1,5 @@
+"use client";
+
 import useSWR from "swr";
 import { useEffect, useRef, useTransition } from "react";
 import { getUserHistories, HistoryData, deleteHistory, History } from "@/actions/historyActions";
