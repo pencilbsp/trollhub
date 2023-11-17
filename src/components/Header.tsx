@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/Button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet";
 
 export default function Header() {
+  const [isOpen, setOpen] = React.useState(false);
   const session = useSession();
   const pathname = usePathname();
 
@@ -33,22 +34,22 @@ export default function Header() {
       <header className="sticky top-0 flex flex-col justify-around items-center w-full border-b bg-background/80 backdrop-blur-xl z-50">
         <div className="container flex h-16 items-center px-4">
           <div className="flex flex-1 items-center justify-between">
-            <Sheet>
+            <Sheet open={isOpen} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <button className="block md:hidden p-0 mr-3">
                   <ViewVerticalIcon className="h-5 w-5" />
                 </button>
               </SheetTrigger>
               <SheetContent side="left" className="flex flex-col justify-between">
-                <nav className="flex flex-col gap-3 mt-6">
-                  <NavLink Icon={HomeIcon} href="/">
+                <nav className="flex flex-col gap-3 mt-6 text-lg">
+                  <NavLink onClick={() => setOpen(false)} Icon={HomeIcon} href="/">
                     Trang chủ
                   </NavLink>
-                  <NavLink Icon={HammerIcon} href="/developer">
-                    Nhà phát triển
-                  </NavLink>
-                  <NavLink Icon={LifeBuoyIcon} href="/help">
+                  <NavLink onClick={() => setOpen(false)} Icon={LifeBuoyIcon} href="/help">
                     Hướng dẫn
+                  </NavLink>
+                  <NavLink onClick={() => setOpen(false)} Icon={HammerIcon} href="/developer">
+                    Nhà phát triển
                   </NavLink>
                 </nav>
                 <div className="flex w-full gap-x-3 justify-end">

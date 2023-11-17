@@ -47,14 +47,14 @@ export function UserNav({ user }: { user: User }) {
               </DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          {/* <DropdownMenuItem asChild>
             <Link href="/liked">
               Đã thích
               <DropdownMenuShortcut>
                 <ThumbsUpIcon size={20} />
               </DropdownMenuShortcut>
             </Link>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()} className="text-red-500 focus:text-red-500">
