@@ -135,6 +135,7 @@ model Content {
   author          String?
   thumbUrl        String?
   description     String?
+  keywords        String?
   chapter         Chapter[]
   totalChap       Int?              @default(0)
   comments        Comment[]

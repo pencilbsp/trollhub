@@ -7,7 +7,8 @@ import { ArrayElement } from "@/types/utils";
 
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export type History = ArrayElement<Awaited<ReturnType<typeof getUserHistories>>>;
+export type HistoryData = Awaited<ReturnType<typeof getUserHistories>>;
+export type History = ArrayElement<HistoryData["histories"]>;
 
 const select = {
   id: true,
@@ -38,21 +39,28 @@ export async function getUserHistories(options: Options = {}) {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) throw new Error();
 
-    const histories = await prisma.history.findMany({
-      where: {
-        userId: session.user.id,
-      },
-      take: 12,
-      ...options,
-      orderBy: {
-        updatedAt: "desc",
-      },
-      select,
-    });
+    const [histories, total] = await Promise.all([
+      prisma.history.findMany({
+        where: {
+          userId: session.user.id,
+        },
+        take: 12,
+        ...options,
+        orderBy: {
+          updatedAt: "desc",
+        },
+        select,
+      }),
+      prisma.history.count({
+        where: {
+          userId: session.user.id,
+        },
+      }),
+    ]);
 
-    return histories;
-  } catch (error) {
-    return [];
+    return { histories, total, loaded: true };
+  } catch (error: any) {
+    return { histories: [], total: 0, error: { message: error.message as string } };
   }
 }
 

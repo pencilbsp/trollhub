@@ -10,6 +10,6 @@ export default async function History() {
   const session = await getServerSession(authOptions);
   if (!session?.user.id) return redirect("/login?next=/history");
 
-  const histories = await getUserHistories();
-  return <HistoryPage data={histories} />;
+  const data = await getUserHistories();
+  return <HistoryPage data={data} />;
 }
