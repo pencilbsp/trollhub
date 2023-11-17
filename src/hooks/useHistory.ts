@@ -65,9 +65,9 @@ export default function useHistory(fallbackData: HistoryData = initialFallbackDa
   };
 
   useEffect(() => {
-    mutate(fallbackData, { revalidate: false });
+    if (!data.loaded && fallbackData.loaded) mutate(fallbackData, { revalidate: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fallbackData]);
+  }, []);
 
   return {
     removeHistory,
