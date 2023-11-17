@@ -2,7 +2,6 @@
 
 import slug from "slug";
 import Link from "next/link";
-import { format } from "date-fns";
 
 import { Trash2Icon } from "lucide-react";
 
@@ -12,6 +11,7 @@ import Thumbnail from "../Thumbnail";
 import { Button } from "../ui/Button";
 import useHistory from "@/hooks/useHistory";
 import SpinerIcon from "../icons/SpinerIcon";
+import { formatDate } from "@/lib/utils";
 
 interface Props {
   data: HistoryData;
@@ -36,7 +36,7 @@ export default function HistoryPage({ data }: Props) {
                   className="max-w-[180px] lg:max-w-[220px] rounded-xl border mt-0 overflow-hidden"
                 />
                 <div className="flex flex-col ml-3 w-full">
-                  <time className="text-sm text-muted-foreground">{format(updatedAt, "dd/MM/yyyy HH:mm")}</time>
+                  <time className="text-sm text-muted-foreground">{formatDate(updatedAt)}</time>
                   <Link href={`/${content.type}/${slug(content.title)}-${content.id}`}>
                     <h3 className="font-semibold lg:text-lg line-clamp-1 lg:line-clamp-2">{content.title}</h3>
                   </Link>

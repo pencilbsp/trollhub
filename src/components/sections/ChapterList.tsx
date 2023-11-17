@@ -3,10 +3,7 @@
 import slug from "slug";
 import Link from "next/link";
 
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { ChapterList } from "@/actions/getContent";
 
 interface Props {
@@ -36,9 +33,7 @@ export default function ChapterList({ chapters, contentTitle, currentId }: Props
                 <Link className="truncate" href={`/chapter/${slug(contentTitle)}-${chap.id}`}>
                   {chap.title}
                 </Link>
-                <time className="font-mono font-light text-sm flex-shrink-0">
-                  {format(chap.createdAt, "dd/MM/yyyy HH:mm", { locale: vi })}
-                </time>
+                <time className="font-mono font-light text-sm flex-shrink-0">{formatDate(chap.createdAt)}</time>
               </li>
             );
           })}

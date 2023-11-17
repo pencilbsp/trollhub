@@ -1,13 +1,11 @@
 import { toast } from "sonner";
 import { User } from "next-auth";
-import { vi } from "date-fns/locale";
 import { memo, useTransition } from "react";
-import { formatDistanceToNow } from "date-fns";
 
 import { deleteComment, likeComment } from "@/actions/commentActions";
 import { AlertTriangleIcon, MoreHorizontalIcon, TrashIcon } from "lucide-react";
 
-import { avatarNameFallback, cn } from "@/lib/utils";
+import { avatarNameFallback, cn, formatToNow } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import {
   DropdownMenu,
@@ -57,9 +55,7 @@ function Comment({ data, currentUser, onCommentDeleted, onCommentLiked }: Props)
           <div>
             <span className="text-sm font-semibold">{user.name}</span>
             <span className="px-1">&#8226;</span>
-            <time className="text-xs text-gray-700">
-              {formatDistanceToNow(createdAt, { locale: vi, includeSeconds: true, addSuffix: true })}
-            </time>
+            <time className="text-xs text-gray-700">{formatToNow(createdAt)}</time>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger className="rounded-full hover:bg-border p-1 focus:outline-none focus:ring-0">

@@ -3,13 +3,12 @@
 import slug from "slug";
 import Link from "next/link";
 
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-
 import { TabletSmartphoneIcon } from "lucide-react";
 
 import { ChapterList } from "@/actions/getContent";
 import { ContentType, Prisma } from "@prisma/client";
+
+import { formatDate } from "@/lib/utils";
 
 import useChapters from "@/hooks/useChapters";
 
@@ -89,9 +88,7 @@ export default function ChapterTable({ data, contentId, createdAt, contentType, 
                       </TableCell>
                       {!hiddenColumns!.includes("update") && (
                         <TableCell className="text-right hidden sm:table-cell">
-                          <time className="font-mono font-light text-sm">
-                            {format(createdAt, "dd/MM/yyyy HH:mm", { locale: vi })}
-                          </time>
+                          <time className="font-mono font-light text-sm">{formatDate(createdAt)}</time>
                         </TableCell>
                       )}
                       {!hiddenColumns!.includes("update") && (

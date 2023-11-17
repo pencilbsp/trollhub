@@ -11,11 +11,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card";
 
-import { avatarNameFallback } from "@/lib/utils";
+import { avatarNameFallback, formatToNow } from "@/lib/utils";
 import { Content, Creator, ContentStatus, ContentType } from "@prisma/client";
-
-import { vi } from "date-fns/locale";
-import { formatDistanceToNow } from "date-fns";
 
 function getContentIcon(type: ContentType) {
   if (type === ContentType.movie) return FilmIcon;
@@ -59,9 +56,7 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
           <Link href={`/channel/${creator.userName.slice(1)}`} className="truncate text-gray-700 dark:text-gray-400">
             {creator.name}
           </Link>
-          <time className="text-xs text-gray-700">
-            {formatDistanceToNow(updatedAt, { locale: vi, includeSeconds: true, addSuffix: true })}
-          </time>
+          <time className="text-xs text-gray-700">{formatToNow(updatedAt)}</time>
         </div>
       </CardHeader>
       <CardContent>

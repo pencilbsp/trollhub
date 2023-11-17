@@ -1,7 +1,9 @@
 import slug from "slug";
 import { Metadata } from "next";
+import vi from "date-fns/locale/vi";
 import { twMerge } from "tailwind-merge";
 import { type ClassValue, clsx } from "clsx";
+import { format, formatDistanceToNow } from "date-fns";
 
 import { ContentType } from "@prisma/client";
 import { Content } from "@/actions/getContent";
@@ -69,3 +71,11 @@ export function generateContentMetadata(data: Content): Metadata {
     },
   };
 }
+
+export const formatToNow = (data: string | number | Date) => {
+  return formatDistanceToNow(new Date(data), { locale: vi, includeSeconds: true, addSuffix: true });
+};
+
+export const formatDate = (data: string | number | Date, fstring: string = "dd/MM/yyyy HH:mm") => {
+  return format(new Date(data), fstring, { locale: vi });
+};

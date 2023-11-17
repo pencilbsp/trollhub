@@ -2,10 +2,7 @@ import slug from "slug";
 import Link from "next/link";
 import Image from "next/image";
 
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-
-import { avatarNameFallback } from "@/lib/utils";
+import { avatarNameFallback, formatDate } from "@/lib/utils";
 import { ThumbsUpIcon, BellPlusIcon, AlertOctagonIcon } from "lucide-react";
 
 import { Content } from "@/actions/getContent";
@@ -40,7 +37,7 @@ export default async function ContentPage({ data }: Props) {
                 <h4 className="font-semibold text-xl text-gray-700 dark:text-gray-300">{data.creator.name}</h4>
               </Link>
               <div className="text-gray-500 font-light text-sm">
-                <time className="font-light">{format(data.updatedAt, "dd/MM/yyyy HH:mm", { locale: vi })}</time>
+                <time className="font-light">{formatDate(data.updatedAt)}</time>
                 <span className="px-1">&#8226;</span>
                 <span className="text-gray-500 font-light">100K lượt xem</span>
               </div>
@@ -71,7 +68,7 @@ export default async function ContentPage({ data }: Props) {
 
                   <li>
                     <b className="mr-2">Ngày phát hành:</b>
-                    <time>{format(data.createdAt, "dd/MM/yyyy", { locale: vi })}</time>
+                    <time>{formatDate(data.createdAt, "dd/MM/yyyy")}</time>
                   </li>
 
                   <li>
