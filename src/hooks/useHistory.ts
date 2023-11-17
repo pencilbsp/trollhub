@@ -43,9 +43,11 @@ export default function useHistory(fallbackData: HistoryData = initialFallbackDa
     if (index > -1) {
       histories[index] = history;
       histories = histories.sort((a, b) => a.updatedAt.getTime() - b.updatedAt.getTime());
+      console.log("update history");
       // @ts-ignore
       mutate({ ...data, total, histories }, { revalidate: false });
     } else {
+      console.log("add history");
       // @ts-ignore
       mutate({ ...data, total, histories: [history, ...data.histories] }, { revalidate: false });
     }
@@ -67,7 +69,12 @@ export default function useHistory(fallbackData: HistoryData = initialFallbackDa
   };
 
   useEffect(() => {
-    if (!data.loaded && fallbackData.loaded) mutate(fallbackData, { revalidate: false });
+    if (!data.loaded && fallbackData.loaded) {
+      // const total = data.total + fallbackData.total;
+      // const histories = [...data.histories, ...fallbackData.histories];
+      // mutate({ ...fallbackData, total, histories }, { revalidate: false });
+      mutate(fallbackData, { revalidate: false });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
