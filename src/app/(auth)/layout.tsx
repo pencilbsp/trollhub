@@ -20,7 +20,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
   if (session) return redirect("/");
 
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <div className="h-screen flex flex-col">

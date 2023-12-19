@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { User } from "next-auth";
 import { signOut } from "next-auth/react";
-import { LogOutIcon, HistoryIcon, ThumbsUpIcon } from "lucide-react";
+import { LogOutIcon, HistoryIcon } from "lucide-react";
 
 import { avatarNameFallback } from "@/lib/utils";
 

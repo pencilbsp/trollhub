@@ -11,6 +11,7 @@ import { Content } from "@/actions/getContent";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
 export function avatarNameFallback(name?: string | null) {
   if (!name) return "NA";
 
