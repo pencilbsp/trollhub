@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { generateContentMetadata, getSlugId } from "@/lib/utils";
 
-import getContent from "@/actions/getContent";
+import getContent from "@/actions/contentActions";
 import ContentPage from "@/components/sections/ContentPage";
 
 interface Props {

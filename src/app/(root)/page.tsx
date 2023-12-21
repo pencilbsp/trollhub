@@ -1,9 +1,13 @@
-import slug from "slug";
-import prisma from "@/lib/prisma";
+import slug from "slug"
+import prisma from "@/lib/prisma"
 
-import CategoryList from "@/components/sections/CategoryList";
-import HomeSlider, { Slide } from "@/components/sections/HomeSlider";
-import HighlightContents from "@/components/sections/HighlightContents";
+import CategoryList from "@/components/sections/CategoryList"
+import HomeSlider, { Slide } from "@/components/sections/HomeSlider"
+import HighlightContents from "@/components/sections/HighlightContents"
+// utils
+import getRedisClient, { getKeyWithNamespace } from "@/lib/redis"
+
+const EX = 30 * 60 // 30 Phút
 
 const contentSelector: any = {
   include: {
@@ -27,49 +31,60 @@ const contentSelector: any = {
       },
     },
   },
-};
+}
 
 async function getHomeData() {
-  const highlights = await Promise.all(
-    [
-      "fh-sentimental",
-      "fh-tieu-thuyet",
-      "fh-tv-show",
-      "fh-boys-love",
-      "fh-girls-love",
-      "fh-truyen-nam",
-      "fh-modern",
-      "fh-historical-drama",
-      "fh-romance",
-    ].map((slug) => prisma.category.findUnique({ where: { slug }, ...contentSelector }))
-  );
+  const redisClient = await getRedisClient()
+  const key = getKeyWithNamespace("home-data")
+  let homeData: any = await redisClient.get(key)
 
-  const categories = await prisma.category.findMany({ where: {}, select: { title: true, slug: true, id: true } });
+  if (!homeData) {
+    const highlights = await Promise.all(
+      [
+        "fh-sentimental",
+        "fh-tieu-thuyet",
+        "fh-tv-show",
+        "fh-boys-love",
+        "fh-girls-love",
+        "fh-truyen-nam",
+        "fh-modern",
+        "fh-historical-drama",
+        "fh-romance",
+      ].map((slug) => prisma.category.findUnique({ where: { slug }, ...contentSelector }))
+    )
 
-  const contents = await prisma.content.findMany({
-    where: {},
-    orderBy: {
-      updatedAt: "desc",
-    },
-    include: {
-      categories: true,
-    },
-    take: 6,
-  });
+    const categories = await prisma.category.findMany({ where: {}, select: { title: true, slug: true, id: true } })
 
-  const slide: Slide[] = contents.map((content) => ({
-    id: content.id,
-    type: content.type,
-    title: content.title,
-    tagline: content.akaTitle[0],
-    image: content.thumbUrl!.replace("_256x", "_720x"),
-  }));
+    const contents = await prisma.content.findMany({
+      where: {},
+      orderBy: {
+        updatedAt: "desc",
+      },
+      include: {
+        categories: true,
+      },
+      take: 6,
+    })
 
-  return { slide, highlights, categories };
+    const slide: Slide[] = contents.map((content) => ({
+      id: content.id,
+      type: content.type,
+      title: content.title,
+      tagline: content.akaTitle[0],
+      image: content.thumbUrl!.replace("_256x", "_720x"),
+    }))
+
+    homeData = { slide, highlights, categories }
+    await redisClient.set(key, JSON.stringify(homeData), { EX })
+  } else {
+    homeData = JSON.parse(homeData)
+  }
+
+  return homeData
 }
 
 export default async function Home() {
-  const { slide, highlights, categories } = await getHomeData();
+  const { slide, highlights, categories } = await getHomeData()
 
   return (
     <main className="flex flex-col gap-6 items-center justify-between">
@@ -94,5 +109,5 @@ export default async function Home() {
         </div>
       </div>
     </main>
-  );
+  )
 }

@@ -1,21 +1,30 @@
-import Image from "next/image";
-import { notFound } from "next/navigation";
+import Image from "next/image"
+import { Metadata } from "next"
+import { notFound } from "next/navigation"
 
-import { getSlugId } from "@/lib/utils";
+import { getSlugId } from "@/lib/utils"
 
-import { getChapter } from "@/actions/chapterActions";
+import { getChapter, getChapterMetadata } from "@/actions/chapterActions"
 
-import ChapterNav from "@/components/ChapterNav";
-import { TooltipProvider } from "@/components/ui/Tooltip";
+import ChapterNav from "@/components/ChapterNav"
+import { TooltipProvider } from "@/components/ui/Tooltip"
 
 interface Props {
-  params: { slug: string };
+  params: { slug: string }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const chapterId = getSlugId(params.slug)
+  const metadata = await getChapterMetadata(chapterId)
+  if (!metadata) return notFound()
+
+  return metadata
 }
 
 export default async function ChapterPage({ params }: Props) {
-  const chapterId = getSlugId(params.slug);
-  const chapter = await getChapter(chapterId);
-  if (!chapter) return notFound();
+  const chapterId = getSlugId(params.slug)
+  const chapter = await getChapter(chapterId)
+  if (!chapter) return notFound()
 
   return (
     <TooltipProvider>
@@ -54,5 +63,5 @@ export default async function ChapterPage({ params }: Props) {
         )}
       </div>
     </TooltipProvider>
-  );
+  )
 }

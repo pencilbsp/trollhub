@@ -1,16 +1,16 @@
-import { notFound } from "next/navigation";
+import { notFound } from "next/navigation"
 
-import { getContentsByCategoryId } from "@/actions/getContents";
-import CategoryContents from "@/components/sections/CategoryContents";
+import { getContentsByCategoryId } from "@/actions/contentActions"
+import CategoryContents from "@/components/sections/CategoryContents"
 
 interface Props {
-  params: { slug: string };
+  params: { slug: string }
 }
 
 export default async function CategoryPage({ params }: Props) {
-  const categoryId = params.slug.slice(-24);
-  const category = await getContentsByCategoryId(categoryId);
-  if (!category) return notFound();
+  const categoryId = params.slug.slice(-24)
+  const category = await getContentsByCategoryId(categoryId)
+  if (!category) return notFound()
 
   return (
     <div className="container p-2 sm:px-8 xl:max-w-7xl">
@@ -23,5 +23,5 @@ export default async function CategoryPage({ params }: Props) {
         <div className="col-span-3 md:col-span-1"></div>
       </div>
     </div>
-  );
+  )
 }

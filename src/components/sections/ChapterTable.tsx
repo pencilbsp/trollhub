@@ -1,47 +1,47 @@
-"use client";
+"use client"
 
-import slug from "slug";
-import Link from "next/link";
+import slug from "slug"
+import Link from "next/link"
 
-import { TabletSmartphoneIcon } from "lucide-react";
+import { TabletSmartphoneIcon } from "lucide-react"
 
-import { ChapterList } from "@/actions/getContent";
-import { ContentType, Prisma } from "@prisma/client";
+import { ContentType, Prisma } from "@prisma/client"
+import { ChapterList } from "@/actions/contentActions"
 
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils"
 
-import useChapters from "@/hooks/useChapters";
+import useChapters from "@/hooks/useChapters"
 
-import { Card } from "@/components/ui/Card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/Table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
+import { Card } from "@/components/ui/Card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/Table"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"
 
 interface Props {
-  contentId: string;
-  data?: ChapterList;
-  contentTitle: string;
-  contentType: ContentType;
-  createdAt?: Prisma.SortOrder;
-  hiddenColumns?: ("view" | "update")[];
+  contentId: string
+  data?: ChapterList
+  contentTitle: string
+  contentType: ContentType
+  createdAt?: Prisma.SortOrder
+  hiddenColumns?: ("view" | "update")[]
 }
 
 export default function ChapterTable({ data, contentId, createdAt, contentType, contentTitle, hiddenColumns }: Props) {
-  if (!createdAt) createdAt = "desc";
-  if (!hiddenColumns) hiddenColumns = [];
+  if (!createdAt) createdAt = "desc"
+  if (!hiddenColumns) hiddenColumns = []
 
-  const { chapters, mutate } = useChapters(contentId, data);
+  const { chapters, mutate } = useChapters(contentId, data)
 
   const handleSort = (value: Prisma.SortOrder) => {
     mutate(
       [
-        ...chapters.sort((a, b) => {
-          if (value === "desc") [a, b] = [b, a];
-          return a.createdAt.getTime() - b.createdAt.getTime();
+        ...chapters.sort((a: any, b: any) => {
+          if (value === "desc") [a, b] = [b, a]
+          return a.createdAt.getTime() - b.createdAt.getTime()
         }),
       ],
       { revalidate: false }
-    );
-  };
+    )
+  }
 
   return (
     <div>
@@ -76,7 +76,8 @@ export default function ChapterTable({ data, contentId, createdAt, contentType, 
               </TableHeader>
               <TableBody>
                 {chapters.map(({ id, title, createdAt, mobileOnly, type }) => {
-                  const href = `/${type === ContentType.movie ? "episode" : "chapter"}/${slug(contentTitle)}-${id}`;
+                  const slugTitle = `${contentTitle}-${title}`
+                  const href = `/${type === ContentType.movie ? "episode" : "chapter"}/${slug(slugTitle)}-${id}`
 
                   return (
                     <TableRow key={id}>
@@ -95,7 +96,7 @@ export default function ChapterTable({ data, contentId, createdAt, contentType, 
                         <TableCell className="text-right hidden sm:table-cell">100K</TableCell>
                       )}
                     </TableRow>
-                  );
+                  )
                 })}
               </TableBody>
             </Table>
@@ -103,5 +104,5 @@ export default function ChapterTable({ data, contentId, createdAt, contentType, 
         </div>
       </Card>
     </div>
-  );
+  )
 }

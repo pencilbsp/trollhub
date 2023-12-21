@@ -1,24 +1,24 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
+import Link from "next/link"
+import { ArrowRightIcon } from "@radix-ui/react-icons"
 // Swiper components, modules and styles
-import { Navigation, Pagination } from "swiper/modules";
-import { Swiper as SwiperReact, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules"
+import { Swiper as SwiperReact, SwiperSlide } from "swiper/react"
 
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import "swiper/css"
+import "swiper/css/navigation"
+import "swiper/css/pagination"
 
-import ContentCard, { ContentWithCreator } from "@/components/ContentCard";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
+import ContentCard, { ContentWithCreator } from "@/components/ContentCard"
 
 interface Props {
-  title: string;
-  swiper?: boolean;
-  moreLink?: string;
-  className?: string;
-  data?: ContentWithCreator[];
+  title: string
+  swiper?: boolean
+  moreLink?: string
+  className?: string
+  data?: ContentWithCreator[]
 }
 
 export default function HighlightContents({ title, moreLink, data, swiper, className }: Props) {
@@ -55,5 +55,5 @@ export default function HighlightContents({ title, moreLink, data, swiper, class
         </div>
       )}
     </div>
-  );
+  )
 }

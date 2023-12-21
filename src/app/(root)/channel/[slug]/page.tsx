@@ -1,44 +1,77 @@
-import Image from "next/image";
-import { notFound } from "next/navigation";
+import slug from "slug"
+import Image from "next/image"
+import { Metadata } from "next"
+import { notFound } from "next/navigation"
 
-import prisma from "@/lib/prisma";
-import { avatarNameFallback } from "@/lib/utils";
-import { ShareIcon, ThumbsUpIcon } from "lucide-react";
+import prisma from "@/lib/prisma"
+import { SITE_NAME, SITE_URL } from "@/config"
+import { avatarNameFallback } from "@/lib/utils"
+import { ShareIcon, ThumbsUpIcon } from "lucide-react"
 
-import HighlightContents from "@/components/sections/HighlightContents";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import LoadMoreContent from "@/components/sections/LoadMoreContent"
+import HighlightContents from "@/components/sections/HighlightContents"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
 
 interface Props {
-  params: { slug: string };
+  params: { slug: string }
 }
 
-async function getCreator(userName: string) {
+const TAKE = 12
+
+async function getCreator(userName: string, withContent = true) {
   return prisma.creator.findUnique({
     where: {
       userName: "@" + userName,
     },
-    include: {
-      contents: {
-        take: 12,
-        orderBy: {
-          updatedAt: "desc",
-        },
-        select: {
-          id: true,
-          type: true,
-          title: true,
-          status: true,
-          thumbUrl: true,
-        },
-      },
+    include: withContent
+      ? {
+          contents: {
+            take: TAKE,
+            orderBy: {
+              updatedAt: "desc",
+            },
+            select: {
+              id: true,
+              type: true,
+              title: true,
+              status: true,
+              thumbUrl: true,
+            },
+          },
+        }
+      : undefined,
+  })
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const userName = params.slug
+  const creator = await getCreator(userName, false)
+  if (!creator) return notFound()
+
+  const title = `${creator.name}: Trang chính thức của ${creator.name} trên ${SITE_NAME}`
+  const description =
+    creator.bio?.slice(0, 255) ??
+    `Đây là trang trang cập nhật các nội dung do ${creator.name} đăng tải trên ${SITE_NAME}. Các bạn hãy bấm theo dõi nhóm tại đây nhé!`
+
+  return {
+    title: title,
+    description: description,
+    keywords: [creator.name, slug(creator.name, { replacement: " " }), `${creator.name} trên ${SITE_NAME}`],
+    openGraph: {
+      title: title,
+      locale: "vi_VN",
+      type: "website",
+      description: description,
+      siteName: SITE_URL.origin,
+      images: { url: creator.avatar! },
     },
-  });
+  }
 }
 
 export default async function ChannelPage({ params }: Props) {
-  const userName = params.slug;
-  const creator = await getCreator(userName);
-  if (!creator) return notFound();
+  const userName = params.slug
+  const creator = await getCreator(userName)
+  if (!creator) return notFound()
 
   return (
     <div className="container p-2 sm:px-8 xl:max-w-7xl">
@@ -54,7 +87,8 @@ export default async function ChannelPage({ params }: Props) {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="flex flex-col items-center sm:items-start sm:flex-row border-b pb-2">
+
+          <div className="flex flex-col items-center sm:items-start sm:flex-row border-b pb-3">
             <Avatar className="w-32 h-32 border-2 border-blue-500 -mt-16 sm:-mt-6 bg-background">
               <AvatarImage src={creator.avatar!} />
               <AvatarFallback>{avatarNameFallback(creator.name)}</AvatarFallback>
@@ -93,11 +127,14 @@ export default async function ChannelPage({ params }: Props) {
               ...content,
               creator: { name: creator.name, avatar: creator.avatar },
             }))}
-            title="Mới nhất"
             className="mt-6"
+            title="Nội dung mới nhất"
           />
+
+          {/* @ts-ignore */}
+          <LoadMoreContent creatorId={creator.id} skip={creator.contents.length} take={TAKE} />
         </div>
       </div>
     </div>
-  );
+  )
 }

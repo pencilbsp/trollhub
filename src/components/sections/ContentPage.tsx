@@ -5,7 +5,7 @@ import Image from "next/image";
 import { avatarNameFallback, formatDate } from "@/lib/utils";
 import { ThumbsUpIcon, BellPlusIcon, AlertOctagonIcon } from "lucide-react";
 
-import { Content } from "@/actions/getContent";
+import { Content } from "@/actions/contentActions";
 import { ContentStatus, ContentType } from "@prisma/client";
 
 import CommentList from "./CommentList";

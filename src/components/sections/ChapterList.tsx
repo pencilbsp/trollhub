@@ -4,7 +4,7 @@ import slug from "slug";
 import Link from "next/link";
 
 import { cn, formatDate } from "@/lib/utils";
-import { ChapterList } from "@/actions/getContent";
+import { ChapterList } from "@/actions/contentActions";
 
 interface Props {
   currentId: string;
