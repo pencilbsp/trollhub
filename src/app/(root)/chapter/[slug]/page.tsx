@@ -7,6 +7,7 @@ import { getSlugId } from "@/lib/utils"
 import { getChapter, getChapterMetadata } from "@/actions/chapterActions"
 
 import ChapterNav from "@/components/ChapterNav"
+import NextChapter from "@/components/NextChapter"
 import { TooltipProvider } from "@/components/ui/Tooltip"
 
 interface Props {
@@ -49,6 +50,7 @@ export default async function ChapterPage({ params }: Props) {
                 height={0}
                 unoptimized
                 sizes="100vh"
+                loading="lazy"
                 className="w-full"
                 key={chapter.id + index}
               />
@@ -62,6 +64,8 @@ export default async function ChapterPage({ params }: Props) {
           </div>
         )}
       </div>
+
+      <NextChapter title={chapter.title} chapterId={chapter.id} contentId={chapter.content.id} />
     </TooltipProvider>
   )
 }

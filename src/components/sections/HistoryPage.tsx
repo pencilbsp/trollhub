@@ -1,24 +1,24 @@
-"use client";
+"use client"
 
-import slug from "slug";
-import Link from "next/link";
+import slug from "slug"
+import Link from "next/link"
 
-import { Trash2Icon } from "lucide-react";
+import { Trash2Icon } from "lucide-react"
 
-import { HistoryData } from "@/actions/historyActions";
+import { HistoryData } from "@/actions/historyActions"
 
-import Thumbnail from "../Thumbnail";
-import { Button } from "../ui/Button";
-import useHistory from "@/hooks/useHistory";
-import SpinerIcon from "../icons/SpinerIcon";
-import { formatDate } from "@/lib/utils";
+import Thumbnail from "../Thumbnail"
+import { Button } from "../ui/Button"
+import { formatDate } from "@/lib/utils"
+import useHistory from "@/hooks/useHistory"
+import SpinerIcon from "../icons/SpinerIcon"
 
 interface Props {
-  data: HistoryData;
+  data: HistoryData
 }
 
 export default function HistoryPage({ data }: Props) {
-  const { total, histories, removeHistory, hasMore, loadMoreHistory, isLoading } = useHistory(data);
+  const { total, histories, removeHistory, hasMore, loadMoreHistory, isLoading } = useHistory(data)
 
   return (
     <div className="container p-2 sm:px-8 xl:max-w-7xl">
@@ -71,5 +71,5 @@ export default function HistoryPage({ data }: Props) {
         <div className="col-span-3 md:col-span-1"></div>
       </div>
     </div>
-  );
+  )
 }
