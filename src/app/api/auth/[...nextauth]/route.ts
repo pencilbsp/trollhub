@@ -1,17 +1,17 @@
-import NextAuth, { AuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import FacebookProvider from "next-auth/providers/facebook";
+import NextAuth, { AuthOptions } from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+import FacebookProvider from "next-auth/providers/facebook"
 
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
 
-import prisma from "@/lib/prisma";
+import prisma from "@/lib/prisma"
 import {
   GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET,
   NEXT_AUTH_SECRET,
   FACEBOOK_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
   FACEBOOK_CLIENT_SECRET,
-} from "@/config";
+} from "@/config"
 
 export const authOptions: AuthOptions = {
   secret: NEXT_AUTH_SECRET,
@@ -34,14 +34,14 @@ export const authOptions: AuthOptions = {
           ...session.user,
           id: user.id,
         },
-      });
+      })
     },
   },
   pages: {
     signIn: "/login",
   },
-};
+}
 
-const handler = NextAuth(authOptions);
+const handler = NextAuth(authOptions)
 
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST }

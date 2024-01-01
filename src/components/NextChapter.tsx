@@ -9,7 +9,13 @@ import { ArrowRightIcon } from "lucide-react"
 import { Button } from "./ui/Button"
 import useChapters from "@/hooks/useChapters"
 
-export default function NextChapter({ chapterId, title, contentId }) {
+type Props = {
+  chapterId: string
+  contentId: string
+  title: string | null
+}
+
+export default function NextChapter({ chapterId, title, contentId }: Props) {
   const { chapters } = useChapters(contentId)
   const nextChaper = useMemo(() => {
     const index = chapters.findIndex(({ id }) => id === chapterId)
@@ -18,7 +24,7 @@ export default function NextChapter({ chapterId, title, contentId }) {
     const next = chapters[index - 1]
     if (!next) return null
 
-    const href = `/chapter/${slug(next.title)}-${next.id}`
+    const href = `/chapter/${slug(next.title!)}-${next.id}`
     return { ...next, href }
   }, [chapters, chapterId])
 
