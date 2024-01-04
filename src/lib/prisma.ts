@@ -41,10 +41,6 @@ const prismaClientSingleton = () => {
   return __prisma
 }
 
-// const globalForPrisma = globalThis as unknown as {
-//   prisma: PrismaClientSingleton | undefined
-// }
-
 let prismaGlobal: PrismaClientSingleton | null = null
 
 if (typeof window === "undefined") {
@@ -57,8 +53,6 @@ if (typeof window === "undefined") {
 
     prismaGlobal = global.prisma
   }
-} else {
-  console.log("dhsjhj")
 }
 
 export default prismaGlobal as PrismaClientSingleton
