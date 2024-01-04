@@ -1,4 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client"
+
+type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>
+
+declare global {
+  namespace NodeJS {
+    interface Global {
+      prisma: PrismaClientSingleton
+    }
+  }
+}
 
 const prismaClientSingleton = () => {
   const __prisma = new PrismaClient().$extends({
@@ -24,22 +34,31 @@ const prismaClientSingleton = () => {
                 commentId,
               },
             }),
-          ]);
+          ])
         },
       },
     },
-  });
+  })
 
-  return __prisma;
-};
+  return __prisma
+}
 
-type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
+// const globalForPrisma = globalThis as unknown as {
+//   prisma: PrismaClientSingleton | undefined
+// }
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClientSingleton | undefined;
-};
+let prisma: PrismaClientSingleton
 
-const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (typeof window === "undefined") {
+  if (process.env.NODE_ENV === "production") {
+    prisma = prismaClientSingleton()
+  } else {
+    if (!global.prisma) {
+      global.prisma = prismaClientSingleton()
+    }
 
-export default prisma;
+    prisma = global.prisma
+  }
+}
+
+export default prisma
