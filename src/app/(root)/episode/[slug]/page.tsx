@@ -3,20 +3,18 @@ import Link from "next/link"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { ChapterStatus } from "@prisma/client"
-import { AlertTriangleIcon } from "lucide-react"
 
 import { PageParams } from "@/types/page"
+import RequestButton from "./RequestButton"
 import { Card } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
-import { Button } from "@/components/ui/Button"
-import VideoPlayer, { VideoPlayerError } from "@/components/VideoPlayer"
 import { getEpisode } from "@/actions/episodeActions"
 import { SITE_URL, USER_CONTENTS_HOST } from "@/config"
 import CommentList from "@/components/sections/CommentList"
 import ChapterTable from "@/components/sections/ChapterTable"
 import { avatarNameFallback, formatDate, getSlugId } from "@/lib/utils"
+import VideoPlayer, { VideoPlayerError } from "@/components/VideoPlayer"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
-// import Player from "@/components/player"
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   const episodeId = getSlugId(params.slug)
@@ -84,11 +82,9 @@ export default async function EpisodePage({ params }: PageParams) {
               <VideoPlayer src={src} />
             </div>
           ) : (
-            <VideoPlayerError
-              buttonText="Yêu cầu xử lý"
-              buttonIcon={<AlertTriangleIcon className="ml-2 w-4 h-4" />}
-              message="Video này hiện chưa được xử lý, vui lòng thử lại sau"
-            />
+            <VideoPlayerError message="Video này hiện chưa được xử lý, vui lòng thử lại sau">
+              <RequestButton chapterId={episode.id} />
+            </VideoPlayerError>
           )}
 
           <ChapterTable

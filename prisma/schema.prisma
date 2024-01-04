@@ -49,12 +49,13 @@ model User {
   Session         Session[]
   // channel       Creator?  @relation(fields: [creatorId], references: [id])
   // creatorId     String?   @unique @db.ObjectId
-  comments        Comment[]
   replies         Reply[]
+  comments        Comment[]
   histories       History[]
+  userLikeReply   UserLikeReply[]
+  requestChapters RequestChapter[]
   userLikeContent UserLikeContent[]
   userLikeComment UserLikeComment[]
-  userLikeReply   UserLikeReply[]
 }
 
 model Creator {
@@ -96,23 +97,24 @@ enum ChapterStatus {
 }
 
 model Chapter {
-  id         String        @id @default(auto()) @map("_id") @db.ObjectId
-  fid        String?
-  title      String?
-  images     String[]
-  text       String?
-  mobileOnly Boolean
-  type       ContentType
-  status     ChapterStatus @default(pending)
-  contentId  String        @db.ObjectId
-  comments   Comment[]
-  content    Content       @relation(fields: [contentId], references: [id])
-  creatorId  String        @db.ObjectId
-  creator    Creator       @relation(fields: [creatorId], references: [id])
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  histories  History[]
-  view       Int?          @default(0)
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  fid             String?
+  title           String?
+  images          String[]
+  text            String?
+  mobileOnly      Boolean
+  type            ContentType
+  status          ChapterStatus    @default(pending)
+  contentId       String           @db.ObjectId
+  comments        Comment[]
+  content         Content          @relation(fields: [contentId], references: [id])
+  creatorId       String           @db.ObjectId
+  creator         Creator          @relation(fields: [creatorId], references: [id])
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  histories       History[]
+  view            Int?             @default(0)
+  requestChapters RequestChapter[]
 }
 
 enum ContentType {
@@ -228,4 +230,24 @@ model UserLikeReply {
   createdAt DateTime @default(now())
 
   @@unique([userId, replyId])
+}
+
+enum RequestChapterStatus {
+  requeted
+  processing
+  done
+  rejected
+}
+
+model RequestChapter {
+  id        String               @id @default(auto()) @map("_id") @db.ObjectId
+  chapterId String               @db.ObjectId
+  chapter   Chapter              @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  userId    String
+  status    RequestChapterStatus @default(requeted)
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt DateTime             @updatedAt
+  createdAt DateTime             @default(now())
+
+  @@unique([chapterId, userId])
 }

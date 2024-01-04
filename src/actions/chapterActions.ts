@@ -1,9 +1,11 @@
 "use server"
 import { Metadata } from "next"
+import { getServerSession } from "next-auth"
 
 import prisma from "@/lib/prisma"
 import { generateKeywords } from "@/lib/utils"
 import { METADATA_EX_TIME, SITE_URL } from "@/config"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import getRedisClient, { getKeyWithNamespace } from "@/lib/redis"
 import { comicParser, createComicURL, novelParser } from "@/lib/fuhu"
 
@@ -155,5 +157,42 @@ export async function getChapterMetadata(id: string): Promise<Metadata | null> {
     return cachedMetadata as Metadata
   } catch (error) {
     return null
+  }
+}
+
+export async function requestChapter(chapterId: string) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) throw new Error("Vui lòng đăng nhập để gửi yêu cầu")
+
+    let status = 0
+    const request = await prisma.requestChapter.findUnique({
+      where: {
+        chapterId_userId: {
+          chapterId,
+          userId: session.user.id,
+        },
+      },
+    })
+
+    if (!request) {
+      status = 1
+      await prisma.requestChapter.create({
+        data: {
+          chapterId,
+          userId: session.user.id,
+        },
+      })
+    }
+
+    const totalRequest = await prisma.requestChapter.count({
+      where: {
+        chapterId,
+      },
+    })
+
+    return { message: "Đã yêu cầu xử lý tập phim thành công", status, totalRequest }
+  } catch (error: any) {
+    return { error: { message: (error?.message || "Đã xảy ra lỗi, vui lòng thử lại sau") as string } }
   }
 }

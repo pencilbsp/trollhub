@@ -5,9 +5,9 @@ import { getServerSession } from "next-auth/next"
 
 import "@/globals.css"
 
-import { GA_MEASUREMENT_ID, METADATA_BASE } from "@/config"
 import Header from "@/components/Header"
 import { ThemeProvider } from "@/components/ThemeProvider"
+import { GA_MEASUREMENT_ID, METADATA_BASE } from "@/config"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { NextAuthProvider } from "@/components/sections/AuthProvider"
 

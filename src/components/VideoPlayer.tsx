@@ -59,18 +59,21 @@ type VideoPlayerErrorProps = {
   buttonText?: string
   buttonIcon?: ReactNode
   onClick?: VoidFunction
+  children?: ReactNode
 }
 
-export function VideoPlayerError({ message, buttonText, buttonIcon, onClick }: VideoPlayerErrorProps) {
+export function VideoPlayerError({ message, buttonText, buttonIcon, onClick, children }: VideoPlayerErrorProps) {
   return (
     <div className="w-full flex flex-col items-center justify-center aspect-video border border-dashed p-4">
       <p className="mb-3 text-base md:text-lg text-center">{message}</p>
-      {buttonText && (
+      {children ? (
+        children
+      ) : buttonText ? (
         <Button className="items-center" onClick={onClick}>
           {buttonText}
           {buttonIcon}
         </Button>
-      )}
+      ) : null}
     </div>
   )
 }
