@@ -4,12 +4,12 @@ import prisma from "@/lib/prisma"
 import getRedisClient, { getKeyWithNamespace } from "@/lib/redis"
 import { INIT_CHAPTER, INIT_TAKE_CONTENT, METADATA_EX_TIME } from "@/config"
 
-export type Content = NonNullable<Awaited<ReturnType<typeof _getContent>>>
+export type Content = NonNullable<Awaited<ReturnType<typeof get>>>
 export type ChapterList = Content["chapter"]
 
 const EX = Math.floor(METADATA_EX_TIME / 8)
 
-const _getContent = (where: any, contentWhere: any) =>
+const get = (where: any, contentWhere: any) =>
   prisma.content.findFirst({
     where,
     select: {
@@ -88,7 +88,7 @@ export default async function getContent(id: string): Promise<Content | null> {
       const where = id.length !== 24 ? { fid: id } : { id }
       const contentWhere = { [id.length !== 24 ? "fid" : "id"]: { notIn: [id] } }
 
-      cachedContent = await _getContent(where, contentWhere)
+      cachedContent = await get(where, contentWhere)
       if (!cachedContent) return null
 
       await redisClient.set(key, JSON.stringify(cachedContent), { EX })

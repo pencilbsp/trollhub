@@ -1,10 +1,11 @@
 import slug from "slug"
-import { Metadata } from "next"
 import vi from "date-fns/locale/vi"
 import { twMerge } from "tailwind-merge"
 import { type ClassValue, clsx } from "clsx"
+import { Metadata, MetadataRoute } from "next"
 import { format, formatDistanceToNow } from "date-fns"
 
+import prisma from "./prisma"
 import { SITE_URL } from "@/config"
 import { ContentType } from "@prisma/client"
 import { Content } from "@/actions/contentActions"
@@ -78,4 +79,38 @@ export const formatToNow = (data: string | number | Date) => {
 
 export const formatDate = (data: string | number | Date, fstring: string = "dd/MM/yyyy HH:mm") => {
   return format(new Date(data), fstring, { locale: vi })
+}
+
+export async function generateSitemap({
+  id,
+  type,
+  take,
+}: {
+  id: number
+  take: number
+  type: ContentType
+}): Promise<MetadataRoute.Sitemap> {
+  const skip = id * take
+
+  const contents = await prisma.content.findMany({
+    where: {
+      type,
+    },
+    skip: skip,
+    take: skip + take,
+    orderBy: {
+      id: "desc",
+    },
+    select: {
+      id: true,
+      type: true,
+      title: true,
+      updatedAt: true,
+    },
+  })
+
+  return contents.map((content) => ({
+    url: `${SITE_URL.origin}/${content.type}/${slug(content.title)}-${content.id}`,
+    lastModified: content.updatedAt,
+  }))
 }
