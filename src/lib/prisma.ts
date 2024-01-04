@@ -3,10 +3,8 @@ import { PrismaClient } from "@prisma/client"
 type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>
 
 declare global {
-  namespace NodeJS {
-    interface Global {
-      prisma: PrismaClientSingleton
-    }
+  namespace globalThis {
+    var prisma: PrismaClientSingleton
   }
 }
 
@@ -47,18 +45,20 @@ const prismaClientSingleton = () => {
 //   prisma: PrismaClientSingleton | undefined
 // }
 
-let prisma: PrismaClientSingleton
+let prismaGlobal: PrismaClientSingleton | null = null
 
 if (typeof window === "undefined") {
   if (process.env.NODE_ENV === "production") {
-    prisma = prismaClientSingleton()
+    prismaGlobal = prismaClientSingleton()
   } else {
     if (!global.prisma) {
       global.prisma = prismaClientSingleton()
     }
 
-    prisma = global.prisma
+    prismaGlobal = global.prisma
   }
+} else {
+  console.log("dhsjhj")
 }
 
-export default prisma
+export default prismaGlobal as PrismaClientSingleton
