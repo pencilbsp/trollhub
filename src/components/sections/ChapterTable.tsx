@@ -107,6 +107,35 @@ export default function ChapterTable({
   )
 }
 
+function scrollParentToChild(parent: HTMLElement, child: HTMLElement) {
+  // Where is the parent on page
+  const parentRect = parent.getBoundingClientRect()
+  // What can you see?
+  const parentViewableArea = {
+    height: parent.clientHeight,
+    width: parent.clientWidth,
+  }
+
+  // Where is the child
+  const childRect = child.getBoundingClientRect()
+  // Is the child viewable?
+  const isViewable = childRect.top >= parentRect.top && childRect.bottom <= parentRect.top + parentViewableArea.height
+
+  // if you can't see the child try to scroll parent
+  if (!isViewable) {
+    // Should we scroll using top or bottom? Find the smaller ABS adjustment
+    const scrollTop = childRect.top - parentRect.top
+    const scrollBot = childRect.bottom - parentRect.bottom
+    if (Math.abs(scrollTop) < Math.abs(scrollBot)) {
+      // we're near the top of the list
+      parent.scrollTop += scrollTop
+    } else {
+      // we're near the bottom of the list
+      parent.scrollTop += scrollBot
+    }
+  }
+}
+
 type ChapterRowProps = {
   href: string
   title: string
@@ -121,12 +150,12 @@ function ChapterRow({ href, isActive, mobileOnly, title, hiddenColumns, createdA
 
   useEffect(() => {
     if (rowRef.current && isActive) {
-      rowRef.current.scrollIntoView({ block: "start", behavior: "smooth" })
+      rowRef.current.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" })
     }
   }, [isActive])
 
   return (
-    <TableRow className="scroll-mt-10" ref={rowRef}>
+    <TableRow ref={rowRef}>
       <TableCell className="font-medium font-mono max-w-md">
         <Link href={href} className={cn("flow-root max-w-full truncate", isActive && "text-blue-500")}>
           {mobileOnly && <TabletSmartphoneIcon size={16} className="mr-2 text-red-400 inline-block" />}

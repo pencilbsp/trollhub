@@ -9,13 +9,14 @@ import { PageParams } from "@/types/page"
 import { Card } from "@/components/ui/Card"
 import { Badge } from "@/components/ui/Badge"
 import { Button } from "@/components/ui/Button"
-import VideoPlayer from "@/components/VideoPlayer"
+import VideoPlayer, { VideoPlayerError } from "@/components/VideoPlayer"
 import { getEpisode } from "@/actions/episodeActions"
 import { SITE_URL, USER_CONTENTS_HOST } from "@/config"
 import CommentList from "@/components/sections/CommentList"
 import ChapterTable from "@/components/sections/ChapterTable"
 import { avatarNameFallback, formatDate, getSlugId } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
+// import Player from "@/components/player"
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   const episodeId = getSlugId(params.slug)
@@ -44,6 +45,11 @@ export default async function EpisodePage({ params }: PageParams) {
   const episode = await getEpisode(episodeId)
 
   if (!episode) return notFound()
+
+  const src = {
+    type: "application/x-mpegurl",
+    src: `${USER_CONTENTS_HOST}/hls/manifest/${episode.id}.m3u8`,
+  }
 
   return (
     <div className="container p-2 sm:px-8 xl:max-w-7xl">
@@ -74,17 +80,15 @@ export default async function EpisodePage({ params }: PageParams) {
           </h1>
 
           {episode.status === ChapterStatus.ready ? (
-            <VideoPlayer src={`${USER_CONTENTS_HOST}/hls/manifest/${episode.id}.m3u8`} />
-          ) : (
-            <div className="w-full flex flex-col items-center justify-center aspect-video border border-dashed p-4">
-              <p className="mb-3 text-base md:text-lg text-center">
-                Video này hiện chưa được xử lý, vui lòng thử lại sau
-              </p>
-              <Button className=" items-center">
-                Yêu cầu xử lý
-                <AlertTriangleIcon className="ml-2 w-4 h-4" />
-              </Button>
+            <div className="-mx-4 sm:mx-0 sm:w-full overflow-hidden">
+              <VideoPlayer src={src} />
             </div>
+          ) : (
+            <VideoPlayerError
+              buttonText="Yêu cầu xử lý"
+              buttonIcon={<AlertTriangleIcon className="ml-2 w-4 h-4" />}
+              message="Video này hiện chưa được xử lý, vui lòng thử lại sau"
+            />
           )}
 
           <ChapterTable

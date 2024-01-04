@@ -78,12 +78,7 @@ module.exports = {
   },
   plugins: [
     require("tailwindcss-animate"),
-    require("@vidstack/react/tailwind.cjs")({
-      // Optimize output by specifying player selector.
-      selector: ".media-player",
-      // Change the media variants prefix.
-      prefix: "media",
-    }),
+    require("@vidstack/react/tailwind.cjs"),
     ({ addVariant }) => {
       addVariant("hocus", ["&:hover", "&:focus-visible"])
       addVariant("group-hocus", [".group:hover &", ".group:focus-visible &"])
