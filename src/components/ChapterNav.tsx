@@ -76,7 +76,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
       <nav>
         {drawer ? (
           <Drawer.Root>
-            <Drawer.Trigger>
+            <Drawer.Trigger asChild>
               <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-500/25 transition-colors">
                 <ListIcon size={20} />
               </button>

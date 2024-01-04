@@ -3,14 +3,11 @@ import { notFound } from "next/navigation"
 
 import { generateContentMetadata, getSlugId } from "@/lib/utils"
 
+import { PageParams } from "@/types/page"
 import getContent from "@/actions/contentActions"
 import ContentPage from "@/components/sections/ContentPage"
 
-interface Props {
-  params: { slug: string }
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   const contentId = getSlugId(params.slug)
   const data = await getContent(contentId)
   if (!data) return notFound()
@@ -18,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return generateContentMetadata(data)
 }
 
-export default async function ComicPage({ params }: Props) {
+export default async function ComicPage({ params }: PageParams) {
   const contentId = getSlugId(params.slug)
   const data = await getContent(contentId)
   if (!data) return notFound()

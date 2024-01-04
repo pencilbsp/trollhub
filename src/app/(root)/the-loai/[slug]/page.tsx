@@ -1,13 +1,10 @@
 import { notFound } from "next/navigation"
 
+import { PageParams } from "@/types/page"
 import { getContentsByCategoryId } from "@/actions/contentActions"
 import CategoryContents from "@/components/sections/CategoryContents"
 
-interface Props {
-  params: { slug: string }
-}
-
-export default async function CategoryPage({ params }: Props) {
+export default async function CategoryPage({ params }: PageParams) {
   const categoryId = params.slug.slice(-24)
   const category = await getContentsByCategoryId(categoryId)
   if (!category) return notFound()

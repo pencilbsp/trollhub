@@ -2,30 +2,40 @@
 
 import slug from "slug"
 import Link from "next/link"
-
+import { useEffect, useRef } from "react"
 import { TabletSmartphoneIcon } from "lucide-react"
 
 import { ContentType, Prisma } from "@prisma/client"
 import { ChapterList } from "@/actions/contentActions"
 
-import { formatDate } from "@/lib/utils"
+import { cn, formatDate } from "@/lib/utils"
 
 import useChapters from "@/hooks/useChapters"
 
 import { Card } from "@/components/ui/Card"
+import { Badge } from "@/components/ui/Badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/Table"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select"
 
 interface Props {
   contentId: string
   data?: ChapterList
+  currentId?: string
   contentTitle: string
   contentType: ContentType
   createdAt?: Prisma.SortOrder
   hiddenColumns?: ("view" | "update")[]
 }
 
-export default function ChapterTable({ data, contentId, createdAt, contentType, contentTitle, hiddenColumns }: Props) {
+export default function ChapterTable({
+  data,
+  contentId,
+  createdAt,
+  currentId,
+  contentType,
+  contentTitle,
+  hiddenColumns,
+}: Props) {
   if (!createdAt) createdAt = "desc"
   if (!hiddenColumns) hiddenColumns = []
 
@@ -66,36 +76,26 @@ export default function ChapterTable({ data, contentId, createdAt, contentType, 
               <TableHeader className="sticky top-0 dark:bg-gray-950 bg-gray-50 mx-4">
                 <TableRow>
                   <TableHead>Tên</TableHead>
-                  {!hiddenColumns.includes("update") && (
-                    <TableHead className="text-right hidden sm:table-cell">Cập nhật</TableHead>
-                  )}
-                  {!hiddenColumns.includes("view") && (
-                    <TableHead className="text-right hidden sm:table-cell">Lượt xem</TableHead>
-                  )}
+                  {!hiddenColumns.includes("update") && <TableHead className="text-right truncate">Cập nhật</TableHead>}
+                  {!hiddenColumns.includes("view") && <TableHead className="text-right truncate">Lượt xem</TableHead>}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {chapters.map(({ id, title, createdAt, mobileOnly, type }) => {
+                  const isActive = id === currentId
                   const slugTitle = `${contentTitle}-${title}`
                   const href = `/${type === ContentType.movie ? "episode" : "chapter"}/${slug(slugTitle)}-${id}`
 
                   return (
-                    <TableRow key={id}>
-                      <TableCell className="font-medium font-mono max-w-md">
-                        <Link href={href} className="flow-root max-w-full truncate">
-                          {mobileOnly && <TabletSmartphoneIcon size={16} className="mr-2 text-red-400 inline-block" />}
-                          {title}
-                        </Link>
-                      </TableCell>
-                      {!hiddenColumns!.includes("update") && (
-                        <TableCell className="text-right hidden sm:table-cell">
-                          <time className="font-mono font-light text-sm">{formatDate(createdAt)}</time>
-                        </TableCell>
-                      )}
-                      {!hiddenColumns!.includes("update") && (
-                        <TableCell className="text-right hidden sm:table-cell">100K</TableCell>
-                      )}
-                    </TableRow>
+                    <ChapterRow
+                      key={id}
+                      href={href}
+                      title={title!}
+                      isActive={isActive}
+                      createdAt={createdAt}
+                      mobileOnly={mobileOnly}
+                      hiddenColumns={hiddenColumns}
+                    />
                   )
                 })}
               </TableBody>
@@ -104,5 +104,49 @@ export default function ChapterTable({ data, contentId, createdAt, contentType, 
         </div>
       </Card>
     </div>
+  )
+}
+
+type ChapterRowProps = {
+  href: string
+  title: string
+  isActive: boolean
+  mobileOnly: boolean
+  createdAt: Date
+  hiddenColumns?: ("view" | "update")[]
+}
+
+function ChapterRow({ href, isActive, mobileOnly, title, hiddenColumns, createdAt }: ChapterRowProps) {
+  const rowRef = useRef<HTMLTableRowElement>(null)
+
+  useEffect(() => {
+    if (rowRef.current && isActive) {
+      rowRef.current.scrollIntoView({ block: "start", behavior: "smooth" })
+    }
+  }, [isActive])
+
+  return (
+    <TableRow className="scroll-mt-10" ref={rowRef}>
+      <TableCell className="font-medium font-mono max-w-md">
+        <Link href={href} className={cn("flow-root max-w-full truncate", isActive && "text-blue-500")}>
+          {mobileOnly && <TabletSmartphoneIcon size={16} className="mr-2 text-red-400 inline-block" />}
+          {title}
+          {isActive && (
+            <Badge
+              variant="outline"
+              className="ml-2 px-1.5 font-sans border-blue-500/70 bg-blue-500/90 text-background"
+            >
+              Đang xem
+            </Badge>
+          )}
+        </Link>
+      </TableCell>
+      {!hiddenColumns!.includes("update") && (
+        <TableCell className="text-right">
+          <time className="font-mono font-light text-sm truncate">{formatDate(createdAt)}</time>
+        </TableCell>
+      )}
+      {!hiddenColumns!.includes("update") && <TableCell className="text-right">100K</TableCell>}
+    </TableRow>
   )
 }

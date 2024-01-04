@@ -3,6 +3,7 @@ export const INIT_TAKE_CONTENT = 8
 
 export const SITE_NAME = "Trollhub"
 export const SITE_URL = new URL("https://fuhuzz.rip")
+export const USER_CONTENTS_HOST = `https://usercontents.${SITE_URL.hostname}`
 
 export const METADATA_BASE = process.env.NEXTAUTH_URL!
 export const NEXT_AUTH_SECRET = process.env.NEXT_AUTH_SECRET!
@@ -19,3 +20,4 @@ export const REDIS_USER = process.env.REDIS_USER || "default"
 export const REDIS_NAMESPACE = process.env.REDIS_NAMESPACE || ""
 
 export const METADATA_EX_TIME = 24 * 60 * 60 // 1 Ngày
+export const EPISODE_EX_TIME = METADATA_EX_TIME * 2 // 2 ngày
