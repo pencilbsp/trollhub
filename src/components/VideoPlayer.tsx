@@ -14,10 +14,14 @@ import cmd5xBuilder from "@/lib/cmd5x"
 
 const dashApi = "/api/prv-dash?"
 
-// if (process.env.NODE_ENV === "production") {
-//   addListener((isOpen) => isOpen && window.location.replace("/404"))
-//   launch()
-// }
+if (process.env.NODE_ENV === "production") {
+  addListener((isOpen) => {
+    if (isOpen) {
+      window.location.replace("/")
+    }
+  })
+  launch()
+}
 
 export type CustomSrc = PlayerSrc & {
   streameUrl?: string
@@ -57,7 +61,6 @@ export default function VideoPlayer({ src, thumbnails }: Props) {
         const ts = Date.now().toString()
         const query = new URLSearchParams({ file_id: src.streameId!, ts })
 
-        console.log(dashApi + query.toString())
         const xkey = window.cmd5x(dashApi + query.toString())
         query.append("xkey", xkey)
 
