@@ -15,6 +15,7 @@ const get = (id: string) =>
       id: true,
       title: true,
       status: true,
+      videoId: true,
       createdAt: true,
       updatedAt: true,
       content: {

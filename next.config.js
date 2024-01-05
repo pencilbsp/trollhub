@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false,
   images: {
     remotePatterns: [
       {
@@ -28,8 +29,12 @@ const nextConfig = {
         source: "/comic/:path*",
         destination: "/comic/:path*",
       },
-    ];
+      {
+        source: "/api/prv-dash/:path*",
+        destination: `${process.env.STREAME_DASH_API}/:path*`,
+      },
+    ]
   },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

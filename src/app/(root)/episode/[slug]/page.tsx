@@ -13,8 +13,8 @@ import { SITE_URL, USER_CONTENTS_HOST } from "@/config"
 import CommentList from "@/components/sections/CommentList"
 import ChapterTable from "@/components/sections/ChapterTable"
 import { avatarNameFallback, formatDate, getSlugId } from "@/lib/utils"
-import VideoPlayer, { VideoPlayerError } from "@/components/VideoPlayer"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
+import VideoPlayer, { CustomSrc, VideoPlayerError } from "@/components/VideoPlayer"
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   const episodeId = getSlugId(params.slug)
@@ -44,7 +44,8 @@ export default async function EpisodePage({ params }: PageParams) {
 
   if (!episode) return notFound()
 
-  const src = {
+  const src: CustomSrc = {
+    streameId: episode.videoId,
     type: "application/x-mpegurl",
     src: `${USER_CONTENTS_HOST}/hls/manifest/${episode.id}.m3u8`,
   }
