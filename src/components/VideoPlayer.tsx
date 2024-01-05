@@ -4,7 +4,7 @@ import "@vidstack/react/player/styles/default/theme.css"
 import "@vidstack/react/player/styles/default/layouts/video.css"
 
 import { ErrorData } from "hls.js"
-import { addListener, launch } from "devtools-detector"
+// import { addListener, launch } from "devtools-detector"
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react"
 import { MediaPlayer, MediaPlayerInstance, MediaProvider, PlayerSrc } from "@vidstack/react"
 import { defaultLayoutIcons, DefaultVideoLayout } from "@vidstack/react/player/layouts/default"
@@ -14,14 +14,14 @@ import cmd5xBuilder from "@/lib/cmd5x"
 
 const dashApi = "/api/prv-dash?"
 
-if (process.env.NODE_ENV === "production") {
-  addListener((isOpen) => {
-    if (isOpen) {
-      window.location.replace("/")
-    }
-  })
-  launch()
-}
+// if (process.env.NODE_ENV === "production") {
+//   addListener((isOpen) => {
+//     if (isOpen) {
+//       window.location.replace("/")
+//     }
+//   })
+//   launch()
+// }
 
 export type CustomSrc = PlayerSrc & {
   streameUrl?: string
