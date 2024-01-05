@@ -14,10 +14,10 @@ import cmd5xBuilder from "@/lib/cmd5x"
 
 const dashApi = "/api/prv-dash?"
 
-if (process.env.NODE_ENV === "production") {
-  addListener((isOpen) => isOpen && window.location.replace("/404"))
-  launch()
-}
+// if (process.env.NODE_ENV === "production") {
+//   addListener((isOpen) => isOpen && window.location.replace("/404"))
+//   launch()
+// }
 
 export type CustomSrc = PlayerSrc & {
   streameUrl?: string
