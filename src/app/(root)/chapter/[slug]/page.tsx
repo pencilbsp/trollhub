@@ -50,7 +50,7 @@ export default async function ChapterPage({ params }: Props) {
                   alt=""
                   effect="blur"
                   tmpRatio="1/1"
-                  threshold={500}
+                  threshold={1000}
                   key={chapter.id + index}
                   src={`${pathname}${search}`}
                 />
