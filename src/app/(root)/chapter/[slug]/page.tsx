@@ -45,7 +45,16 @@ export default async function ChapterPage({ params }: Props) {
           <div className="-mx-4 sm:mx-auto max-w-3xl border rounded-xl overflow-hidden">
             {chapter.images.map((img, index) => {
               const { pathname, search } = new URL(img)
-              return <Image alt="" key={chapter.id + index} src={`${pathname}${search}`} tmpRatio="1/1" effect="blur" />
+              return (
+                <Image
+                  alt=""
+                  effect="blur"
+                  tmpRatio="1/1"
+                  threshold={200}
+                  key={chapter.id + index}
+                  src={`${pathname}${search}`}
+                />
+              )
             })}
           </div>
         )}
