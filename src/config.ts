@@ -1,9 +1,11 @@
 export const INIT_CHAPTER = 8
 export const INIT_TAKE_CONTENT = 8
 
+const devMode = process.env.NODE_ENV !== "production"
+
 export const SITE_NAME = "Trollhub"
 export const SITE_URL = new URL("https://fuhuzz.rip")
-export const USER_CONTENTS_HOST = `https://usercontents.${SITE_URL.hostname}`
+export const USER_CONTENTS_HOST = devMode ? process.env.USER_CONTENTS_HOST : `https://usercontents.${SITE_URL.hostname}`
 
 export const METADATA_BASE = process.env.NEXTAUTH_URL!
 export const NEXT_AUTH_SECRET = process.env.NEXT_AUTH_SECRET!

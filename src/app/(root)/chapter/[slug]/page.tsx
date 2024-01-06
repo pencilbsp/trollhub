@@ -6,6 +6,7 @@ import { getSlugId } from "@/lib/utils"
 
 import { getChapter, getChapterMetadata } from "@/actions/chapterActions"
 
+import { USER_CONTENTS_HOST } from "@/config"
 import ChapterNav from "@/components/ChapterNav"
 import NextChapter from "@/components/NextChapter"
 import { TooltipProvider } from "@/components/ui/Tooltip"
@@ -42,19 +43,22 @@ export default async function ChapterPage({ params }: Props) {
 
         {chapter.type === "comic" && (
           <div className="-mx-4 sm:mx-auto max-w-3xl border rounded-xl overflow-hidden">
-            {chapter.images.map((img, index) => (
-              <Image
-                alt={""}
-                src={img}
-                width={0}
-                height={0}
-                unoptimized
-                sizes="100vh"
-                loading="lazy"
-                className="w-full"
-                key={chapter.id + index}
-              />
-            ))}
+            {chapter.images.map((img, index) => {
+              const { pathname, search } = new URL(img)
+              return (
+                <Image
+                  alt={""}
+                  width={0}
+                  height={0}
+                  unoptimized
+                  sizes="100vh"
+                  loading="lazy"
+                  className="w-full"
+                  key={chapter.id + index}
+                  src={`${pathname}${search}`}
+                />
+              )
+            })}
           </div>
         )}
 
