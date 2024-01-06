@@ -117,5 +117,5 @@
 }
 
 .lazy-wrapper > img {
-  display: inline-block;
+  @apply w-full inline-block;
 }
