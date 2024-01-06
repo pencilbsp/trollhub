@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
   requestHeaders.set("Referer", "https://idoitmyself.xyz/")
 
   const { pathname, search } = request.nextUrl
-  request.nextUrl.href = `https://static.theshalola.xyz/${pathname}${search}`
+  request.nextUrl.href = `https://static.theshalola.xyz${pathname}${search}`
 
   return NextResponse.rewrite(request.nextUrl, {
     request: {
