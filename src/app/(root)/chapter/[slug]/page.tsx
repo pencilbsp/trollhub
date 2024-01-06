@@ -1,4 +1,4 @@
-import Image from "next/image"
+// import Image from "next/image"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
@@ -6,7 +6,7 @@ import { getSlugId } from "@/lib/utils"
 
 import { getChapter, getChapterMetadata } from "@/actions/chapterActions"
 
-import { USER_CONTENTS_HOST } from "@/config"
+import Image from "@/components/Image"
 import ChapterNav from "@/components/ChapterNav"
 import NextChapter from "@/components/NextChapter"
 import { TooltipProvider } from "@/components/ui/Tooltip"
@@ -45,19 +45,7 @@ export default async function ChapterPage({ params }: Props) {
           <div className="-mx-4 sm:mx-auto max-w-3xl border rounded-xl overflow-hidden">
             {chapter.images.map((img, index) => {
               const { pathname, search } = new URL(img)
-              return (
-                <Image
-                  alt={""}
-                  width={0}
-                  height={0}
-                  unoptimized
-                  sizes="100vh"
-                  loading="lazy"
-                  className="w-full"
-                  key={chapter.id + index}
-                  src={`${pathname}${search}`}
-                />
-              )
+              return <Image alt="" key={chapter.id + index} src={`${pathname}${search}`} tmpRatio="1/1" effect="blur" />
             })}
           </div>
         )}

@@ -69,10 +69,27 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: 0 },
         },
+        shine: {
+          "0%": {
+            "background-position": "0% 0%",
+          },
+          "100%": {
+            "background-position": "-135% 0%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shine: "shine 1.3s infinite",
+      },
+      backgroundImage: {
+        shine: "linear-gradient(-90deg, hsl(var(--background)) 0%, hsl(var(--shine)) 50%, hsl(var(--background)) 100%)",
+        curtain: 'url("/picture-photo.svg")',
+      },
+      backgroundSize: {
+        "1/3": "calc(100%/3)",
+        400: "400% 400%",
       },
     },
   },

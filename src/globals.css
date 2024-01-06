@@ -7,6 +7,8 @@
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 
+    --shine: 240 4.8% 95.9%;
+
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
 
@@ -44,6 +46,8 @@
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
+
+    --shine: 240 3.7% 15.9%;
 
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -106,4 +110,12 @@
 
 .CircularProgressbar-trail {
   @apply stroke-gray-300/50 dark:stroke-gray-700/50 !important;
+}
+
+.lazy-wrapper {
+  @apply absolute inset-0 leading-[0] bg-cover object-cover w-full h-full;
+}
+
+.lazy-wrapper > img {
+  display: inline-block;
 }

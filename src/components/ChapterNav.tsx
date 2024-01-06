@@ -72,7 +72,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
   }, [contentId, id, data?.user.id])
 
   return (
-    <motion.aside className={cn("chapter-nav", offset && "stickied")}>
+    <motion.aside className={cn("chapter-nav z-10", offset && "stickied")}>
       <nav>
         {drawer ? (
           <Drawer.Root>
