@@ -44,4 +44,5 @@ export const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions)
 
+// @ts-ignore
 export { handler as GET, handler as POST }

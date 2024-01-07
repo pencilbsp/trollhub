@@ -64,6 +64,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
     const handleHistory = async () => {
       const { error, history } = await createHistory(contentId, id)
       if (error) return toast.error(error.message)
+      // @ts-ignore
       upadteHistory(history)
     }
 
