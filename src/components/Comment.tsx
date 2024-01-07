@@ -1,48 +1,48 @@
-import { toast } from "sonner";
-import { User } from "next-auth";
-import { memo, useTransition } from "react";
+import { toast } from "sonner"
+import { User } from "next-auth"
+import { memo, useTransition } from "react"
 
-import { deleteComment, likeComment } from "@/actions/commentActions";
-import { AlertTriangleIcon, MoreHorizontalIcon, TrashIcon } from "lucide-react";
+import { deleteComment, likeComment } from "@/actions/commentActions"
+import { AlertTriangleIcon, MoreHorizontalIcon, TrashIcon } from "lucide-react"
 
-import { avatarNameFallback, cn, formatToNow } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { avatarNameFallback, cn, formatToNow } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuShortcut,
-} from "@/components/ui/DropdownMenu";
-import SpinerIcon from "./icons/SpinerIcon";
-import { Comment } from "@/hooks/useComment";
+} from "@/components/ui/DropdownMenu"
+import SpinerIcon from "./icons/SpinerIcon"
+import { Comment } from "@/hooks/useComment"
 
 interface Props {
-  currentUser?: User;
-  data: Comment;
-  onCommentDeleted: (id: string) => void;
-  onCommentLiked: (id: string, liked: boolean) => void;
+  currentUser?: User
+  data: Comment
+  onCommentDeleted: (id: string) => void
+  onCommentLiked: (id: string, liked: boolean) => void
 }
 
 function Comment({ data, currentUser, onCommentDeleted, onCommentLiked }: Props) {
-  const { id, user, createdAt, text, liked, totalLike } = data;
-  const [isPending, startTransition] = useTransition();
+  const { id, user, createdAt, text, liked, totalLike } = data
+  const [isPending, startTransition] = useTransition()
 
   const handleDeleteComment = async () => {
     if (!isPending && user) {
-      const result = await deleteComment(id);
-      if (result.error) toast.error(result.error.message);
-      else onCommentDeleted(id);
+      const result = await deleteComment(id)
+      if (result.error) toast.error(result.error.message)
+      else onCommentDeleted(id)
     }
-  };
+  }
 
   const handleLikeCommnet = async () => {
     if (!isPending && currentUser) {
-      const result = await likeComment(currentUser.id, id, liked);
-      if (result.error) toast.error(result.error.message);
-      else onCommentLiked(id, !liked);
+      const result = await likeComment(currentUser.id, id, liked)
+      if (result.error) toast.error(result.error.message)
+      else onCommentLiked(id, !liked)
     }
-  };
+  }
 
   return (
     <div className="flex gap-2">
@@ -61,10 +61,10 @@ function Comment({ data, currentUser, onCommentDeleted, onCommentLiked }: Props)
             <DropdownMenuTrigger className="rounded-full hover:bg-border p-1 focus:outline-none focus:ring-0">
               {isPending ? <SpinerIcon /> : <MoreHorizontalIcon size={20} />}
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-44">
+            <DropdownMenuContent className="text-sm" align="end">
               <DropdownMenuItem>
                 Báo cáo bình luận
-                <DropdownMenuShortcut>
+                <DropdownMenuShortcut className="ml-4">
                   <AlertTriangleIcon size={18} />
                 </DropdownMenuShortcut>
               </DropdownMenuItem>
@@ -95,7 +95,7 @@ function Comment({ data, currentUser, onCommentDeleted, onCommentLiked }: Props)
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default memo(Comment);
+export default memo(Comment)

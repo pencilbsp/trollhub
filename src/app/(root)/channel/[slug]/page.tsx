@@ -4,7 +4,7 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import prisma from "@/lib/prisma"
-import { SITE_NAME, SITE_URL } from "@/config"
+import { ADULT_CATEGORY_ID, SITE_NAME, SITE_URL } from "@/config"
 import { avatarNameFallback } from "@/lib/utils"
 import { ShareIcon, ThumbsUpIcon } from "lucide-react"
 
@@ -19,7 +19,7 @@ interface Props {
 const TAKE = 12
 
 async function getCreator(userName: string, withContent = true) {
-  return prisma.creator.findUnique({
+  const data: any = await prisma.creator.findUnique({
     where: {
       userName: "@" + userName,
     },
@@ -36,11 +36,24 @@ async function getCreator(userName: string, withContent = true) {
               title: true,
               status: true,
               thumbUrl: true,
+              updatedAt: true,
+              categoryIds: true,
             },
           },
         }
       : undefined,
   })
+
+  if (!data) return null
+  return data.contents
+    ? {
+        ...data,
+        contents: data.contents.map((content: any) => {
+          const adultContent = content.categoryIds.includes(ADULT_CATEGORY_ID)
+          return { ...content, adultContent, categoryIds: undefined }
+        }),
+      }
+    : data
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

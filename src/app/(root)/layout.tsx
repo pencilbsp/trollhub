@@ -6,6 +6,8 @@ import { getServerSession } from "next-auth/next"
 import "@/globals.css"
 
 import Header from "@/components/Header"
+import SettingsProvider from "@/contexts/SettingsContext"
+import SettingsDialog from "@/components/SettingsDialog"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import { GA_MEASUREMENT_ID, METADATA_BASE } from "@/config"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
@@ -42,10 +44,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <NextAuthProvider session={session}>
-            <div className="relative flex flex-col">
-              <Header />
-              {children}
-            </div>
+            <SettingsProvider>
+              <SettingsDialog />
+              <div className="relative flex flex-col">
+                <Header />
+                {children}
+              </div>
+            </SettingsProvider>
           </NextAuthProvider>
         </ThemeProvider>
       </body>

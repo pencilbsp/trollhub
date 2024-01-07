@@ -1,25 +1,25 @@
-import slug from "slug";
-import Link from "next/link";
-import Image from "next/image";
+import slug from "slug"
+import Link from "next/link"
+import Image from "next/image"
 
-import { avatarNameFallback, formatDate } from "@/lib/utils";
-import { ThumbsUpIcon, BellPlusIcon, AlertOctagonIcon } from "lucide-react";
+import { avatarNameFallback, formatDate } from "@/lib/utils"
+import { ThumbsUpIcon, BellPlusIcon, AlertOctagonIcon } from "lucide-react"
 
-import { Content } from "@/actions/contentActions";
-import { ContentStatus, ContentType } from "@prisma/client";
+import { Content } from "@/actions/contentActions"
+import { ContentStatus, ContentType } from "@prisma/client"
 
-import CommentList from "./CommentList";
-import ChapterTable from "./ChapterTable";
-import { Card } from "@/components/ui/Card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import CommentList from "./CommentList"
+import ChapterTable from "./ChapterTable"
+import { Card } from "@/components/ui/Card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
 
 interface Props {
-  data: Content;
+  data: Content
 }
 
 function getStatus(status: ContentStatus) {
-  if (status === ContentStatus.updating) return <span className="text-green-500">Đang xuất bản</span>;
-  return <span className="text-pink-500">Đã hoàn thành</span>;
+  if (status === ContentStatus.updating) return <span className="text-green-500">Đang xuất bản</span>
+  return <span className="text-pink-500">Đã hoàn thành</span>
 }
 
 export default async function ContentPage({ data }: Props) {
@@ -37,7 +37,7 @@ export default async function ContentPage({ data }: Props) {
                 <h4 className="font-semibold text-xl text-gray-700 dark:text-gray-300">{data.creator.name}</h4>
               </Link>
               <div className="text-gray-500 font-light text-sm">
-                <time className="font-light">{formatDate(data.updatedAt)}</time>
+                <time className="font-light text-sm">Cập nhật lúc {formatDate(data.updatedAt)}</time>
                 <span className="px-1">&#8226;</span>
                 <span className="text-gray-500 font-light">100K lượt xem</span>
               </div>
@@ -98,13 +98,13 @@ export default async function ContentPage({ data }: Props) {
                   <li>
                     <b className="mr-2">Thể loại:</b>
                     {data.categories.map(({ title, id }, index) => {
-                      const href = `/the-loai/${slug(title)}-${id}`;
+                      const href = `/the-loai/${slug(title)}-${id}`
                       return (
                         <Link key={id} href={href} className="text-blue-400 mr-1 hover:underline hover:text-blue-500">
                           {title}
                           {index < data.categories.length - 1 && ","}
                         </Link>
-                      );
+                      )
                     })}
                   </li>
                 </ul>
@@ -143,5 +143,5 @@ export default async function ContentPage({ data }: Props) {
         <div className="col-span-3 lg:col-span-1"></div>
       </div>
     </div>
-  );
+  )
 }

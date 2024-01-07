@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { User } from "next-auth";
-import { signOut } from "next-auth/react";
-import { LogOutIcon, HistoryIcon } from "lucide-react";
+import Link from "next/link"
+import { User } from "next-auth"
+import { signOut } from "next-auth/react"
+import { LogOutIcon, HistoryIcon } from "lucide-react"
 
-import { avatarNameFallback } from "@/lib/utils";
+import { avatarNameFallback } from "@/lib/utils"
 
-import { Button } from "@/components/ui/Button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +16,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
+} from "@/components/ui/DropdownMenu"
+import { SettingTrigger } from "./SettingsDialog"
 
 export function UserNav({ user }: { user: User }) {
   return (
@@ -36,9 +37,14 @@ export function UserNav({ user }: { user: User }) {
             <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
           </div>
         </DropdownMenuLabel>
+
         <DropdownMenuSeparator />
+
         <DropdownMenuGroup>
           <DropdownMenuItem>Kênh của tôi</DropdownMenuItem>
+
+          <SettingTrigger />
+
           <DropdownMenuItem asChild>
             <Link href="/history">
               Đã xem
@@ -47,16 +53,10 @@ export function UserNav({ user }: { user: User }) {
               </DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
-          {/* <DropdownMenuItem asChild>
-            <Link href="/liked">
-              Đã thích
-              <DropdownMenuShortcut>
-                <ThumbsUpIcon size={20} />
-              </DropdownMenuShortcut>
-            </Link>
-          </DropdownMenuItem> */}
         </DropdownMenuGroup>
+
         <DropdownMenuSeparator />
+
         <DropdownMenuItem onClick={() => signOut()} className="text-red-500 focus:text-red-500">
           Đăng xuất
           <DropdownMenuShortcut>
@@ -65,5 +65,5 @@ export function UserNav({ user }: { user: User }) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

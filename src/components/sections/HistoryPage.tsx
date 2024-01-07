@@ -14,7 +14,7 @@ import useHistory from "@/hooks/useHistory"
 import SpinerIcon from "../icons/SpinerIcon"
 
 interface Props {
-  data: HistoryData
+  data?: HistoryData
 }
 
 export default function HistoryPage({ data }: Props) {
@@ -33,6 +33,7 @@ export default function HistoryPage({ data }: Props) {
                   ratio="16/9"
                   alt={content.title}
                   thumbUrl={content.thumbUrl!}
+                  adultContent={content.adultContent}
                   className="max-w-[180px] lg:max-w-[220px] rounded-xl border mt-0 overflow-hidden"
                 />
                 <div className="flex flex-col ml-3 w-full">

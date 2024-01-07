@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma"
 import getRedisClient, { getKeyWithNamespace } from "@/lib/redis"
-import { INIT_CHAPTER, INIT_TAKE_CONTENT, METADATA_EX_TIME } from "@/config"
+import { ADULT_CATEGORY_ID, INIT_CHAPTER, INIT_TAKE_CONTENT, METADATA_EX_TIME } from "@/config"
 
 export type Content = NonNullable<Awaited<ReturnType<typeof get>>>
 export type ChapterList = Content["chapter"]
@@ -102,7 +102,7 @@ export default async function getContent(id: string): Promise<Content | null> {
   }
 }
 
-export const contentQuery = (options: any): any => ({
+export const contentQuery = (options: any) => ({
   select: {
     id: true,
     title: true,
@@ -113,9 +113,10 @@ export const contentQuery = (options: any): any => ({
         title: true,
         status: true,
         creator: true,
-        updatedAt: true,
         thumbUrl: true,
+        updatedAt: true,
         description: true,
+        categoryIds: true,
       },
       orderBy: {
         updatedAt: "desc",
@@ -126,7 +127,20 @@ export const contentQuery = (options: any): any => ({
 })
 
 export async function getContentsByCategoryId(id: string, options = { take: INIT_TAKE_CONTENT, skip: 0 }) {
-  return prisma.category.findUnique({ where: { id }, ...contentQuery(options) })
+  const data = await prisma.category.findUnique({
+    where: { id },
+    ...contentQuery(options),
+  })
+
+  if (!data) return null
+
+  return {
+    ...data,
+    contents: data.contents.map((content) => {
+      const adultContent = content.categoryIds.includes(ADULT_CATEGORY_ID)
+      return { ...content, adultContent, categoryIds: undefined }
+    }),
+  }
 }
 
 type Options = {
@@ -145,6 +159,7 @@ export async function getContents(where: any, options: Options) {
       title: true,
       thumbUrl: true,
       updatedAt: true,
+      categoryIds: true,
       creator: {
         select: {
           name: true,
@@ -160,5 +175,11 @@ export async function getContents(where: any, options: Options) {
     take: options.take ?? INIT_TAKE_CONTENT,
   })
 
-  return { contents, total }
+  return {
+    contents: contents.map((content) => {
+      const adultContent = content.categoryIds.includes(ADULT_CATEGORY_ID)
+      return { ...content, adultContent, categoryIds: undefined }
+    }),
+    total,
+  }
 }

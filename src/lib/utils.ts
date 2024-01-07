@@ -77,7 +77,7 @@ export const formatToNow = (data: string | number | Date) => {
   return formatDistanceToNow(new Date(data), { locale: vi, includeSeconds: true, addSuffix: true })
 }
 
-export const formatDate = (data: string | number | Date, fstring: string = "dd/MM/yyyy HH:mm") => {
+export const formatDate = (data: string | number | Date, fstring: string = "HH:mm dd/MM/yyyy") => {
   return format(new Date(data), fstring, { locale: vi })
 }
 

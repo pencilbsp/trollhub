@@ -12,7 +12,7 @@ export default function useHistory(fallbackData: HistoryData = initialFallbackDa
   const [isPending, startTransition] = useTransition()
   const { data, isLoading, error, mutate } = useSWR("history", fetcher, {
     fallbackData,
-    revalidateOnMount: false,
+    // revalidateOnMount: false,
     revalidateOnFocus: false,
   })
 

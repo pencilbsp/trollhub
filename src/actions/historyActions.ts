@@ -1,14 +1,15 @@
-"use server";
+"use server"
 
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth"
 
-import prisma from "@/lib/prisma";
-import { ArrayElement } from "@/types/utils";
+import prisma from "@/lib/prisma"
+import { ArrayElement } from "@/types/utils"
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { ADULT_CATEGORY_ID } from "@/config"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
-export type HistoryData = Awaited<ReturnType<typeof getUserHistories>>;
-export type History = ArrayElement<HistoryData["histories"]>;
+export type HistoryData = Awaited<ReturnType<typeof getUserHistories>>
+export type History = ArrayElement<HistoryData["histories"]>
 
 const select = {
   id: true,
@@ -19,6 +20,7 @@ const select = {
       type: true,
       title: true,
       thumbUrl: true,
+      categoryIds: true,
     },
   },
   chapter: {
@@ -27,17 +29,17 @@ const select = {
       title: true,
     },
   },
-};
+}
 
 type Options = {
-  skip?: number;
-  take?: number;
-};
+  skip?: number
+  take?: number
+}
 
 export async function getUserHistories(options: Options = {}) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) throw new Error();
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) throw new Error()
 
     const [histories, total] = await Promise.all([
       prisma.history.findMany({
@@ -56,18 +58,25 @@ export async function getUserHistories(options: Options = {}) {
           userId: session.user.id,
         },
       }),
-    ]);
+    ])
 
-    return { histories, total, loaded: true };
+    return {
+      histories: histories.map((data) => {
+        const adultContent = data.content.categoryIds.includes(ADULT_CATEGORY_ID)
+        return { ...data, content: { ...data.content, adultContent, categoryIds: undefined } }
+      }),
+      total,
+      loaded: true,
+    }
   } catch (error: any) {
-    return { histories: [], total: 0, error: { message: error.message as string } };
+    return { histories: [], total: 0, error: { message: error.message as string } }
   }
 }
 
 export async function createHistory(contentId: string, chapterId: string) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) throw new Error("Tính năng lưu lịch sử yêu cầu đăng nhập");
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) throw new Error("Tính năng lưu lịch sử yêu cầu đăng nhập")
 
     const [history] = await Promise.all([
       prisma.history.upsert({
@@ -97,25 +106,25 @@ export async function createHistory(contentId: string, chapterId: string) {
           },
         },
       }),
-    ]);
+    ])
 
-    return { history };
+    return { history }
   } catch (error: any) {
-    return { error: { message: error.message as string } };
+    return { error: { message: error.message as string } }
   }
 }
 
 export async function deleteHistory(id: string) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) throw new Error("Tính năng xoá lịch sử yêu cầu đăng nhập");
+    const session = await getServerSession(authOptions)
+    if (!session || !session.user) throw new Error("Tính năng xoá lịch sử yêu cầu đăng nhập")
 
     await prisma.history.delete({
       where: {
         id,
       },
-    });
+    })
   } catch (error: any) {
-    return { error: { message: error.message as string } };
+    return { error: { message: error.message as string } }
   }
 }
