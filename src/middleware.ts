@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export const config = {
-  matcher: "/images/:path*",
+  matcher: ["/images/:path*", "/simages/:path*"],
 }
 
 export function middleware(request: NextRequest) {
