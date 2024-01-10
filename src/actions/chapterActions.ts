@@ -4,47 +4,40 @@ import { getServerSession } from "next-auth"
 
 import prisma from "@/lib/prisma"
 import { generateKeywords } from "@/lib/utils"
+import { ChapterStatus } from "@prisma/client"
 import { METADATA_EX_TIME, SITE_URL } from "@/config"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import getRedisClient, { getKeyWithNamespace } from "@/lib/redis"
-import { comicParser, createComicURL, novelParser } from "@/lib/fuhu"
+import { COMIC_VERSION, comicParser, createEmbedUrl, novelParser } from "@/lib/fuhu"
 
 async function cloneImages(chapterId: string, fid: string) {
-  try {
-    const images = await comicParser(createComicURL(fid))
-    await prisma.chapter.update({
-      where: {
-        id: chapterId,
-      },
-      data: {
-        images,
-        status: "ready",
-      },
-    })
+  const images = await comicParser(createEmbedUrl(fid, COMIC_VERSION))
+  await prisma.chapter.update({
+    where: {
+      id: chapterId,
+    },
+    data: {
+      images,
+      status: "ready",
+    },
+  })
 
-    return images
-  } catch (error) {
-    return []
-  }
+  return images
 }
 
 async function cloneText(chapterId: string, fid: string) {
-  try {
-    const text = await novelParser(createComicURL(fid))
-    await prisma.chapter.update({
-      where: {
-        id: chapterId,
-      },
-      data: {
-        text,
-        status: "ready",
-      },
-    })
+  const text = await novelParser(createEmbedUrl(fid, COMIC_VERSION))
+  await prisma.chapter.update({
+    where: {
+      id: chapterId,
+    },
+    data: {
+      text,
+      status: "ready",
+    },
+  })
 
-    return text
-  } catch (error) {
-    return ""
-  }
+  return text
 }
 
 export const chapterQuery = (options: any): any => ({
@@ -74,7 +67,7 @@ export async function getChapter(id: string) {
       },
     })
 
-    if (!data) throw Error()
+    if (!data) throw Error("Nội dung không tồn tại")
 
     if (data.type === "comic" && data.status === "pending") {
       data.images = await cloneImages(data.id, data.fid!)
@@ -194,5 +187,43 @@ export async function requestChapter(chapterId: string) {
     return { message: "Đã yêu cầu xử lý tập phim thành công", status, totalRequest }
   } catch (error: any) {
     return { error: { message: (error?.message || "Đã xảy ra lỗi, vui lòng thử lại sau") as string } }
+  }
+}
+
+export async function resetChapterStatus(id: string) {
+  try {
+    const chapter = await prisma.chapter.findUnique({ where: { id } })
+    if (!chapter) throw new Error("Nội dung này không tồn tại hoặc đã bị xoá")
+
+    if (chapter.status === ChapterStatus.ready) {
+      return {
+        message: "Nội dung này đã sẵn sàng để xem",
+      }
+    }
+
+    if (chapter.status === ChapterStatus.pending) {
+      return {
+        message: "Nội dung này sẽ sớm được xử lý",
+      }
+    }
+
+    await prisma.chapter.update({
+      where: {
+        id,
+      },
+      data: {
+        status: ChapterStatus.pending,
+      },
+    })
+
+    return {
+      message: "Yêu cầu thành công, xin hãy quay lại sau",
+    }
+  } catch (error: any) {
+    return {
+      error: {
+        message: error.message,
+      },
+    }
   }
 }
