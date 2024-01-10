@@ -1,28 +1,29 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import * as React from "react";
+import Link from "next/link"
+import * as React from "react"
 
-import Headroom from "react-headroom";
-import { ViewVerticalIcon } from "@radix-ui/react-icons";
-import { HomeIcon, HammerIcon, LifeBuoyIcon } from "lucide-react";
+import Headroom from "react-headroom"
+import { ViewVerticalIcon } from "@radix-ui/react-icons"
+import { HomeIcon, HammerIcon, LifeBuoyIcon } from "lucide-react"
 
-import NavLink from "./NavLink";
-import { ToggleTheme } from "./ToggleTheme";
+import NavLink from "./NavLink"
+import { ToggleTheme } from "./ToggleTheme"
 
-import { User } from "next-auth";
-import { usePathname } from "next/navigation";
+import { User } from "next-auth"
+import { usePathname } from "next/navigation"
 
-import { UserNav } from "./UserNav";
-import SearchModel from "./SearchModel";
-import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/Button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet";
+import { UserNav } from "./UserNav"
+import SearchModel from "./SearchModel"
+import RequestDialog from "./RequestDialog"
+import { useSession } from "next-auth/react"
+import { Button } from "@/components/ui/Button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet"
 
 export default function Header() {
-  const [isOpen, setOpen] = React.useState(false);
-  const session = useSession();
-  const pathname = usePathname();
+  const [isOpen, setOpen] = React.useState(false)
+  const session = useSession()
+  const pathname = usePathname()
 
   return (
     <Headroom
@@ -76,9 +77,7 @@ export default function Header() {
 
               <ToggleTheme />
 
-              <Button variant="outline" className="flex-shrink-0">
-                Yêu cầu
-              </Button>
+              <RequestDialog />
 
               {session && session.data?.user ? (
                 <UserNav user={session.data.user as User} />
@@ -92,5 +91,5 @@ export default function Header() {
         </div>
       </header>
     </Headroom>
-  );
+  )
 }

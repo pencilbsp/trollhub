@@ -91,14 +91,16 @@ export default async function ChannelPage({ params }: Props) {
       <div className="grid grid-cols-3 gap-6 w-full p-2">
         <div className="flex flex-col col-span-3 lg:col-span-2">
           <div className="w-full aspect-[21/9] rounded-xl overflow-hidden border">
-            <Image
-              width={0}
-              height={0}
-              sizes="100vh"
-              alt={creator.name}
-              src={creator.cover!}
-              className="w-full h-full object-cover"
-            />
+            {creator.cover && (
+              <Image
+                width={0}
+                height={0}
+                sizes="100vh"
+                alt={creator.name}
+                src={creator.cover}
+                className="w-full h-full object-cover"
+              />
+            )}
           </div>
 
           <div className="flex flex-col items-center sm:items-start sm:flex-row border-b pb-3">

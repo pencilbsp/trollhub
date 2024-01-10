@@ -122,6 +122,7 @@ enum ContentType {
   movie
   comic
   novel
+  video
 }
 
 enum ContentStatus {

@@ -1,4 +1,3 @@
-// import Image from "next/image"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
@@ -7,6 +6,7 @@ import { getSlugId } from "@/lib/utils"
 import { getChapter, getChapterMetadata } from "@/actions/chapterActions"
 
 import Image from "@/components/Image"
+import ReloadButton from "./ReloadButton"
 import ChapterNav from "@/components/ChapterNav"
 import NextChapter from "@/components/NextChapter"
 import { TooltipProvider } from "@/components/ui/Tooltip"
@@ -41,7 +41,14 @@ export default async function ChapterPage({ params }: Props) {
           />
         </div>
 
-        {chapter.type === "comic" && (
+        {chapter.status !== "ready" ? (
+          <div className="border border-dashed px-4 py-8 flex flex-col gap-4 items-center justify-center rounded-xl">
+            <p className="text-lg font-semibold text-center">
+              Nội dung không khả dụng ngay bây giờ, vui lòng quay lại sau. Xin cám ơn!
+            </p>
+            <ReloadButton id={chapter.id} status={chapter.status} />
+          </div>
+        ) : chapter.type === "comic" ? (
           <div className="-mx-4 sm:mx-auto max-w-3xl border rounded-xl overflow-hidden">
             {chapter.images.map((img, index) => {
               const { pathname, search } = new URL(img)
@@ -57,9 +64,7 @@ export default async function ChapterPage({ params }: Props) {
               )
             })}
           </div>
-        )}
-
-        {chapter.type === "novel" && (
+        ) : (
           <div className="sm:mx-auto max-w-3xl font-semibold text-xl">
             <p className="select-none whitespace-pre-wrap text-stone-600 dark:text-stone-400">{chapter.text}</p>
           </div>

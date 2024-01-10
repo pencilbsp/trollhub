@@ -10,7 +10,7 @@ type Props = {
 
 export default function LoadingButton({ isLoading, loadingText, children, ...others }: Props) {
   return (
-    <Button {...others}>
+    <Button {...others} disabled={isLoading}>
       {isLoading && <SpinerIcon className="mr-1.5" />}
       {isLoading ? loadingText ?? children : children}
     </Button>
