@@ -28,6 +28,15 @@ export default async function ChapterPage({ params }: Props) {
   const chapter = await getChapter(chapterId)
   if (!chapter) return notFound()
 
+  if (chapter.mobileOnly && chapter.type === "comic")
+    return (
+      <div className="border border-dashed px-4 py-8 flex flex-col gap-4 items-center justify-center rounded-xl">
+        <p className="text-lg font-semibold text-center">
+          Nội dung không khả dụng ngay bây giờ, vui lòng quay lại sau. Xin cám ơn!
+        </p>
+      </div>
+    )
+
   return (
     <TooltipProvider>
       <div className="container px-4 xl:max-w-6xl">
