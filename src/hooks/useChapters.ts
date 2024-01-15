@@ -8,8 +8,8 @@ export type Chapter = Awaited<ReturnType<typeof getChapters>>
 type ChapterList = XOR<Chapter, IChapterList>
 
 const fetcher = async (id: string) => {
-  const chapterId = id.split("|")[0]
-  const result = await getChapters({ chapterId }, { orderBy: { createdAt: "desc" } })
+  const contentId = id.split("|")[0]
+  const result = await getChapters({ contentId }, { orderBy: { createdAt: "desc" } })
   return result.data
 }
 
