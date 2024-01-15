@@ -22,7 +22,7 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
       </Button>
       <Button asChild size="sm" className="truncate">
         {/* @ts-ignore */}
-        <Link href={row.original.app}>
+        <Link href={row.original.app} target="_blank">
           Xem trên app <PlayIcon className="w-4 h-4 ml-1" />
         </Link>
       </Button>
