@@ -69,7 +69,7 @@ export default function Header() {
             <nav className="gap-6 hidden md:flex">
               <NavLink href="/">Trang chủ</NavLink>
               <NavLink href="/developer">Nhà phát triển</NavLink>
-              <NavLink href="/help">Hướng dẫn</NavLink>
+              <NavLink href="/data">Dữ liệu</NavLink>
             </nav>
 
             <div className="flex gap-3 w-full sm:w-auto">

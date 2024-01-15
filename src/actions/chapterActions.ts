@@ -41,7 +41,6 @@ async function cloneText(chapterId: string, fid: string) {
 }
 
 export const chapterQuery = (options: any): any => ({
-  ...options,
   select: {
     id: true,
     type: true,
@@ -50,6 +49,7 @@ export const chapterQuery = (options: any): any => ({
     createdAt: true,
     mobileOnly: true,
   },
+  ...options,
 })
 
 export async function getChapter(id: string) {
@@ -86,17 +86,15 @@ export async function getChapter(id: string) {
   }
 }
 
-export async function getChapters(
-  contentId: string,
-  options: any = { take: 12, skip: 0, orderBy: { createdAt: "desc" } }
-) {
-  contentId = contentId.split("|")[0]
-  return prisma.chapter.findMany({
-    where: {
-      contentId,
-    },
+export async function getChapters(where: any, options: any = { take: 12, skip: 0, orderBy: { createdAt: "desc" } }) {
+  // console.log(options)
+  const data = await prisma.chapter.findMany({
+    where,
     ...chapterQuery(options),
   })
+
+  const total = await prisma.chapter.count({ where })
+  return { data, total }
 }
 
 export async function getChapterMetadata(id: string): Promise<Metadata | null> {

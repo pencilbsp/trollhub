@@ -114,3 +114,23 @@ export async function generateSitemap({
     lastModified: content.updatedAt,
   }))
 }
+
+export function chaptersMapTable(data: any) {
+  return data.map((i: any) => {
+    const contentSlug = slug(i.content.title)
+
+    return {
+      id: i.id,
+      title: i.title!,
+      contentId: i.content.id,
+      status: i.status.toString(),
+      contentTitle: i.content.title!,
+      mobileOnly: i.mobileOnly.toString(),
+      contentUrl: `/${i.type}/${contentSlug}-${i.content.id}`,
+      url: `/${i.type !== "movie" ? "chapter" : "episode"}/${contentSlug}-${slug(i.title)}-${i.id}`,
+      app: `fuhuapp://${
+        i.type === "movie" ? "movie-eps" : i.type === "comic" ? "comic-chapter" : "novel-chapter"
+      }/${contentSlug}_${i.fid}.html`,
+    }
+  })
+}
