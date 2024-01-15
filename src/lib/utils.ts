@@ -128,9 +128,9 @@ export function chaptersMapTable(data: any) {
       mobileOnly: i.mobileOnly.toString(),
       contentUrl: `/${i.type}/${contentSlug}-${i.content.id}`,
       url: `/${i.type !== "movie" ? "chapter" : "episode"}/${contentSlug}-${slug(i.title)}-${i.id}`,
-      app: `fuhuapp://${
+      app: `https://fuhu.page.link/?link=https://fuhux.com/${
         i.type === "movie" ? "movie-eps" : i.type === "comic" ? "comic-chapter" : "novel-chapter"
-      }/${contentSlug}_${i.fid}.html`,
+      }/${contentSlug}_${i.fid}.html&apn=net.zfunhub&ibi=net.mbf.FunHub&isi=1572604579`,
     }
   })
 }
