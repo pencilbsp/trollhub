@@ -53,9 +53,10 @@ export const chapterQuery = (options: any): any => ({
 })
 
 export async function getChapter(id: string) {
+  let data
   try {
     const where = id.length !== 24 ? { fid: id } : { id }
-    const data = await prisma.chapter.findFirst({
+    data = await prisma.chapter.findFirst({
       where,
       include: {
         content: {
@@ -81,7 +82,7 @@ export async function getChapter(id: string) {
 
     return data
   } catch (error) {
-    return null
+    return data
   }
 }
 
