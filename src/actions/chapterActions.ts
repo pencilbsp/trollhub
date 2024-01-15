@@ -71,10 +71,12 @@ export async function getChapter(id: string) {
 
     if (data.type === "comic" && data.status === "pending") {
       data.images = await cloneImages(data.id, data.fid!)
+      data.status = "ready"
     }
 
     if (data.type === "novel" && data.status === "pending") {
       data.text = await cloneText(data.id, data.fid!)
+      data.status = "ready"
     }
 
     return data
