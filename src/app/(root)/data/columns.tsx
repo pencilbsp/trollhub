@@ -6,6 +6,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/Badge"
 import { Checkbox } from "@/components/ui/checkbox"
 
+import { formatToNow } from "@/lib/utils"
 import { labels, priorities, statuses } from "@/components/data-table/data"
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
@@ -99,6 +100,16 @@ export const columns: ColumnDef<any>[] = [
           <span>{priority.label}</span>
         </div>
       )
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Thời gian" />,
+    cell: ({ row }) => {
+      return <time className="truncate">{formatToNow(row.original.createdAt)}</time>
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))

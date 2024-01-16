@@ -122,6 +122,7 @@ export function chaptersMapTable(data: any) {
     return {
       id: i.id,
       title: i.title!,
+      createdAt: i.createdAt,
       contentId: i.content.id,
       status: i.status.toString(),
       contentTitle: i.content.title!,

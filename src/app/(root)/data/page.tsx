@@ -15,6 +15,7 @@ export default async function DataPage() {
         type: true,
         status: true,
         mobileOnly: true,
+        createdAt: true,
         content: {
           select: {
             id: true,
@@ -22,6 +23,9 @@ export default async function DataPage() {
             type: true,
           },
         },
+      },
+      orderBy: {
+        createdAt: "desc",
       },
       skip: 0,
       take: 10,

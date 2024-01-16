@@ -16,6 +16,7 @@ export const chaptersFetcher = async ({ pageSize, pageIndex }: PaginationState) 
         type: true,
         status: true,
         mobileOnly: true,
+        createdAt: true,
         content: {
           select: {
             id: true,
@@ -23,6 +24,9 @@ export const chaptersFetcher = async ({ pageSize, pageIndex }: PaginationState) 
             type: true,
           },
         },
+      },
+      orderBy: {
+        createdAt: "desc",
       },
       take: pageSize,
       skip: pageSize * pageIndex,
