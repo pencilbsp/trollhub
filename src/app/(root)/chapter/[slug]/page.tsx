@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 
 import { getSlugId } from "@/lib/utils"
 
+import { USER_CONTENTS_HOST } from "@/config"
 import { getChapter, getChapterMetadata } from "@/actions/chapterActions"
 
 import Image from "@/components/Image"
@@ -23,6 +24,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return metadata
 }
 
+async function getImages(chapter: NonNullable<Awaited<ReturnType<typeof getChapter>>>) {
+  try {
+    const response = await fetch(`${USER_CONTENTS_HOST}/api/fttps:webp/${chapter.fid}`)
+    const data = await response.json()
+    if (data.images.length) {
+      return data.images.map((i: string) => `${USER_CONTENTS_HOST}/public/images/${chapter.fid}/${i}`)
+    }
+    return chapter.images
+  } catch (error) {
+    return chapter.images
+  }
+}
+
 export default async function ChapterPage({ params }: Props) {
   const chapterId = getSlugId(params.slug)
   const chapter = await getChapter(chapterId)
@@ -39,6 +53,8 @@ export default async function ChapterPage({ params }: Props) {
   //     </div>
   //   )
 
+  const images: string[] = await getImages(chapter)
+
   return (
     <TooltipProvider>
       <div className="container px-4 xl:max-w-6xl">
@@ -52,7 +68,7 @@ export default async function ChapterPage({ params }: Props) {
           />
         </div>
 
-        {chapter.status !== "ready" ? (
+        {!images.length ? (
           <div className="border border-dashed px-4 py-8 flex flex-col gap-4 items-center justify-center rounded-xl">
             <p className="text-lg font-semibold text-center">
               Nội dung không khả dụng ngay bây giờ, vui lòng quay lại sau. Xin cám ơn!
@@ -61,18 +77,9 @@ export default async function ChapterPage({ params }: Props) {
           </div>
         ) : chapter.type === "comic" ? (
           <div className="-mx-4 sm:mx-auto max-w-3xl border rounded-xl overflow-hidden">
-            {chapter.images.map((img, index) => {
-              const { pathname, search } = new URL(img)
-              return (
-                <Image
-                  alt=""
-                  effect="blur"
-                  tmpRatio="1/1"
-                  threshold={1200}
-                  key={chapter.id + index}
-                  src={`${pathname}${search}`}
-                />
-              )
+            {images.map((img, index) => {
+              // const { pathname, search } = new URL(img)
+              return <Image alt="" src={img} effect="blur" tmpRatio="1/1" threshold={1200} key={chapter.id + index} />
             })}
           </div>
         ) : (
