@@ -30,10 +30,14 @@ async function getImages(chapter: NonNullable<Awaited<ReturnType<typeof getChapt
     const data = await response.json()
     if (data.images.length) {
       return data.images.map((i: string) => `${USER_CONTENTS_HOST}/public/images/${chapter.fid}/${i}`)
+    } else {
+      throw new Error()
     }
-    return chapter.images
   } catch (error) {
-    return chapter.images
+    return (chapter?.images || []).map((img) => {
+      const { pathname, search } = new URL(img)
+      return `${pathname}${search}`
+    })
   }
 }
 
