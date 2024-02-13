@@ -26,6 +26,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 async function getImages(chapter: NonNullable<Awaited<ReturnType<typeof getChapter>>>) {
   try {
+    if (chapter.type === "novel") return [chapter.text]
+    
     const response = await fetch(`${USER_CONTENTS_HOST}/api/fttps:webp/${chapter.fid}`)
     const data = await response.json()
     if (data.images.length) {
@@ -76,7 +78,7 @@ export default async function ChapterPage({ params }: Props) {
           </div>
         ) : (
           <div className="sm:mx-auto max-w-3xl font-semibold text-xl">
-            <p className="select-none whitespace-pre-wrap text-stone-600 dark:text-stone-400">{chapter.text}</p>
+            <p className="select-none whitespace-pre-wrap text-stone-600 dark:text-stone-400">{images[0]}</p>
           </div>
         )}
       </div>
