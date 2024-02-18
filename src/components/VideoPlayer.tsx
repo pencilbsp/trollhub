@@ -3,7 +3,7 @@
 import "@vidstack/react/player/styles/default/theme.css"
 import "@vidstack/react/player/styles/default/layouts/video.css"
 
-import { ErrorData } from "hls.js"
+import { ErrorData, ErrorDetails, ErrorTypes } from "hls.js"
 // import { addListener, launch } from "devtools-detector"
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react"
 import { MediaPlayer, MediaPlayerInstance, MediaProvider, PlayerSrc } from "@vidstack/react"
@@ -56,7 +56,7 @@ export default function VideoPlayer({ src, thumbnails }: Props) {
   }
 
   const loadSources = useCallback(async () => {
-    if (src.streameId)
+    if (src.streameId) {
       try {
         const ts = Date.now().toString()
         const query = new URLSearchParams({ file_id: src.streameId!, ts })
@@ -73,8 +73,11 @@ export default function VideoPlayer({ src, thumbnails }: Props) {
         // @ts-ignore
         setSources({ ...src, src: data.data.m3u8 })
       } catch (error: any) {
-        setError({ ...error, details: error.message })
+        setError({ error, details: ErrorDetails.LEVEL_LOAD_ERROR, type: ErrorTypes.MEDIA_ERROR, fatal: false })
       }
+    } else {
+      setSources(src)
+    }
   }, [src])
 
   useEffect(() => {
@@ -95,9 +98,9 @@ export default function VideoPlayer({ src, thumbnails }: Props) {
     <MediaPlayer
       playsinline
       ref={player}
-      src={sources as any}
       keyTarget="player"
       aspectRatio="16/9"
+      src={sources as any}
       onHlsError={onHlsError}
       keyShortcuts={{
         toggleMuted: "m",
@@ -112,7 +115,7 @@ export default function VideoPlayer({ src, thumbnails }: Props) {
       }}
     >
       <MediaProvider />
-      <DefaultVideoLayout thumbnails={thumbnails} icons={defaultLayoutIcons} />
+      <DefaultVideoLayout thumbnails={thumbnails} icons={defaultLayoutIcons} noScrubGesture />
     </MediaPlayer>
   )
 }

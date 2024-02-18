@@ -3,7 +3,7 @@ import { ContentType, ChapterStatus } from "@prisma/client"
 
 import prisma from "@/lib/prisma"
 import getRedisClient from "@/lib/redis"
-import { EPISODE_EX_TIME } from "@/config"
+import { EPISODE_EX_TIME as EX_TIME } from "@/config"
 
 const get = (id: string) =>
   prisma.chapter.findUnique({
@@ -44,20 +44,16 @@ export async function getEpisode(id: string): Promise<EpisodeType> {
   try {
     const redisClient = await getRedisClient()
     const cachedEpisode = await redisClient.get(id)
-    if (cachedEpisode) {
-      const episode = JSON.parse(cachedEpisode)
-      return episode
-    }
+    if (cachedEpisode) return JSON.parse(cachedEpisode)
 
     const episode = await get(id)
     if (!episode) throw new Error("notFound")
 
-    const EX = episode.status === ChapterStatus.ready ? EPISODE_EX_TIME : 5 * 60
+    const EX = episode.status === "ready" ? EX_TIME : 60
     await redisClient.set(id, JSON.stringify(episode), { EX })
 
     return episode
   } catch (error: any) {
-    console.log(error)
     return null
   }
 }

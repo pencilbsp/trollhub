@@ -24,19 +24,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return metadata
 }
 
-async function getImages(chapter: NonNullable<Awaited<ReturnType<typeof getChapter>>>) {
+async function getImages(chapter: NonNullable<Awaited<ReturnType<typeof getChapter>>>): Promise<string[]> {
   try {
-    if (chapter.type === "novel") return [chapter.text]
-    
+    if (chapter.type === "novel") return chapter.text ? [chapter.text] : []
+
     const response = await fetch(`${USER_CONTENTS_HOST}/api/fttps:webp/${chapter.fid}`)
     const data = await response.json()
-    if (data.images.length) {
-      return data.images.map((i: string) => `${USER_CONTENTS_HOST}/images/${chapter.fid}/${i}`)
-    } else {
-      throw new Error()
-    }
+
+    if (!data.images || data.images.length === 0) throw new Error()
+    return data.images.map((i: string) => `${USER_CONTENTS_HOST}/images/${chapter.fid}/${i}`)
   } catch (error) {
-    return (chapter?.images || []).map((img) => {
+    if (!chapter.images) return []
+
+    return chapter.images.map((img) => {
       const { pathname, search } = new URL(img)
       return `${pathname}${search}`
     })
@@ -48,7 +48,7 @@ export default async function ChapterPage({ params }: Props) {
   const chapter = await getChapter(chapterId)
   if (!chapter) return notFound()
 
-  const images: string[] = await getImages(chapter)
+  const images = await getImages(chapter)
 
   return (
     <TooltipProvider>
