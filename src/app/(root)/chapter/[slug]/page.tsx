@@ -32,12 +32,9 @@ async function getImages(chapter: NonNullable<Awaited<ReturnType<typeof getChapt
     const response = await fetch(url, { cache: "no-cache" })
     const data = await response.json()
 
-    console.log(chapter.fid, data)
-
     if (!data.images || data.images.length === 0) throw new Error()
     return data.images.map((i: string) => `${USER_CONTENTS_HOST}/images/${chapter.fid}/${i}`)
   } catch (error) {
-    console.log(error)
     if (!chapter.images) return []
 
     return chapter.images.map((img) => {
