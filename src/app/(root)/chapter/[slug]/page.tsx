@@ -34,6 +34,7 @@ async function getImages(chapter: NonNullable<Awaited<ReturnType<typeof getChapt
     if (!data.images || data.images.length === 0) throw new Error()
     return data.images.map((i: string) => `${USER_CONTENTS_HOST}/images/${chapter.fid}/${i}`)
   } catch (error) {
+    console.log(error)
     if (!chapter.images) return []
 
     return chapter.images.map((img) => {
