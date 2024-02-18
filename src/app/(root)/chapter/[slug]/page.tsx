@@ -28,7 +28,8 @@ async function getImages(chapter: NonNullable<Awaited<ReturnType<typeof getChapt
   try {
     if (chapter.type === "novel") return chapter.text ? [chapter.text] : []
 
-    const response = await fetch(`${USER_CONTENTS_HOST}/api/fttps:webp/${chapter.fid}`)
+    const url = `${USER_CONTENTS_HOST}/api/fttps:webp/${chapter.fid}`
+    const response = await fetch(url, { cache: "no-cache" })
     const data = await response.json()
 
     console.log(chapter.fid, data)
