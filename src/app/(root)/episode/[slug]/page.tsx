@@ -38,6 +38,23 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
   }
 }
 
+async function getM3U8Available(episode: NonNullable<Awaited<ReturnType<typeof getEpisode>>>) {
+  try {
+    if (!episode.fid) throw new Error()
+
+    const api = `${USER_CONTENTS_HOST}/api/get-m3u8-available?fid=${episode.fid}`
+    const response = await fetch(api, { cache: "no-cache" })
+    const data = await response.json()
+
+    if (data.m3u8) return USER_CONTENTS_HOST + data.m3u8
+    if (episode.status !== "ready") throw new Error()
+
+    return `${USER_CONTENTS_HOST}/hls/manifest/${episode.id}.m3u8`
+  } catch (error) {
+    return null
+  }
+}
+
 export default async function EpisodePage({ params }: PageParams) {
   const episodeId = getSlugId(params.slug)
   const episode = await getEpisode(episodeId)
@@ -47,7 +64,7 @@ export default async function EpisodePage({ params }: PageParams) {
   const src: CustomSrc = {
     streameId: episode.videoId,
     type: "application/x-mpegurl",
-    src: `${USER_CONTENTS_HOST}/hls/manifest/${episode.id}.m3u8`,
+    src: await getM3U8Available(episode),
   }
 
   return (
@@ -78,7 +95,7 @@ export default async function EpisodePage({ params }: PageParams) {
             </Badge>
           </h1>
 
-          {episode.status === ChapterStatus.ready ? (
+          {src.src ? (
             <div className="-mx-4 sm:mx-0 sm:w-full overflow-hidden">
               <VideoPlayer src={src} />
             </div>

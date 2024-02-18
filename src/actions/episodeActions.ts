@@ -13,6 +13,7 @@ const get = (id: string) =>
     },
     select: {
       id: true,
+      fid: true,
       title: true,
       status: true,
       videoId: true,
