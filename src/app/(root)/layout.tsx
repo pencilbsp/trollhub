@@ -9,7 +9,7 @@ import Header from "@/components/Header"
 import SettingsProvider from "@/contexts/SettingsContext"
 import SettingsDialog from "@/components/SettingsDialog"
 import { ThemeProvider } from "@/components/ThemeProvider"
-import { GA_MEASUREMENT_ID, METADATA_BASE } from "@/config"
+import { GA_MEASUREMENT_ID, METADATA_BASE, GOOGLE_ADSENSE_ID } from "@/config"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { NextAuthProvider } from "@/components/sections/AuthProvider"
 
@@ -39,6 +39,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         `}
           </Script>
         </>
+      )}
+
+      {GOOGLE_ADSENSE_ID && (
+        <Script
+          async
+          crossOrigin="anonymous"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GOOGLE_ADSENSE_ID}`}
+        />
       )}
 
       <body className={inter.className}>

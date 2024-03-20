@@ -14,6 +14,7 @@ export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!
 export const FACEBOOK_CLIENT_ID = process.env.FACEBOOK_CLIENT_ID!
 export const FACEBOOK_CLIENT_SECRET = process.env.FACEBOOK_CLIENT_SECRET!
 
+export const GOOGLE_ADSENSE_ID = process.env.GOOGLE_ADSENSE_ID
 export const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID
 
 export const REDIS_URL = process.env.REDIS_URL
