@@ -15,6 +15,14 @@ import { NextAuthProvider } from "@/components/sections/AuthProvider"
 
 const inter = Inter({ subsets: ["latin"] })
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elemName: string]: any
+    }
+  }
+}
+
 export const metadata: Metadata = {
   metadataBase: new URL(METADATA_BASE),
   title: "Troll with Fuhu",
@@ -41,6 +49,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </>
       )}
 
+      <Script
+        async
+        strategy="lazyOnload"
+        crossOrigin="anonymous"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"
+      />
+
       {GOOGLE_ADSENSE_ID && (
         <Script
           async
@@ -51,6 +66,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       )}
 
       <body className={inter.className}>
+        {GOOGLE_ADSENSE_ID && <amp-auto-ads type="adsense" data-ad-client={GOOGLE_ADSENSE_ID}></amp-auto-ads>}
+
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <NextAuthProvider session={session}>
             <SettingsProvider>
