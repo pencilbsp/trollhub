@@ -1,3 +1,4 @@
+import Head from "next/head"
 import Script from "next/script"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
@@ -34,6 +35,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="vi" suppressHydrationWarning>
+      <Head>
+        <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+        {GOOGLE_ADSENSE_ID && (
+          <script
+            async
+            crossOrigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GOOGLE_ADSENSE_ID}`}
+          ></script>
+        )}
+      </Head>
+
       {GA_MEASUREMENT_ID && (
         <>
           <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
@@ -47,22 +59,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         `}
           </Script>
         </>
-      )}
-
-      <Script
-        async
-        strategy="lazyOnload"
-        crossOrigin="anonymous"
-        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"
-      />
-
-      {GOOGLE_ADSENSE_ID && (
-        <Script
-          async
-          strategy="lazyOnload"
-          crossOrigin="anonymous"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GOOGLE_ADSENSE_ID}`}
-        />
       )}
 
       <body className={inter.className}>
