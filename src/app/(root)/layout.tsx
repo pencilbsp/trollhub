@@ -44,6 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       {GOOGLE_ADSENSE_ID && (
         <Script
           async
+          strategy="lazyOnload"
           crossOrigin="anonymous"
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GOOGLE_ADSENSE_ID}`}
         />
