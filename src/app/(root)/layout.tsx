@@ -35,16 +35,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="vi" suppressHydrationWarning>
-      <Head>
-        <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+      <head>
+        <Script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js" />
         {GOOGLE_ADSENSE_ID && (
-          <script
+          <Script
             async
             crossOrigin="anonymous"
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GOOGLE_ADSENSE_ID}`}
-          ></script>
+          />
         )}
-      </Head>
+      </head>
 
       {GA_MEASUREMENT_ID && (
         <>
