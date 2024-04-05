@@ -1,4 +1,3 @@
-import Head from "next/head"
 import Script from "next/script"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
@@ -7,6 +6,7 @@ import { getServerSession } from "next-auth/next"
 import "@/globals.css"
 
 import Header from "@/components/Header"
+import AdSense from "@/components/google/AdSense"
 import SettingsProvider from "@/contexts/SettingsContext"
 import SettingsDialog from "@/components/SettingsDialog"
 import { ThemeProvider } from "@/components/ThemeProvider"
@@ -36,14 +36,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="vi" suppressHydrationWarning>
       <head>
-        <Script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js" />
-        {GOOGLE_ADSENSE_ID && (
-          <Script
-            async
-            crossOrigin="anonymous"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${GOOGLE_ADSENSE_ID}`}
-          />
-        )}
+        <Script
+          async
+          strategy="afterInteractive"
+          custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"
+        />
+        {GOOGLE_ADSENSE_ID && <AdSense pId={GOOGLE_ADSENSE_ID} />}
       </head>
 
       {GA_MEASUREMENT_ID && (
