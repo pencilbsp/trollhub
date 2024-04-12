@@ -21,6 +21,7 @@ const useDebounce = (callback: DebouncedCallback, delay: number) => {
       clearTimeout(timeoutRef.current);
     }
 
+    // @ts-ignore
     timeoutRef.current = setTimeout(() => {
       callback(...args);
     }, delay);
