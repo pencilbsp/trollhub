@@ -8,20 +8,18 @@ import "@/globals.css";
 
 import Header from "@/components/Header";
 import AdSense from "@/components/google/AdSense";
-import AdBanner from "@/components/google/AdBanner";
 import SettingsProvider from "@/contexts/SettingsContext";
 import SettingsDialog from "@/components/SettingsDialog";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import {
-  GA_MEASUREMENT_ID,
   METADATA_BASE,
+  FLYICON_ADS_ID,
   GOOGLE_ADSENSE_ID,
-  ADS_ID,
 } from "@/config";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextAuthProvider } from "@/components/sections/AuthProvider";
 
-const Ads = dynamic(() => import("@/components/Ads"));
+const FlyiconAds = dynamic(() => import("@/components/ads/FlyiconAds"));
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -58,7 +56,7 @@ export default async function RootLayout({
         {GOOGLE_ADSENSE_ID && <AdSense pId={GOOGLE_ADSENSE_ID} />}
       </head>
 
-      {GA_MEASUREMENT_ID && (
+      {/* {GA_MEASUREMENT_ID && (
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
@@ -73,17 +71,17 @@ export default async function RootLayout({
         `}
           </Script>
         </>
-      )}
+      )} */}
 
       <body className={inter.className}>
-        {ADS_ID && <Ads />}
+        {FLYICON_ADS_ID && <FlyiconAds id={FLYICON_ADS_ID} />}
 
-        {GOOGLE_ADSENSE_ID && (
+        {/* {GOOGLE_ADSENSE_ID && (
           <amp-auto-ads
             type="adsense"
             data-ad-client={GOOGLE_ADSENSE_ID}
           ></amp-auto-ads>
-        )}
+        )} */}
 
         <ThemeProvider
           attribute="class"
@@ -97,14 +95,14 @@ export default async function RootLayout({
               <div className="relative flex flex-col">
                 <Header />
 
-                {GOOGLE_ADSENSE_ID && (
+                {/* {GOOGLE_ADSENSE_ID && (
                   <AdBanner
                     dataAdFormat="auto"
                     gaId={GOOGLE_ADSENSE_ID}
                     dataAdSlot="4086433053"
                     dataFullwidthResponsive
                   />
-                )}
+                )} */}
 
                 {children}
               </div>

@@ -1,12 +1,10 @@
 "use client";
 
-import { ADS_ID } from "@/config";
-
-export default function Ads() {
+export default function FlyiconAd({ id }: { id: string }) {
   return (
     <div
       suppressHydrationWarning
-      id={ADS_ID}
+      id={`atn-${id}`}
       style={{
         position: "fixed",
         right: "20px",
@@ -14,7 +12,7 @@ export default function Ads() {
         zIndex: 9999,
       }}
       dangerouslySetInnerHTML={{
-        __html: `<script async src="https://ajsc.yodimedia.com/code/d/6/d67d8ab4f4c10bf22aa353e27879133c.js" crossorigin="anonymous"></script>`,
+        __html: `<script async src="https://ajsc.yodimedia.com/code/d/6/${id}.js" crossorigin="anonymous"></script>`,
       }}
     />
   );
