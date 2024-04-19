@@ -14,6 +14,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import {
   METADATA_BASE,
   FLYICON_ADS_ID,
+  GA_MEASUREMENT_ID,
   GOOGLE_ADSENSE_ID,
 } from "@/config";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -46,7 +47,7 @@ export default async function RootLayout({
 
   return (
     <html lang="vi" suppressHydrationWarning>
-      <head>
+      {/* <head>
         <Script
           async
           strategy="afterInteractive"
@@ -54,9 +55,9 @@ export default async function RootLayout({
           src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"
         />
         {GOOGLE_ADSENSE_ID && <AdSense pId={GOOGLE_ADSENSE_ID} />}
-      </head>
+      </head> */}
 
-      {/* {GA_MEASUREMENT_ID && (
+      {GA_MEASUREMENT_ID && (
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
@@ -71,7 +72,7 @@ export default async function RootLayout({
         `}
           </Script>
         </>
-      )} */}
+      )}
 
       <body className={inter.className}>
         {FLYICON_ADS_ID && <FlyiconAds id={FLYICON_ADS_ID} />}
