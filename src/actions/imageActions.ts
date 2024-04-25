@@ -42,10 +42,7 @@ async function cloneImages(chapterId: string, fid: string) {
       },
     });
 
-    return images.map((img) => {
-      const { pathname, search } = new URL(img);
-      return `${pathname}${search}`;
-    });
+    return images;
   }
 
   return data.images.map(
@@ -73,7 +70,10 @@ export async function getImages(
       }
     }
 
-    return chapter.images;
+    return chapter.images.map((img) => {
+      const { pathname, search } = new URL(img);
+      return `${pathname}${search}`;
+    });
   } catch (error) {
     if (!chapter.images) return [];
 
