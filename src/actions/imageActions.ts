@@ -68,7 +68,7 @@ export async function getImages(
 
     return chapter.images.map((img) => {
       const { pathname, search } = new URL(img);
-      return `${USER_CONTENTS_HOST}/proxy/${chapter.fid}/${pathname}${search}`;
+      return `${USER_CONTENTS_HOST}/proxy/${chapter.fid}${pathname}${search}`;
     });
   }
 }
