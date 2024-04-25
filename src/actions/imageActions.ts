@@ -25,18 +25,28 @@ async function cloneText(chapterId: string, fid: string) {
 }
 
 async function cloneImages(chapterId: string, fid: string) {
-  const images = await comicParser(createEmbedUrl(fid, COMIC_VERSION));
-  await prisma.chapter.update({
-    where: {
-      id: chapterId,
-    },
-    data: {
-      images,
-      status: "ready",
-    },
-  });
+  const url = `${USER_CONTENTS_HOST}/api/fttps:webp/${chapterId}`;
+  const response = await fetch(url, { cache: "no-cache" });
+  const data = await response.json();
 
-  return images;
+  if (!data.images || data.images.length === 0) {
+    const images = await comicParser(createEmbedUrl(fid, COMIC_VERSION));
+    await prisma.chapter.update({
+      where: {
+        id: chapterId,
+      },
+      data: {
+        images,
+        status: "ready",
+      },
+    });
+
+    return images;
+  }
+
+  return data.images.map(
+    (i: string) => `${USER_CONTENTS_HOST}/images/${chapterId}/${i}`
+  );
 }
 
 export async function getImages(
@@ -55,14 +65,7 @@ export async function getImages(
       return chapter.text ? [chapter.text] : [];
     }
 
-    const url = `${USER_CONTENTS_HOST}/api/fttps:webp/${chapter.fid}`;
-    const response = await fetch(url, { cache: "no-cache" });
-    const data = await response.json();
-
-    if (!data.images || data.images.length === 0) throw new Error();
-    return data.images.map(
-      (i: string) => `${USER_CONTENTS_HOST}/images/${chapter.fid}/${i}`
-    );
+    return chapter.images;
   } catch (error) {
     if (!chapter.images) return [];
 
