@@ -1,55 +1,32 @@
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { Suspense } from "react";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-import { getSlugId } from "@/lib/utils"
+import { getSlugId } from "@/lib/utils";
 
-import { USER_CONTENTS_HOST } from "@/config"
-import { getChapter, getChapterMetadata } from "@/actions/chapterActions"
+import { getChapter, getChapterMetadata } from "@/actions/chapterActions";
 
-import Image from "@/components/Image"
-import ReloadButton from "./ReloadButton"
-import ChapterNav from "@/components/ChapterNav"
-import NextChapter from "@/components/NextChapter"
-import { TooltipProvider } from "@/components/ui/Tooltip"
+import ChapterNav from "@/components/ChapterNav";
+import NextChapter from "@/components/NextChapter";
+import { TooltipProvider } from "@/components/ui/Tooltip";
+import { ComicViewer, ComicViewerLoading } from "@/components/comic-viewer";
 
 interface Props {
-  params: { slug: string }
+  params: { slug: string };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const chapterId = getSlugId(params.slug)
-  const metadata = await getChapterMetadata(chapterId)
-  if (!metadata) return notFound()
+  const chapterId = getSlugId(params.slug);
+  const metadata = await getChapterMetadata(chapterId);
+  if (!metadata) return notFound();
 
-  return metadata
-}
-
-async function getImages(chapter: NonNullable<Awaited<ReturnType<typeof getChapter>>>): Promise<string[]> {
-  try {
-    if (chapter.type === "novel") return chapter.text ? [chapter.text] : []
-
-    const url = `${USER_CONTENTS_HOST}/api/fttps:webp/${chapter.fid}`
-    const response = await fetch(url, { cache: "no-cache" })
-    const data = await response.json()
-
-    if (!data.images || data.images.length === 0) throw new Error()
-    return data.images.map((i: string) => `${USER_CONTENTS_HOST}/images/${chapter.fid}/${i}`)
-  } catch (error) {
-    if (!chapter.images) return []
-
-    return chapter.images.map((img) => {
-      const { pathname, search } = new URL(img)
-      return `${pathname}${search}`
-    })
-  }
+  return metadata;
 }
 
 export default async function ChapterPage({ params }: Props) {
-  const chapterId = getSlugId(params.slug)
-  const chapter = await getChapter(chapterId)
-  if (!chapter) return notFound()
-
-  const images = await getImages(chapter)
+  const chapterId = getSlugId(params.slug);
+  const chapter = await getChapter(chapterId);
+  if (!chapter) return notFound();
 
   return (
     <TooltipProvider>
@@ -64,27 +41,17 @@ export default async function ChapterPage({ params }: Props) {
           />
         </div>
 
-        {images.length === 0 ? (
-          <div className="border border-dashed px-4 py-8 flex flex-col gap-4 items-center justify-center rounded-xl">
-            <p className="text-lg font-semibold text-center">
-              Nội dung không khả dụng ngay bây giờ, vui lòng quay lại sau. Xin cám ơn!
-            </p>
-            <ReloadButton id={chapter.id} status={chapter.status} />
-          </div>
-        ) : chapter.type === "comic" ? (
-          <div className="-mx-4 sm:mx-auto max-w-3xl border rounded-xl overflow-hidden">
-            {images.map((img, index) => {
-              return <Image alt="" src={img} effect="blur" tmpRatio="1/1" threshold={2400} key={chapter.id + index} />
-            })}
-          </div>
-        ) : (
-          <div className="sm:mx-auto max-w-3xl font-semibold text-xl">
-            <p className="select-none whitespace-pre-wrap text-stone-600 dark:text-stone-400">{images[0]}</p>
-          </div>
-        )}
+        <Suspense fallback={<ComicViewerLoading />}>
+          <ComicViewer chapter={chapter} />
+        </Suspense>
+        {/* <ComicViewerLoading /> */}
       </div>
 
-      <NextChapter title={chapter.title} chapterId={chapter.id} contentId={chapter.content.id} />
+      <NextChapter
+        title={chapter.title}
+        chapterId={chapter.id}
+        contentId={chapter.content.id}
+      />
     </TooltipProvider>
-  )
+  );
 }
