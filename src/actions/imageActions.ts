@@ -25,34 +25,6 @@ async function cloneText(chapterId: string, fid: string) {
   return text;
 }
 
-async function cloneImages(chapterId: string, fid: string) {
-  const url = `${USER_CONTENTS_HOST}/api/fttps:webp/${fid}`;
-  const response = await fetch(url, { cache: "no-cache" });
-  const data = await response.json();
-
-  if (!data.images || data.images.length === 0) {
-    const images = await comicParser(createEmbedUrl(fid, COMIC_VERSION));
-    await prisma.chapter.update({
-      where: {
-        id: chapterId,
-      },
-      data: {
-        images,
-        status: "ready",
-      },
-    });
-
-    return images.map((img) => {
-      const { pathname, search } = new URL(img);
-      return `${pathname}${search}`;
-    });
-  }
-
-  return data.images.map(
-    (i: string) => `${USER_CONTENTS_HOST}/images/${fid}/${i}`
-  );
-}
-
 export async function getImages(
   chapter: NonNullable<Awaited<ReturnType<typeof getChapter>>>
 ): Promise<string[]> {
@@ -66,15 +38,31 @@ export async function getImages(
       return chapter.text ? [chapter.text] : [];
     }
 
-    if (chapter.type === "comic") {
-      if (chapter.status === "pending") {
-        chapter.images = await cloneImages(chapter.id, chapter.fid!);
-      }
+    const url = `${USER_CONTENTS_HOST}/api/fttps:webp/${chapter.fid}`;
+    const response = await fetch(url, { cache: "no-cache" });
+    const data = await response.json();
 
-      if (chapter.status === "ready") throw new Error();
+    if (!data.images || data.images.length === 0) {
+      chapter.images = await comicParser(
+        createEmbedUrl(chapter.fid!, COMIC_VERSION)
+      );
+
+      await prisma.chapter.update({
+        where: {
+          id: chapter.id,
+        },
+        data: {
+          status: "ready",
+          images: chapter.images,
+        },
+      });
+    } else {
+      return data.images.map(
+        (i: string) => `${USER_CONTENTS_HOST}/images/${chapter.fid}/${i}`
+      );
     }
 
-    return chapter.images;
+    throw new Error();
   } catch (error) {
     if (!chapter.images) return [];
 
