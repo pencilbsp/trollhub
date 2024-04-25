@@ -25,7 +25,7 @@ async function cloneText(chapterId: string, fid: string) {
 }
 
 async function cloneImages(chapterId: string, fid: string) {
-  const url = `${USER_CONTENTS_HOST}/api/fttps:webp/${chapterId}`;
+  const url = `${USER_CONTENTS_HOST}/api/fttps:webp/${fid}`;
   const response = await fetch(url, { cache: "no-cache" });
   const data = await response.json();
 
