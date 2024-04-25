@@ -53,16 +53,20 @@ export async function getImages(
   chapter: NonNullable<Awaited<ReturnType<typeof getChapter>>>
 ): Promise<string[]> {
   try {
-    if (chapter.type === "comic" && chapter.status === "pending") {
-      chapter.images = await cloneImages(chapter.id, chapter.fid!);
-      chapter.status = "ready";
-    }
-
-    if (chapter.type === "novel" && chapter.status === "pending") {
-      chapter.text = await cloneText(chapter.id, chapter.fid!);
-      chapter.status = "ready";
+    if (chapter.type === "novel") {
+      if (chapter.status === "pending") {
+        chapter.text = await cloneText(chapter.id, chapter.fid!);
+        chapter.status = "ready";
+      }
 
       return chapter.text ? [chapter.text] : [];
+    }
+
+    if (chapter.type === "comic") {
+      if (chapter.status === "pending") {
+        chapter.images = await cloneImages(chapter.id, chapter.fid!);
+        chapter.status = "ready";
+      }
     }
 
     return chapter.images;
