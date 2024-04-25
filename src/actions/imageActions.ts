@@ -67,6 +67,8 @@ export async function getImages(
     }
 
     if (chapter.type === "comic") {
+      if (chapter.status === "ready") throw new Error();
+
       if (chapter.status === "pending") {
         chapter.images = await cloneImages(chapter.id, chapter.fid!);
         chapter.status = "ready";
