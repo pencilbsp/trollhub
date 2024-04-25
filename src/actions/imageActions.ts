@@ -45,7 +45,7 @@ async function cloneImages(chapterId: string, fid: string) {
   }
 
   return data.images.map(
-    (i: string) => `${USER_CONTENTS_HOST}/images/${chapterId}/${i}`
+    (i: string) => `${USER_CONTENTS_HOST}/images/${fid}/${i}`
   );
 }
 
