@@ -1,5 +1,6 @@
 "use server";
 
+import prisma from "@/lib/prisma";
 import { USER_CONTENTS_HOST } from "@/config";
 import { getChapter } from "./chapterActions";
 import {
