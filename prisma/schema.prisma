@@ -98,7 +98,7 @@ enum ChapterStatus {
 
 model Chapter {
   id              String           @id @default(auto()) @map("_id") @db.ObjectId
-  fid             String?
+  fid             String           @unique
   title           String?
   images          String[]
   text            String?
@@ -132,7 +132,7 @@ enum ContentStatus {
 
 model Content {
   id              String            @id @default(auto()) @map("_id") @db.ObjectId
-  fid             String?
+  fid             String            @unique
   title           String
   akaTitle        String[]
   type            ContentType

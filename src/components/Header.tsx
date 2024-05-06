@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import * as React from "react"
+import Link from "next/link";
+import * as React from "react";
 
-import Headroom from "react-headroom"
-import { ViewVerticalIcon } from "@radix-ui/react-icons"
-import { HomeIcon, HammerIcon, LifeBuoyIcon } from "lucide-react"
+import Headroom from "react-headroom";
+import { ViewVerticalIcon } from "@radix-ui/react-icons";
+import { HomeIcon, HammerIcon, LifeBuoyIcon } from "lucide-react";
 
-import NavLink from "./NavLink"
-import { ToggleTheme } from "./ToggleTheme"
+import NavLink from "./NavLink";
+import { ToggleTheme } from "./ToggleTheme";
 
-import { User } from "next-auth"
-import { usePathname } from "next/navigation"
+import { User } from "next-auth";
+import { usePathname } from "next/navigation";
 
-import { UserNav } from "./UserNav"
-import SearchModel from "./SearchModel"
-import RequestDialog from "./RequestDialog"
-import { useSession } from "next-auth/react"
-import { Button } from "@/components/ui/Button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet"
+import { UserNav } from "./UserNav";
+import SearchModel from "./SearchModel";
+import RequestDialog from "./RequestDialog";
+import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/Button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/Sheet";
 
 export default function Header() {
-  const [isOpen, setOpen] = React.useState(false)
-  const session = useSession()
-  const pathname = usePathname()
+  const [isOpen, setOpen] = React.useState(false);
+  const session = useSession();
+  const pathname = usePathname();
 
   return (
     <Headroom
@@ -41,16 +41,31 @@ export default function Header() {
                   <ViewVerticalIcon className="h-5 w-5" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="flex flex-col justify-between">
+              <SheetContent
+                side="left"
+                className="flex flex-col justify-between"
+              >
                 <nav className="flex flex-col gap-3 mt-6 text-lg">
-                  <NavLink onClick={() => setOpen(false)} Icon={HomeIcon} href="/">
+                  <NavLink
+                    onClick={() => setOpen(false)}
+                    Icon={HomeIcon}
+                    href="/"
+                  >
                     Trang chủ
                   </NavLink>
-                  <NavLink onClick={() => setOpen(false)} Icon={LifeBuoyIcon} href="/help">
-                    Hướng dẫn
+                  <NavLink
+                    onClick={() => setOpen(false)}
+                    Icon={LifeBuoyIcon}
+                    href="/requested"
+                  >
+                    Nội dung đã yêu cầu
                   </NavLink>
-                  <NavLink onClick={() => setOpen(false)} Icon={HammerIcon} href="/developer">
-                    Nhà phát triển
+                  <NavLink
+                    onClick={() => setOpen(false)}
+                    Icon={HammerIcon}
+                    href="/data"
+                  >
+                    Dữ liệu
                   </NavLink>
                 </nav>
                 <div className="flex w-full gap-x-3 justify-end">
@@ -68,7 +83,7 @@ export default function Header() {
 
             <nav className="gap-6 hidden md:flex">
               <NavLink href="/">Trang chủ</NavLink>
-              <NavLink href="/developer">Nhà phát triển</NavLink>
+              <NavLink href="/requested">Nội dung đã yêu cầu</NavLink>
               <NavLink href="/data">Dữ liệu</NavLink>
             </nav>
 
@@ -83,7 +98,9 @@ export default function Header() {
                 <UserNav user={session.data.user as User} />
               ) : (
                 <Button className="hidden lg:block" asChild>
-                  <Link href={"/login?next=" + encodeURIComponent(pathname)}>Đăng nhập</Link>
+                  <Link href={"/login?next=" + encodeURIComponent(pathname)}>
+                    Đăng nhập
+                  </Link>
                 </Button>
               )}
             </div>
@@ -91,5 +108,5 @@ export default function Header() {
         </div>
       </header>
     </Headroom>
-  )
+  );
 }

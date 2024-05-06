@@ -1,5 +1,5 @@
-import { toast } from "sonner"
-import { FormEvent, useTransition } from "react"
+import { toast } from "sonner";
+import { FormEvent, useTransition } from "react";
 
 import {
   Dialog,
@@ -8,35 +8,38 @@ import {
   DialogContent,
   DialogTrigger,
   DialogDescription,
-} from "@/components/ui/Dialog"
-import LoadingButton from "./LoadingButton"
-import { Input } from "@/components/ui/input"
-import { USER_CONTENTS_HOST } from "@/config"
-import { Button } from "@/components/ui/Button"
+} from "@/components/ui/Dialog";
+import LoadingButton from "./LoadingButton";
+import { Input } from "@/components/ui/input";
+import { USER_CONTENTS_HOST } from "@/config";
+import { Button } from "@/components/ui/Button";
 
 export default function RequestDialog() {
-  const [pending, startTransition] = useTransition()
+  const [pending, startTransition] = useTransition();
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) =>
     startTransition(async () => {
       try {
-        event.preventDefault()
-        const formData = new FormData(event.target as HTMLFormElement)
-        const url = formData.get("url") as string
+        event.preventDefault();
+        const formData = new FormData(event.target as HTMLFormElement);
+        const url = formData.get("url") as string;
         if (url) {
-          const response = await fetch(USER_CONTENTS_HOST + "/api/request-content", {
-            method: "POST",
-            body: JSON.stringify({ url }),
-            headers: { "Content-Type": "application/json" },
-          })
+          const response = await fetch(
+            USER_CONTENTS_HOST + "/api/request-content",
+            {
+              method: "POST",
+              body: JSON.stringify({ url }),
+              headers: { "Content-Type": "application/json" },
+            }
+          );
 
-          const result = await response.json()
-          toast.success(result.message)
+          const result = await response.json();
+          toast.success(result.message);
         }
       } catch (error: any) {
-        toast.error(error.message)
+        toast.error(error.message);
       }
-    })
+    });
 
   return (
     <Dialog>
@@ -49,14 +52,23 @@ export default function RequestDialog() {
         <DialogHeader>
           <DialogTitle>Yêu cầu thêm hoặc cập nhật nội dung</DialogTitle>
           <DialogDescription>
-            Điền link phim, truyện, hoặc kênh mà bạn muốn chúng tôi thêm hoặc cập nhật!
+            Điền link phim, truyện, hoặc kênh mà bạn muốn chúng tôi thêm hoặc
+            cập nhật!
             <br />
-            Quá trình yêu cầu có thể mất nhiều thời gian nếu kênh chứa nhiều nội dung, hãy kiên nhẫn chờ đợi!
+            Quá trình yêu cầu có thể mất nhiều thời gian nếu kênh chứa nhiều nội
+            dung, hãy kiên nhẫn chờ đợi!
           </DialogDescription>
         </DialogHeader>
 
-        <form className="flex w-full items-center space-x-2" onSubmit={onSubmit}>
-          <Input name="url" placeholder="Link Fuhu video, comic, novel hoặc chanel" />
+        <form
+          className="flex w-full items-center space-x-2"
+          onSubmit={onSubmit}
+        >
+          <Input
+            name="url"
+            placeholder="Link Fuhu video, comic, novel hoặc chanel"
+            disabled={pending}
+          />
           <LoadingButton
             type="submit"
             disabled={pending}
@@ -69,5 +81,5 @@ export default function RequestDialog() {
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

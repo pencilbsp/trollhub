@@ -7,18 +7,12 @@ import { getServerSession } from "next-auth/next";
 import "@/globals.css";
 
 import Header from "@/components/Header";
-import AdSense from "@/components/google/AdSense";
 import SettingsProvider from "@/contexts/SettingsContext";
 import SettingsDialog from "@/components/SettingsDialog";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import {
-  METADATA_BASE,
-  FLYICON_ADS_ID,
-  GA_MEASUREMENT_ID,
-  GOOGLE_ADSENSE_ID,
-} from "@/config";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextAuthProvider } from "@/components/sections/AuthProvider";
+import { METADATA_BASE, FLYICON_ADS_ID, GA_MEASUREMENT_ID } from "@/config";
 
 const FlyiconAds = dynamic(() => import("@/components/ads/FlyiconAds"));
 
@@ -74,7 +68,7 @@ export default async function RootLayout({
         </>
       )}
 
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning>
         {FLYICON_ADS_ID && <FlyiconAds id={FLYICON_ADS_ID} />}
 
         {/* {GOOGLE_ADSENSE_ID && (

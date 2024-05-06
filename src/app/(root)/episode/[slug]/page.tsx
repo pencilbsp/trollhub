@@ -2,7 +2,6 @@ import slug from "slug"
 import Link from "next/link"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { ChapterStatus } from "@prisma/client"
 
 import { PageParams } from "@/types/page"
 import RequestButton from "./RequestButton"
