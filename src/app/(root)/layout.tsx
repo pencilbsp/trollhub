@@ -5,16 +5,23 @@ import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth/next";
 
 import "@/globals.css";
-
-import Header from "@/components/Header";
+// context
 import SettingsProvider from "@/contexts/SettingsContext";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+// components
+import Header from "@/components/Header";
 import SettingsDialog from "@/components/SettingsDialog";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextAuthProvider } from "@/components/sections/AuthProvider";
-import { METADATA_BASE, FLYICON_ADS_ID, GA_MEASUREMENT_ID } from "@/config";
-
+const PTOAds = dynamic(() => import("@/components/ads/PTOAds"));
 const FlyiconAds = dynamic(() => import("@/components/ads/FlyiconAds"));
+
+import {
+  PTO_ADS_ID,
+  METADATA_BASE,
+  FLYICON_ADS_ID,
+  GA_MEASUREMENT_ID,
+} from "@/config";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -69,6 +76,7 @@ export default async function RootLayout({
       )}
 
       <body className={inter.className} suppressHydrationWarning>
+        {PTO_ADS_ID && <PTOAds id={PTO_ADS_ID} />}
         {FLYICON_ADS_ID && <FlyiconAds id={FLYICON_ADS_ID} />}
 
         {/* {GOOGLE_ADSENSE_ID && (
