@@ -5,8 +5,8 @@ import { getServerSession } from "next-auth"
 import prisma from "@/lib/prisma"
 import { ArrayElement } from "@/types/utils"
 
+import authOptions from "@/lib/auth"
 import { ADULT_CATEGORY_ID } from "@/config"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
 export type HistoryData = Awaited<ReturnType<typeof getUserHistories>>
 export type History = ArrayElement<HistoryData["histories"]>
