@@ -6,7 +6,7 @@ import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 
 import prisma from "@/lib/prisma";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import authOptions from "@/lib/auth";
 
 const commentSchema = object({
   text: string().required("Bình luận phải có nội dung").max(2000, "Bình luận không được quá 2000 ký tự"),

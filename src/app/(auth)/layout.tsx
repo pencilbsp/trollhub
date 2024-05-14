@@ -4,9 +4,9 @@ import { redirect } from "next/navigation";
 
 import "@/globals.css";
 
+import authOptions from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 const inter = Inter({ subsets: ["latin"] });
 

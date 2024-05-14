@@ -6,8 +6,8 @@ import { getServerSession } from "next-auth/next";
 
 import "@/globals.css";
 // context
+import authOptions from "@/lib/auth";
 import SettingsProvider from "@/contexts/SettingsContext";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 // components
 import Header from "@/components/Header";
 import SettingsDialog from "@/components/SettingsDialog";

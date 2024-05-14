@@ -3,10 +3,10 @@ import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 
 import prisma from "@/lib/prisma";
+import authOptions from "@/lib/auth";
 import { generateKeywords } from "@/lib/utils";
 import { ChapterStatus } from "@prisma/client";
 import { METADATA_EX_TIME, SITE_URL } from "@/config";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import getRedisClient, { getKeyWithNamespace } from "@/lib/redis";
 
 export type Chapter = NonNullable<Awaited<ReturnType<typeof getChapter>>>;
