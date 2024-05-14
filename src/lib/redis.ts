@@ -2,22 +2,6 @@ import { createClient, RedisClientType } from "redis";
 
 import { REDIS_URL, REDIS_USER, REDIS_PASS, REDIS_NAMESPACE } from "@/config";
 
-async function redisJson<T>(key: string): Promise<T | null> {
-  try {
-    const data = await redis.get(key);
-    if (!data) return null;
-
-    const json = JSON.parse(data);
-    return json as T;
-  } catch (error) {
-    return null;
-  }
-}
-
-interface RedisClient extends Omit<RedisClientType, "json"> {
-  json: typeof redisJson;
-}
-
 declare global {
   var redis: RedisClient;
 }
@@ -27,7 +11,21 @@ const redisClient =
   createClient({ url: REDIS_URL, username: REDIS_USER, password: REDIS_PASS });
 if (process.env.NODE_ENV !== "production") globalThis.redis = redisClient;
 
-redis.json = redisJson;
+interface RedisClient extends Omit<RedisClientType, "json"> {
+  json: <T>(key: string) => Promise<T | null>;
+}
+
+redisClient.json = async function redisJson<T>(key: string): Promise<T | null> {
+  try {
+    const data = await redisClient.get(key);
+    if (!data) return null;
+
+    const json = JSON.parse(data);
+    return json as T;
+  } catch (error) {
+    return null;
+  }
+};
 
 redisClient
   .on("ready", () => console.log("Redis Client Ready"))
