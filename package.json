@@ -32,7 +32,7 @@
     "date-fns": "^2.30.0",
     "devtools-detector": "^2.0.14",
     "framer-motion": "^10.16.4",
-    "hls.js": "^1.5.8",
+    "hls.js": "^1.4.14",
     "html-escaper": "^3.0.3",
     "jsdom": "^22.1.0",
     "lucide-react": "^0.307.0",
