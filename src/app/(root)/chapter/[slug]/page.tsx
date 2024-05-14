@@ -6,6 +6,7 @@ import { getSlugId } from "@/lib/utils";
 
 import { getChapter, getChapterMetadata } from "@/actions/chapterActions";
 
+import updateView from "@/lib/update-view";
 import ChapterNav from "@/components/ChapterNav";
 import NextChapter from "@/components/NextChapter";
 import { TooltipProvider } from "@/components/ui/Tooltip";
@@ -27,6 +28,8 @@ export default async function ChapterPage({ params }: Props) {
   const chapterId = getSlugId(params.slug);
   const chapter = await getChapter(chapterId);
   if (!chapter) return notFound();
+
+  updateView(chapter.id, "chapter");
 
   return (
     <TooltipProvider>
