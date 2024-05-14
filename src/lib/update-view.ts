@@ -1,6 +1,6 @@
 "use server";
 
-import { Prisma } from "@prisma/client";
+import prisma from "./prisma";
 import getRedisClient, { getKeyWithNamespace } from "./redis";
 
 type ViewType = "content" | "chapter";
@@ -15,7 +15,7 @@ export default async function updateView(contentId: string, type: ViewType) {
 
     if (!view) {
       //  @ts-ignore
-      const content = await Prisma[type].findUnique({
+      const content = await prisma[type].findUnique({
         where: { id: contentId },
         select: { view: true },
       });
