@@ -54,8 +54,6 @@ export default function ChapterTable({
 
   const { chapters, mutate } = useChapters(contentId, data);
 
-  console.log(chapters)
-
   const handleSort = (value: Prisma.SortOrder) => {
     mutate(
       [
