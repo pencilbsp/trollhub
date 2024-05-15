@@ -14,6 +14,7 @@ export type Chapter = NonNullable<Awaited<ReturnType<typeof getChapter>>>;
 export const chapterQuery = (options: any): any => ({
   select: {
     id: true,
+    view: true,
     type: true,
     title: true,
     status: true,

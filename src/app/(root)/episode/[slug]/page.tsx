@@ -1,5 +1,6 @@
 import slug from "slug";
 import Link from "next/link";
+import numeral from "numeral";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -100,7 +101,9 @@ export default async function EpisodePage({ params }: PageParams) {
                   {formatDate(episode.updatedAt)}
                 </time>
                 <span className="px-1">&#8226;</span>
-                <span className="text-gray-500 font-light">100K lượt xem</span>
+                <span className="text-gray-500 font-light">
+                  {numeral(episode.view || 0).format("0a")} lượt xem
+                </span>
               </div>
             </div>
           </Card>

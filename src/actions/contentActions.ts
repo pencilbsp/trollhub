@@ -14,6 +14,7 @@ const get = (where: any, contentWhere: any) =>
     where,
     select: {
       id: true,
+      view: true,
       title: true,
       thumbUrl: true,
       updatedAt: true,
@@ -29,6 +30,7 @@ const get = (where: any, contentWhere: any) =>
         },
         select: {
           id: true,
+          view: true,
           type: true,
           title: true,
           createdAt: true,

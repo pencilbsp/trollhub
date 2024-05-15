@@ -2,6 +2,7 @@
 
 import slug from "slug";
 import Link from "next/link";
+import numeral from "numeral";
 import { useEffect, useRef } from "react";
 import { TabletSmartphoneIcon } from "lucide-react";
 
@@ -105,7 +106,7 @@ export default function ChapterTable({
               </TableHeader>
               <TableBody>
                 {/* @ts-ignore */}
-                {chapters.map(({ id, title, createdAt, mobileOnly, type }) => {
+                {chapters.map(({ id, title, createdAt, mobileOnly, type, view }) => {
                   const isActive = id === currentId;
                   const slugTitle = `${contentTitle}-${title}`;
                   const href = `/${
@@ -115,6 +116,7 @@ export default function ChapterTable({
                   return (
                     <ChapterRow
                       key={id}
+                      view={view}
                       href={href}
                       title={title!}
                       isActive={isActive}
@@ -166,6 +168,7 @@ function scrollParentToChild(parent: HTMLElement, child: HTMLElement) {
 
 type ChapterRowProps = {
   href: string;
+  view: number;
   title: string;
   isActive: boolean;
   mobileOnly: boolean;
@@ -178,6 +181,7 @@ function ChapterRow({
   isActive,
   mobileOnly,
   title,
+  view,
   hiddenColumns,
   createdAt,
 }: ChapterRowProps) {
@@ -228,7 +232,7 @@ function ChapterRow({
         </TableCell>
       )}
       {!hiddenColumns!.includes("update") && (
-        <TableCell className="text-right">100K</TableCell>
+        <TableCell className="text-right">{numeral(view || 0).format("0a")}</TableCell>
       )}
     </TableRow>
   );

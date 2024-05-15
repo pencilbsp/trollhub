@@ -2,6 +2,7 @@
 
 import slug from "slug"
 import Link from "next/link"
+import numeral from "numeral"
 import Image from "next/image"
 import { useEffect, useRef } from "react"
 import {
@@ -41,7 +42,7 @@ interface Props {
 
 function ContentHorizontal({ data }: { data: ContentWithCreator }) {
   const descriptionRef = useRef<HTMLDivElement>(null)
-  const { id, type, creator, thumbUrl, title, updatedAt, description, status, adultContent } = data
+  const { id, type, creator, thumbUrl, title, updatedAt, description, status, adultContent, view } = data
 
   const ContentIcon = getContentIcon(type)
   const href = `/${type}/${slug(title)}-${id}`
@@ -97,7 +98,7 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
             <span>0 lượt thích</span>
             <span>10 bình luận</span>
           </div>
-          <span>100K lượt xem</span>
+          <span>{numeral(view || 0).format("0a")} lượt xem</span>
         </div>
         <div className="grid grid-cols-3 gap-4 pt-2">
           <button className="flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-900 transition-colors rounded-md py-1.5">
