@@ -168,7 +168,7 @@ function scrollParentToChild(parent: HTMLElement, child: HTMLElement) {
 
 type ChapterRowProps = {
   href: string;
-  view: number;
+  view: number | null;
   title: string;
   isActive: boolean;
   mobileOnly: boolean;
