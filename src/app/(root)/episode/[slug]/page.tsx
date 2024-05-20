@@ -126,7 +126,7 @@ export default async function EpisodePage({ params }: PageParams) {
 
           {src.src ? (
             <div className="-mx-4 sm:mx-0 sm:w-full overflow-hidden">
-              <VideoPlayer src={src} />
+              <VideoPlayer src={src} provider="jwplayer" />
             </div>
           ) : (
             <VideoPlayerError message="Video này hiện chưa được xử lý, vui lòng thử lại sau">
