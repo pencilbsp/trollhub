@@ -51,10 +51,10 @@ export default async function getSearchResult(
     { $unset: ["categoryIds", "fid", "createdAt"] },
     {
       $lookup: {
-        from: "Creator",
-        localField: "creatorId",
-        foreignField: "_id",
         as: "creator",
+        from: "Creator",
+        foreignField: "_id",
+        localField: "creatorId",
       },
     },
     { $unwind: "$creator" },
@@ -75,23 +75,50 @@ export default async function getSearchResult(
         _id: 0,
         creatorId: 0,
         "creator.bio": 0,
+        "creator.fid": 0,
+        "creator._id": 0,
         "creator.email": 0,
         "creator.updatedAt": 0,
         "creator.createdAt": 0,
-        "creator.fid": 0,
-        "creator._id": 0,
       },
     },
     { $sort: { updatedAt: -1 } },
   ];
 
-  if (skip) contentPipeline.push({ $skip: skip });
-  if (take) contentPipeline.push({ $limit: take });
+  const creatorPipeline: any = [
+    {
+      $match: {
+        $text: { $search: `\"${keyword}\"`, $diacriticSensitive: true },
+      },
+    },
+    {
+      $addFields: {
+        id: { $toString: "$_id" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        bio: 0,
+        fid: 0,
+        email: 0,
+        updatedAt: 0,
+        createdAt: 0,
+      },
+    },
+    // { $unset: ["bio", "email", "updatedAt", "createdAt", "fid"] },
+    { $sort: { updatedAt: -1 } },
+  ];
 
-  const creatorPipeline = [...contentPipeline];
-  creatorPipeline[1] = {
-    $unset: ["bio", "email", "updatedAt", "createdAt", "fid"],
-  };
+  if (skip) {
+    creatorPipeline.push({ $skip: skip });
+    contentPipeline.push({ $skip: skip });
+  }
+
+  if (take) {
+    creatorPipeline.push({ $limit: take });
+    contentPipeline.push({ $limit: take });
+  }
 
   const [contents, creators] = await Promise.all([
     prisma.content.aggregateRaw<any>({ pipeline: contentPipeline }),
