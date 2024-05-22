@@ -22,10 +22,10 @@ import useKeyPress from "@/hooks/useKeyPress";
 import useDebounce from "@/hooks/useDebounce";
 
 import SpinerIcon from "./icons/SpinerIcon";
-import { avatarNameFallback } from "@/lib/utils";
-import getSearchResult from "@/actions/getSearchResult";
+import { avatarNameFallback, formatToNow } from "@/lib/utils";
+import getSearchResult, { SearchResult } from "@/actions/getSearchResult";
 
-const defaultState = { contents: [], creators: [] };
+const defaultState: SearchResult = { contents: [], creators: [] };
 
 export default function SearchModel() {
   const [isOpen, setOpen] = useState(false);
@@ -33,9 +33,15 @@ export default function SearchModel() {
   const [result, setResult] = useState(defaultState);
 
   const [isPending, startTransition] = useTransition();
-  useKeyPress("k", () => setOpen(!isOpen), isMacOS ? { metaKey: true } : { altKey: true });
+  useKeyPress(
+    "k",
+    () => setOpen(!isOpen),
+    isMacOS ? { metaKey: true } : { altKey: true }
+  );
 
-  const handleGoto = (_: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>) => {
+  const handleGoto = (
+    _: MouseEvent<HTMLAnchorElement, globalThis.MouseEvent>
+  ) => {
     setOpen(!isOpen);
   };
 
@@ -44,7 +50,7 @@ export default function SearchModel() {
 
     if (value) {
       startTransition(async () => {
-        const data: any = await getSearchResult(value, { take: 24 });
+        const data = await getSearchResult(value, { take: 24 });
         setResult(data);
       });
     } else {
@@ -62,7 +68,9 @@ export default function SearchModel() {
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogTrigger className="inline-flex items-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 relative justify-start text-sm text-muted-foreground sm:pr-12 w-full sm:w-64">
-        <span className="hidden lg:inline-flex">Tìm kiếm kênh, nội dung...</span>
+        <span className="hidden lg:inline-flex">
+          Tìm kiếm kênh, nội dung...
+        </span>
         <span className="inline-flex lg:hidden">Tìm kiếm...</span>
         <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] opacity-100 sm:flex">
           <span className="text-xs">{isMacOS ? "⌘" : "Alt"}</span>K
@@ -80,27 +88,45 @@ export default function SearchModel() {
             <CommandEmpty>Không tìm thấy kết quả phù hợp</CommandEmpty>
             {result.contents.length > 0 && (
               <CommandGroup heading="Nội dung">
-                {result.contents.map(({ id, title, thumbUrl, akaTitle, type }) => (
-                  <Link key={id} href={`/${type}/${slug(title)}-${id}`} onClick={(e) => handleGoto(e)}>
-                    <CommandItem className="cursor-pointer">
-                      <div className="w-12 h-12 mr-2 flex-shrink-0">
-                        <Image
-                          width={0}
-                          height={0}
-                          alt={title}
-                          sizes="100vh"
-                          src={thumbUrl}
-                          className="w-full h-full border rounded object-cover"
-                        />
-                      </div>
+                {result.contents.map(
+                  ({
+                    id,
+                    title,
+                    thumbUrl,
+                    akaTitle,
+                    type,
+                    creator,
+                    updatedAt,
+                  }) => (
+                    <Link
+                      key={id}
+                      href={`/${type}/${slug(title)}-${id}`}
+                      onClick={(e) => handleGoto(e)}
+                    >
+                      <CommandItem className="cursor-pointer">
+                        <div className="w-12 h-12 mr-2 flex-shrink-0">
+                          <Image
+                            width={0}
+                            height={0}
+                            alt={title}
+                            sizes="100vh"
+                            src={thumbUrl}
+                            className="w-full h-full border rounded object-cover"
+                          />
+                        </div>
 
-                      <div className="flex flex-col">
-                        <h5 className="truncate font-bold">{title}</h5>
-                        <span className="truncate">{akaTitle?.[0]}</span>
-                      </div>
-                    </CommandItem>
-                  </Link>
-                ))}
+                        <div className="flex flex-col min-w-0">
+                          <h5 className="truncate font-bold">{title}</h5>
+                          <span className="truncate">{akaTitle?.[0]}</span>
+                          <span className="truncate text-xs">
+                            {creator.name}&nbsp;&#183;&nbsp;
+                            {formatToNow(new Date(updatedAt))}
+                          </span>
+                        </div>
+                      </CommandItem>
+                    </Link>
+                  )
+                )}
               </CommandGroup>
             )}
             {result.creators.length > 0 && (
@@ -108,11 +134,17 @@ export default function SearchModel() {
                 <CommandSeparator />
                 <CommandGroup heading="Kênh">
                   {result.creators.map(({ id, name, avatar, userName }) => (
-                    <Link key={id} href={`/channel/${(userName as string).slice(1)}`} onClick={handleGoto}>
+                    <Link
+                      key={id}
+                      href={`/channel/${(userName as string).slice(1)}`}
+                      onClick={handleGoto}
+                    >
                       <CommandItem className="cursor-pointer">
                         <Avatar className="w-12 h-12 border mr-2">
                           <AvatarImage src={avatar} />
-                          <AvatarFallback>{avatarNameFallback(name)}</AvatarFallback>
+                          <AvatarFallback>
+                            {avatarNameFallback(name)}
+                          </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
                           <span className="font-bold">{name}</span>

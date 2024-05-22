@@ -20,9 +20,9 @@ import { Badge } from "@/components/ui/Badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card"
 
+import useSettings from "@/hooks/useSettings"
 import { avatarNameFallback, cn, formatToNow } from "@/lib/utils"
 import { Content, Creator, ContentStatus, ContentType } from "@prisma/client"
-import useSettings from "@/hooks/useSettings"
 
 function getContentIcon(type: ContentType) {
   if (type === ContentType.movie) return FilmIcon
