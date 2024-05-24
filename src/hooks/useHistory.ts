@@ -11,6 +11,25 @@ import {
 
 const fetcher = (_: string) => getUserHistories();
 
+const groupByDate = (data: History[]) => {
+  const grouped: Map<string, History[]> = new Map();
+
+  data.forEach((item) => {
+    // Lấy ngày của sự kiện
+    const key = item.updatedAt.toISOString().split("T")[0]; // Lấy phần ngày từ đối tượng Date
+
+    // Kiểm tra xem đã có nhóm cho ngày này chưa, nếu chưa thì tạo mới
+    if (!grouped.has(key)) {
+      grouped.set(key, []);
+    }
+
+    // Thêm sự kiện vào nhóm của ngày tương ứng
+    grouped.get(key)?.push(item);
+  });
+
+  return grouped;
+};
+
 const initialFallbackData: HistoryData = {
   total: 0,
   loaded: false,
@@ -103,8 +122,8 @@ export default function useHistory(
     isError: error,
     loadMoreHistory,
     total: data.total,
-    histories: data.histories,
     isLoading: isLoading || isPending,
+    histories: groupByDate(data.histories),
     hasMore: data.total > data.histories.length,
   };
 }

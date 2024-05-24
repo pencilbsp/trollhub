@@ -102,6 +102,10 @@
   body.header-pinned .stickied {
     @apply top-20;
   }
+
+  .line-mask {
+    mask-image: linear-gradient(rgb(0, 0, 0), transparent);
+  }
 }
 
 .CircularProgressbar-path {
