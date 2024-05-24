@@ -30,6 +30,10 @@ type Props = {
   playerInterface?: PlayerInterface;
 };
 
+const findSource = (sources: PlayerSource[], key: string) => {
+  return sources.find((e) => e.key === key) || sources[0];
+};
+
 /* -------------------------------------------------------------------------------------------------
  * Video Player
  * -----------------------------------------------------------------------------------------------*/
@@ -49,12 +53,11 @@ export default function VideoPlayer({
 
   const [error, setError] = useState<PlayerError | null>(null);
   const [source, setSource] = useState<PlayerSource>(
-    sources.find((e) => e.key === defaultSource) || sources[0]
+    findSource(sources, defaultSource)
   );
 
   const onClick = () => {
     setError(null);
-    setSource(sources[0]);
   };
 
   useEffect(() => {
@@ -102,7 +105,10 @@ export default function VideoPlayer({
             <RocketIcon className="h-4 md:h-5" />
             Chọn nguồn phát
           </div>
-          <Tabs value={source.key}>
+          <Tabs
+            value={source.key}
+            onValueChange={(newValue) => findSource(sources, newValue)}
+          >
             <TabsList className="grid grid-cols-2 h-8 p-0 px-1 py-1 sm:flex">
               {sources.map((source) => {
                 return (
