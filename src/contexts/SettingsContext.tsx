@@ -12,7 +12,7 @@ const defaultSettings: {
 } = {
   open: false,
   showAdultContent: false,
-  playerInterface: "vidstack",
+  playerInterface: "jwplayer",
 };
 
 const initialState = {

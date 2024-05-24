@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { PlayerError, PlayerSource } from "@/types/other";
 import _JWPlayer, { JWPlayerProps } from "@jwplayer/jwplayer-react";
@@ -8,7 +8,7 @@ interface Props extends Omit<JWPlayerProps, "library" | "file" | "onTime"> {
   thumbnails?: string;
   source?: PlayerSource | null;
   onTime?: (time: number) => void;
-  onError?: (error: PlayerError) => void;
+  onError?: (error: PlayerError | null) => void;
 }
 
 const JWPlayer = function ({
@@ -20,6 +20,13 @@ const JWPlayer = function ({
   ...props
 }: Props) {
   const player = useRef<jwplayer.JWPlayer | null>(null);
+
+  useEffect(() => {
+    if (player.current && source) {
+      player.current.load(source.src);
+      player.current.play();
+    }
+  }, [source]);
 
   return (
     <_JWPlayer

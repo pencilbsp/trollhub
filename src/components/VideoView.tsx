@@ -32,8 +32,11 @@ export default async function VideoView(prop: Props) {
 
   return (
     <Fragment>
-      {sources.providers.length ? (
-        <div className="-mx-4 sm:mx-0 sm:w-full overflow-hidden">
+      {sources?.providers?.length ? (
+        <div
+          className="-mx-4 sm:mx-0 sm:w-full overflow-hidden"
+          suppressHydrationWarning
+        >
           <VideoPlayer
             vid={prop.vid}
             contentId={prop.contentId}

@@ -103,11 +103,15 @@ export default function VideoPlayer({
         <div className="px-4 sm:px-0 flex flex-col sm:flex-row gap-2 sm:items-center justify-between">
           <div className="font-medium md:text-lg flex items-center gap-1.5">
             <RocketIcon className="h-4 md:h-5" />
-            Chọn nguồn phát
+            <span>Chọn nguồn phát</span>
           </div>
           <Tabs
             value={source.key}
-            onValueChange={(newValue) => findSource(sources, newValue)}
+            onValueChange={(newValue) => {
+              setError(null);
+              // console.log(findSource(sources, newValue));
+              setSource(findSource(sources, newValue));
+            }}
           >
             <TabsList className="grid grid-cols-2 h-8 p-0 px-1 py-1 sm:flex">
               {sources.map((source) => {
