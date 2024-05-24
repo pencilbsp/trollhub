@@ -1,24 +1,23 @@
 import slug from "slug";
 import Link from "next/link";
 import numeral from "numeral";
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { SITE_URL } from "@/config";
 import { PageParams } from "@/types/page";
 import updateView from "@/lib/update-view";
-import RequestButton from "./RequestButton";
+import { getEpisode } from "@/actions/episodeActions";
+import { avatarNameFallback, formatDate, getSlugId } from "@/lib/utils";
+
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { getEpisode } from "@/actions/episodeActions";
-import { SITE_URL, USER_CONTENTS_HOST } from "@/config";
+import VideoView from "@/components/VideoView";
+import { PlayerLoading } from "@/components/VideoPlayer";
 import CommentList from "@/components/sections/CommentList";
 import ChapterTable from "@/components/sections/ChapterTable";
-import { avatarNameFallback, formatDate, getSlugId } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
-import VideoPlayer, {
-  CustomSrc,
-  VideoPlayerError,
-} from "@/components/VideoPlayer";
 
 export async function generateMetadata({
   params,
@@ -44,25 +43,6 @@ export async function generateMetadata({
   };
 }
 
-async function getM3U8Available(
-  episode: NonNullable<Awaited<ReturnType<typeof getEpisode>>>
-) {
-  try {
-    if (!episode.fid) throw new Error();
-
-    const api = `${USER_CONTENTS_HOST}/api/get-m3u8-available?fid=${episode.fid}`;
-    const response = await fetch(api, { cache: "no-cache" });
-    const data = await response.json();
-
-    if (data.m3u8) return USER_CONTENTS_HOST + data.m3u8;
-    if (episode.status !== "ready") throw new Error();
-
-    return `${USER_CONTENTS_HOST}/hls/manifest/${episode.id}.m3u8`;
-  } catch (error) {
-    return null;
-  }
-}
-
 export default async function EpisodePage({ params }: PageParams) {
   const episodeId = getSlugId(params.slug);
   const episode = await getEpisode(episodeId);
@@ -70,12 +50,6 @@ export default async function EpisodePage({ params }: PageParams) {
   if (!episode) return notFound();
 
   updateView(episode.id, "chapter");
-
-  const src: CustomSrc = {
-    streameId: episode.videoId,
-    type: "application/x-mpegurl",
-    src: await getM3U8Available(episode),
-  };
 
   return (
     <div className="container p-2 sm:px-8 xl:max-w-7xl">
@@ -124,15 +98,13 @@ export default async function EpisodePage({ params }: PageParams) {
             </Badge>
           </h1>
 
-          {src.src ? (
-            <div className="-mx-4 sm:mx-0 sm:w-full overflow-hidden">
-              <VideoPlayer src={src} provider="jwplayer" />
-            </div>
-          ) : (
-            <VideoPlayerError message="Video này hiện chưa được xử lý, vui lòng thử lại sau">
-              <RequestButton chapterId={episode.id} />
-            </VideoPlayerError>
-          )}
+          <Suspense fallback={<PlayerLoading />}>
+            <VideoView
+              vid={episode.id}
+              fid={episode.fid}
+              contentId={episode.content.id}
+            />
+          </Suspense>
 
           <ChapterTable
             currentId={episode.id}

@@ -137,13 +137,16 @@ export async function getChapterMetadata(id: string): Promise<Metadata | null> {
   }
 }
 
-export async function requestChapter(chapterId: string) {
+export async function requestChapter(chapterId: string, message?: string) {
   try {
+    if (message && message.length > 500)
+      throw new Error("Lời nhắn không được vượt quá 500 kí tự.");
+
     const session = await getServerSession(authOptions);
     if (!session || !session.user)
-      throw new Error("Vui lòng đăng nhập để gửi yêu cầu");
+      throw new Error("Vui lòng đăng nhập để gửi yêu cầu.");
 
-    let status = 0;
+    let status = false;
     const request = await prisma.requestChapter.findUnique({
       where: {
         chapterId_userId: {
@@ -154,11 +157,12 @@ export async function requestChapter(chapterId: string) {
     });
 
     if (!request) {
-      status = 1;
+      status = true;
       await prisma.requestChapter.create({
         data: {
           chapterId,
           userId: session.user.id,
+          message: message?.trim(),
         },
       });
     }
@@ -170,7 +174,7 @@ export async function requestChapter(chapterId: string) {
     });
 
     return {
-      message: "Đã yêu cầu xử lý tập phim thành công",
+      message: "Đã yêu cầu xử lý nội dung thành công.",
       status,
       totalRequest,
     };
@@ -178,7 +182,7 @@ export async function requestChapter(chapterId: string) {
     return {
       error: {
         message: (error?.message ||
-          "Đã xảy ra lỗi, vui lòng thử lại sau") as string,
+          "Đã xảy ra lỗi, vui lòng thử lại sau.") as string,
       },
     };
   }
@@ -217,6 +221,35 @@ export async function resetChapterStatus(id: string) {
     return {
       error: {
         message: error.message,
+      },
+    };
+  }
+}
+
+export async function checkRequestStatus(chapterId: string) {
+  try {
+    const totalRequest = await prisma.requestChapter.count({
+      where: { chapterId },
+    });
+
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) return { requested: false, totalRequest };
+
+    const requested = await prisma.requestChapter.findUnique({
+      where: {
+        chapterId_userId: {
+          chapterId,
+          userId: session.user.id,
+        },
+      },
+    });
+
+    return { requested: !!requested, totalRequest };
+  } catch (error: any) {
+    return {
+      error: {
+        message: (error?.message ||
+          "Đã xảy ra lỗi, vui lòng thử lại sau") as string,
       },
     };
   }

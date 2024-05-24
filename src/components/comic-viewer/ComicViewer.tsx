@@ -2,6 +2,7 @@ import { Fragment } from "react";
 
 import Image from "@/components/Image";
 import ReloadButton from "./ReloadButton";
+import RequestButton from "../RequestButton";
 import { getImages } from "@/actions/imageActions";
 import { type Chapter } from "@/actions/chapterActions";
 
@@ -20,7 +21,11 @@ export default async function ComicViewer({ chapter }: Props) {
             Nội dung không khả dụng ngay bây giờ, vui lòng quay lại sau. Xin cám
             ơn!
           </p>
-          <ReloadButton id={chapter.id} status={chapter.status} />
+
+          <div className="flex flex-col md:flex-row gap-3">
+            <RequestButton chapterId={chapter.id} />
+            <ReloadButton id={chapter.id} status={chapter.status} />
+          </div>
         </div>
       ) : chapter.type === "comic" ? (
         <div className="-mx-4 sm:mx-auto max-w-3xl border rounded-xl overflow-hidden">

@@ -1,51 +1,33 @@
 "use client";
 
-import "@vidstack/react/player/styles/default/theme.css";
-import "@vidstack/react/player/styles/default/layouts/video.css";
-
+import { toast } from "sonner";
 import dynamic from "next/dynamic";
-import { ErrorData, ErrorDetails, ErrorTypes } from "hls.js";
-// import { addListener, launch } from "devtools-detector"
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import {
-  PlayerSrc,
-  MediaPlayer,
-  MediaProvider,
-  MediaPlayerInstance,
-} from "@vidstack/react";
-import {
-  defaultLayoutIcons,
-  DefaultVideoLayout,
-} from "@vidstack/react/player/layouts/default";
+import { useSession } from "next-auth/react";
+import { ReactNode, useEffect, useRef, useState } from "react";
+
+import { RocketIcon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import useHistory from "@/hooks/useHistory";
+import useSettings from "@/hooks/useSettings";
+import VidstackPlayer from "./VidstackPlayer";
+import { createHistory } from "@/actions/historyActions";
+import { PlayerError, PlayerInterface, PlayerSource } from "@/types/other";
 
 import { Button } from "./ui/Button";
-import cmd5xBuilder from "@/lib/cmd5x";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
-const JWPlayer = dynamic(() => import("./JWPlayer"), {
+const JWPlayer = dynamic(() => import("@/components/JWPlayer"), {
   loading: () => <PlayerLoading />,
 });
 
-const dashApi = "/api/prv-dash?";
-
-// if (process.env.NODE_ENV === "production") {
-//   addListener((isOpen) => {
-//     if (isOpen) {
-//       window.location.replace("/")
-//     }
-//   })
-//   launch()
-// }
-
-export type CustomSrc = PlayerSrc & {
-  src?: string;
-  streameUrl?: string;
-  streameId: string | null;
-};
-
 type Props = {
-  src: CustomSrc;
+  vid: string;
+  contentId: string;
   thumbnails?: string;
-  provider?: "jwplayer" | "vidstack";
+  defaultSource: string;
+  sources: PlayerSource[];
+  playerInterface?: PlayerInterface;
 };
 
 /* -------------------------------------------------------------------------------------------------
@@ -53,131 +35,124 @@ type Props = {
  * -----------------------------------------------------------------------------------------------*/
 
 export default function VideoPlayer({
-  src,
+  vid,
+  sources,
+  contentId,
   thumbnails,
-  provider = "vidstack",
+  defaultSource,
 }: Props) {
-  const player = useRef<MediaPlayerInstance>(null);
-  const [error, setError] = useState<ErrorData | null>(null);
-  const [source, setSource] = useState<CustomSrc | null>(
-    src.streameId ? null : src
+  const { data } = useSession();
+  const { upadteHistory } = useHistory();
+  const { playerInterface } = useSettings();
+
+  const time = useRef(0);
+
+  const [error, setError] = useState<PlayerError | null>(null);
+  const [source, setSource] = useState<PlayerSource>(
+    sources.find((e) => e.key === defaultSource) || sources[0]
   );
-
-  const isLoading = !source && !error;
-
-  const onHlsError = (error: ErrorData) => {
-    player.current?.destroy();
-    setError(error);
-  };
 
   const onClick = () => {
     setError(null);
-    setSource(null);
-    loadSources();
+    setSource(sources[0]);
   };
 
-  const loadSources = useCallback(async () => {
-    if (src.streameId) {
-      try {
-        const ts = Date.now().toString();
-        const query = new URLSearchParams({ file_id: src.streameId!, ts });
-
-        const xkey = window.cmd5x(dashApi + query.toString());
-        query.append("xkey", xkey);
-
-        const response = await fetch(dashApi + query.toString());
-        if (!response.ok) throw new Error("Unable to get video information");
-
-        const data = await response.json();
-        if (data.error) throw new Error(data.error.message);
-
-        // @ts-ignore
-        setSources({ ...src, src: data.data.m3u8 });
-      } catch (error: any) {
-        setError({
-          error,
-          details: ErrorDetails.LEVEL_LOAD_ERROR,
-          type: ErrorTypes.MEDIA_ERROR,
-          fatal: false,
-        });
-      }
-    } else {
-      setSource(src);
-    }
-  }, [src]);
-
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (typeof window.cmd5x === "undefined") {
-        cmd5xBuilder({}, window);
-      }
-    }
+    const handleHistory = async () => {
+      const { error, history } = await createHistory(contentId, vid);
+      if (error) return toast.error(error.message);
+      // @ts-ignore
+      upadteHistory(history);
+    };
 
-    loadSources();
-  }, [src, loadSources]);
+    data?.user.id && handleHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentId, vid, data?.user.id]);
 
-  if (isLoading) return <PlayerLoading />;
-
-  if (!isLoading && error)
-    return (
+  return (
+    <div className="space-y-4">
       <VideoPlayerError
         onClick={onClick}
         buttonText="Thử lại"
-        message={error.details}
+        message={error?.message}
       />
-    );
 
-  if (provider === "vidstack")
-    return (
-      <MediaPlayer
-        playsinline
-        ref={player}
-        keyTarget="player"
-        aspectRatio="16/9"
-        src={source as any}
-        onHlsError={onHlsError}
-        keyShortcuts={{
-          toggleMuted: "m",
-          volumeUp: "ArrowUp",
-          toggleCaptions: "c",
-          toggleFullscreen: "f",
-          volumeDown: "ArrowDown",
-          togglePaused: "k Space",
-          seekBackward: "ArrowLeft",
-          seekForward: "ArrowRight",
-          togglePictureInPicture: "i",
-        }}
-      >
-        <MediaProvider />
-        <DefaultVideoLayout
-          thumbnails={thumbnails}
-          icons={defaultLayoutIcons}
-          noScrubGesture
+      {!error && playerInterface === "vidstack" && (
+        <VidstackPlayer
+          source={source}
+          onError={setError}
+          currentTime={time.current}
+          onTime={(t) => (time.current = t)}
         />
-      </MediaPlayer>
-    );
+      )}
 
-  return <JWPlayer src={source?.src} />;
+      {!error && playerInterface === "jwplayer" && (
+        <JWPlayer
+          config={{}}
+          source={source}
+          onError={setError}
+          currentTime={time.current}
+          onTime={(t) => (time.current = t)}
+        />
+      )}
+
+      {sources.length > 0 && (
+        <div className="px-4 sm:px-0 flex flex-col sm:flex-row gap-2 sm:items-center justify-between">
+          <div className="font-medium md:text-lg flex items-center gap-1.5">
+            <RocketIcon className="h-4 md:h-5" />
+            Chọn nguồn phát
+          </div>
+          <Tabs value={source.key}>
+            <TabsList className="grid grid-cols-2 h-8 p-0 px-1 py-1 sm:flex">
+              {sources.map((source) => {
+                return (
+                  <TabsTrigger
+                    key={source.key}
+                    value={source.key}
+                    className="h-[1.45rem] rounded-sm px-2 text-xs"
+                  >
+                    {source.label}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </Tabs>
+        </div>
+      )}
+    </div>
+  );
 }
 
 /* -------------------------------------------------------------------------------------------------
  * Video Player Components
  * -----------------------------------------------------------------------------------------------*/
 
-function PlayerBox({ children }: { children: ReactNode }) {
+function PlayerBox({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="w-full flex flex-col items-center justify-center aspect-video border border-dashed p-4">
+    <div
+      className={cn(
+        "w-full flex flex-col items-center justify-center aspect-video border border-dashed p-4",
+        className
+      )}
+    >
       {children}
     </div>
   );
 }
 
-function PlayerLoading() {
-  return <PlayerBox>Đang tải...</PlayerBox>;
+export function PlayerLoading({ className }: { className?: string }) {
+  return <PlayerBox className={className}>Đang tải...</PlayerBox>;
 }
 
 type VideoPlayerErrorProps = {
-  message: string;
+  message?: string;
+  className?: string;
   buttonText?: string;
   children?: ReactNode;
   buttonIcon?: ReactNode;
@@ -190,18 +165,23 @@ export function VideoPlayerError({
   buttonIcon,
   onClick,
   children,
+  className,
 }: VideoPlayerErrorProps) {
   return (
-    <PlayerBox>
-      <p className="mb-3 text-base md:text-lg text-center">{message}</p>
-      {children ? (
-        children
-      ) : buttonText ? (
-        <Button className="items-center" onClick={onClick}>
-          {buttonText}
-          {buttonIcon}
-        </Button>
-      ) : null}
-    </PlayerBox>
+    <div>
+      {message && (
+        <PlayerBox className={className}>
+          <p className="mb-3 text-base md:text-lg text-center">{message}</p>
+          {children ? (
+            children
+          ) : buttonText ? (
+            <Button className="items-center" onClick={onClick}>
+              {buttonText}
+              {buttonIcon}
+            </Button>
+          ) : null}
+        </PlayerBox>
+      )}
+    </div>
   );
 }

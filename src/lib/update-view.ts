@@ -10,8 +10,8 @@ export default async function updateView(contentId: string, type: ViewType) {
   try {
     const redisClient = await getRedisClient();
 
-    const redisKey = getKeyWithNamespace("view", contentId);
-    let view = await redisClient.json<View>(redisKey);
+    const redisKey = getKeyWithNamespace("view", type, contentId);
+    let view: string | number | null = await redisClient.get(redisKey);
 
     if (!view) {
       //  @ts-ignore
@@ -21,13 +21,15 @@ export default async function updateView(contentId: string, type: ViewType) {
       // });
 
       // view = { type, view: content.view };
-      view = { type, view: 0 };
+      view = 0;
+    } else {
+      view = Number(view);
     }
 
-    view.view++;
+    view++;
     // console.log(view);
 
-    await redisClient.set(redisKey, JSON.stringify(view));
+    await redisClient.set(redisKey, view);
   } catch (error) {
     console.log("Update View Error:", contentId, error);
   }

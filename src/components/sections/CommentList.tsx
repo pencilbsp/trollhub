@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 import useComment from "@/hooks/useComment";
 
@@ -9,16 +11,30 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import SpinerIcon from "@/components/icons/SpinerIcon";
 import CommentEditor from "@/components/CommentEditor";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select";
 
 interface Props {
   contentId: string;
 }
 
 export default function CommentList({ contentId }: Props) {
+  const current = usePathname();
   const { data: session } = useSession();
-  const { comment, isLoading, sortComment, likeComment, deleteComment, loadMoreComment, addComment } =
-    useComment(contentId);
+  const {
+    comment,
+    isLoading,
+    sortComment,
+    likeComment,
+    deleteComment,
+    loadMoreComment,
+    addComment,
+  } = useComment(contentId);
 
   return (
     <div className="">
@@ -36,9 +52,24 @@ export default function CommentList({ contentId }: Props) {
       </div>
       <Card className="p-4 mt-4">
         {session ? (
-          <CommentEditor user={session.user} contentId={contentId} onNewComment={addComment} />
+          <CommentEditor
+            user={session.user}
+            contentId={contentId}
+            onNewComment={addComment}
+          />
         ) : (
-          <p className="text-center text-lg">Đăng nhập để gửi bình luận!!!</p>
+          <p className="text-center text-lg">
+            <Link
+              className="text-blue-500 hover:underline"
+              href={
+                "/login" +
+                (current ? `?next=${decodeURIComponent(current)}` : "")
+              }
+            >
+              Đăng nhập
+            </Link>{" "}
+            để gửi bình luận!
+          </p>
         )}
 
         {

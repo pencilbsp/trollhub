@@ -47,7 +47,6 @@ export default async function ChapterPage({ params }: Props) {
         <Suspense fallback={<ComicViewerLoading />}>
           <ComicViewer chapter={chapter} />
         </Suspense>
-        {/* <ComicViewerLoading /> */}
       </div>
 
       <NextChapter

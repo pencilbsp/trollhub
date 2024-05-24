@@ -1,76 +1,94 @@
-"use client"
+"use client";
 
-import slug from "slug"
-import Link from "next/link"
-import { Drawer } from "vaul"
-import { toast } from "sonner"
-import { motion } from "framer-motion"
-import { useSession } from "next-auth/react"
-import { ContentType } from "@prisma/client"
-import { ArrowUpIcon, ListIcon } from "lucide-react"
-import { useEffect, useMemo, useState } from "react"
+import slug from "slug";
+import Link from "next/link";
+import { Drawer } from "vaul";
+import { toast } from "sonner";
+import { motion } from "framer-motion";
+import { useSession } from "next-auth/react";
+import { ContentType } from "@prisma/client";
+import { ArrowUpIcon, ListIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
-import { cn } from "@/lib/utils"
-import useHistory from "@/hooks/useHistory"
-import useChapters from "@/hooks/useChapters"
-import useOffSetTop from "@/hooks/useOffSetTop"
-import useResponsive from "@/hooks/useResponsive"
+import { cn } from "@/lib/utils";
+import useHistory from "@/hooks/useHistory";
+import useChapters from "@/hooks/useChapters";
+import useOffSetTop from "@/hooks/useOffSetTop";
+import useResponsive from "@/hooks/useResponsive";
 
-import { createHistory } from "@/actions/historyActions"
-import ChapterIcon from "@/components/icons/ChapterIcon"
-import ChapterList from "@/components/sections/ChapterList"
-import CircleProgressIcon from "@/components/icons/CircleProgressIcon"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover"
-import { Tooltip, TooltipArrow, TooltipContent, TooltipTrigger } from "@/components/ui/Tooltip"
+import { createHistory } from "@/actions/historyActions";
+import ChapterIcon from "@/components/icons/ChapterIcon";
+import ChapterList from "@/components/sections/ChapterList";
+import CircleProgressIcon from "@/components/icons/CircleProgressIcon";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/Popover";
+import {
+  Tooltip,
+  TooltipArrow,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/Tooltip";
 
 interface Props {
-  id: string
-  title: string
-  contentId: string
-  contentTitle: string
-  contentType: ContentType
+  id: string;
+  title: string;
+  contentId: string;
+  contentTitle: string;
+  contentType: ContentType;
 }
 
 const scrollToTop = (smooth: boolean = false) => {
-  if (typeof document === "undefined") return
+  if (typeof document === "undefined") return;
 
-  if (smooth) window.scrollTo({ top: 0, behavior: "smooth" })
-  else document.documentElement.scrollTop = 0
-}
+  if (smooth) window.scrollTo({ top: 0, behavior: "smooth" });
+  else document.documentElement.scrollTop = 0;
+};
 
-export default function ChapterNav({ id, title, contentTitle, contentId, contentType }: Props) {
-  const { data } = useSession()
-  const offset = useOffSetTop(64)
-  const { upadteHistory } = useHistory()
+export default function ChapterNav({
+  id,
+  title,
+  contentTitle,
+  contentId,
+  contentType,
+}: Props) {
+  const { data } = useSession();
+  const offset = useOffSetTop(64);
+  const { upadteHistory } = useHistory();
 
-  const [drawer, setDrawer] = useState(false)
-  const { chapters } = useChapters(contentId)
+  const [drawer, setDrawer] = useState(false);
+  const { chapters } = useChapters(contentId);
 
-  const href = `/${contentType}/${slug(contentTitle)}-${contentId}`
+  const href = `/${contentType}/${slug(contentTitle)}-${contentId}`;
 
   const { percent, chapterIdx } = useMemo(() => {
-    const chapterIdx = chapters.findIndex((c: any) => id === c.id)
-    const percent = chapters.length ? ((chapters.length - chapterIdx) / chapters.length) * 100 : 0
-    return { chapterIdx, percent }
-  }, [chapters, id])
+    // @ts-ignore
+    const chapterIdx = chapters.findIndex((c: any) => id === c.id);
+    const percent = chapters.length
+      ? ((chapters.length - chapterIdx) / chapters.length) * 100
+      : 0;
+    return { chapterIdx, percent };
+  }, [chapters, id]);
 
-  const isMobile = useResponsive("down", "md")
+  const isMobile = useResponsive("down", "md");
 
   useEffect(() => {
-    setDrawer(isMobile)
-  }, [isMobile])
+    setDrawer(isMobile);
+  }, [isMobile]);
 
   useEffect(() => {
     const handleHistory = async () => {
-      const { error, history } = await createHistory(contentId, id)
-      if (error) return toast.error(error.message)
+      const { error, history } = await createHistory(contentId, id);
+      if (error) return toast.error(error.message);
       // @ts-ignore
-      upadteHistory(history)
-    }
+      upadteHistory(history);
+    };
 
-    data?.user.id && handleHistory()
+    data?.user.id && handleHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contentId, id, data?.user.id])
+  }, [contentId, id, data?.user.id]);
 
   return (
     <motion.aside className={cn("chapter-nav z-10", offset && "stickied")}>
@@ -85,7 +103,12 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
             <Drawer.Portal>
               <Drawer.Overlay className="fixed inset-0 bg-black/40" />
               <Drawer.Content className="backdrop-blur-xl bg-background/80 flex flex-col rounded-t-[10px] mt-24 fixed bottom-0 left-0 right-0">
-                <ChapterList chapters={chapters} currentId={id} contentTitle={contentTitle} />
+                <ChapterList
+                  currentId={id}
+                  // @ts-ignore
+                  chapters={chapters}
+                  contentTitle={contentTitle}
+                />
               </Drawer.Content>
             </Drawer.Portal>
           </Drawer.Root>
@@ -102,7 +125,12 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
               alignOffset={-12}
               className="rounded-xl shadow w-[540px]  p-0 overflow-hidden backdrop-blur-xl bg-background/80"
             >
-              <ChapterList chapters={chapters} currentId={id} contentTitle={contentTitle} />
+              <ChapterList
+                currentId={id}
+                // @ts-ignore
+                chapters={chapters}
+                contentTitle={contentTitle}
+              />
             </PopoverContent>
           </Popover>
         )}
@@ -116,13 +144,16 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
           <Link href={href}>
             <h2 className="truncate text-sm md:text-base">{contentTitle}</h2>
           </Link>
-          <h1 className="truncate text-foreground/60 text-xs md:text-sm">{title}</h1>
+          <h1 className="truncate text-foreground/60 text-xs md:text-sm">
+            {title}
+          </h1>
         </div>
       </div>
 
       <div className="flex-shrink-0 flex-grow ml-auto mr-3 flex-col items-end hidden md:flex">
         <p>{percent.toFixed(0)}%</p>
         <p className="text-foreground/60 text-sm font-light">
+          {/* @ts-ignore */}
           {chapters.length - chapterIdx}/{chapters.length} chương
         </p>
       </div>
@@ -148,5 +179,5 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
         </TooltipContent>
       </Tooltip>
     </motion.aside>
-  )
+  );
 }

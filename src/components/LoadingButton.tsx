@@ -1,18 +1,24 @@
-import { Button } from "./ui/Button"
-import SpinerIcon from "./icons/SpinerIcon"
+import SpinerIcon from "./icons/SpinerIcon";
+import { Button, ButtonProps } from "./ui/Button";
 
-type Props = {
-  isLoading?: boolean
-  loadingText?: string
-  children: React.ReactNode
-  [key: string]: any
+interface Props extends ButtonProps {
+  className?: string;
+  isLoading?: boolean;
+  loadingText?: string;
+  children: React.ReactNode;
 }
 
-export default function LoadingButton({ isLoading, loadingText, children, ...others }: Props) {
+export default function LoadingButton({
+  children,
+  isLoading,
+  className,
+  loadingText,
+  ...others
+}: Props) {
   return (
-    <Button {...others} disabled={isLoading}>
+    <Button {...others} disabled={isLoading} className={className}>
       {isLoading && <SpinerIcon className="mr-1.5" />}
       {isLoading ? loadingText ?? children : children}
     </Button>
-  )
+  );
 }
