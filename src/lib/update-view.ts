@@ -4,7 +4,7 @@
 import getRedisClient, { getKeyWithNamespace } from "./redis";
 
 type ViewType = "content" | "chapter";
-type View = { type: ViewType; view: number };
+// type View = { type: ViewType; view: number };
 
 export default async function updateView(contentId: string, type: ViewType) {
   try {
@@ -29,7 +29,7 @@ export default async function updateView(contentId: string, type: ViewType) {
     view++;
     // console.log(view);
 
-    await redisClient.set(redisKey, view);
+    await redisClient.set(redisKey, view.toString());
   } catch (error) {
     console.log("Update View Error:", contentId, error);
   }

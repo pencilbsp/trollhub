@@ -2,7 +2,6 @@
 
 import slug from "slug"
 import Link from "next/link"
-import numeral from "numeral"
 import Image from "next/image"
 import { useEffect, useRef } from "react"
 import {
@@ -20,6 +19,7 @@ import { Badge } from "@/components/ui/Badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card"
 
+import numeral from "@/lib/format-number";
 import useSettings from "@/hooks/useSettings"
 import { avatarNameFallback, cn, formatToNow } from "@/lib/utils"
 import { Content, Creator, ContentStatus, ContentType } from "@prisma/client"
@@ -98,7 +98,7 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
             <span>0 lượt thích</span>
             <span>10 bình luận</span>
           </div>
-          <span>{numeral(view || 0).format("0a")} lượt xem</span>
+          <span>{numeral(view || 0).format("0.0a")} lượt xem</span>
         </div>
         <div className="grid grid-cols-3 gap-4 pt-2">
           <button className="flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-900 transition-colors rounded-md py-1.5">

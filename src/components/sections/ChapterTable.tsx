@@ -2,13 +2,13 @@
 
 import slug from "slug";
 import Link from "next/link";
-import numeral from "numeral";
 import { useEffect, useRef } from "react";
 import { TabletSmartphoneIcon } from "lucide-react";
 
 import { ContentType, Prisma } from "@prisma/client";
 import { ChapterList } from "@/actions/contentActions";
 
+import numeral from "@/lib/format-number";
 import { cn, formatDate } from "@/lib/utils";
 
 import useChapters from "@/hooks/useChapters";
@@ -232,7 +232,7 @@ function ChapterRow({
         </TableCell>
       )}
       {!hiddenColumns!.includes("update") && (
-        <TableCell className="text-right">{numeral(view || 0).format("0a")}</TableCell>
+        <TableCell className="text-right">{numeral(view || 0).format("0.0a")}</TableCell>
       )}
     </TableRow>
   );

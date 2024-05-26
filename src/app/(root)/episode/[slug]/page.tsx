@@ -1,11 +1,11 @@
 import slug from "slug";
 import Link from "next/link";
-import numeral from "numeral";
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { SITE_URL } from "@/config";
+import numeral from "@/lib/format-number";
 import { PageParams } from "@/types/page";
 import updateView from "@/lib/update-view";
 import { getEpisode } from "@/actions/episodeActions";
@@ -76,7 +76,7 @@ export default async function EpisodePage({ params }: PageParams) {
                 </time>
                 <span className="px-1">&#8226;</span>
                 <span className="text-gray-500 font-light">
-                  {numeral(episode.view || 0).format("0a")} lượt xem
+                  {numeral(episode.view || 0).format("0.0a")} lượt xem
                 </span>
               </div>
             </div>

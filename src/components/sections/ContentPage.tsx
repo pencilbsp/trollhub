@@ -1,10 +1,10 @@
 import slug from "slug"
 import Link from "next/link"
-import numeral from "numeral"
 import Image from "next/image"
-
-import { avatarNameFallback, formatDate } from "@/lib/utils"
 import { ThumbsUpIcon, BellPlusIcon, AlertOctagonIcon } from "lucide-react"
+
+import numeral from "@/lib/format-number";
+import { avatarNameFallback, formatDate } from "@/lib/utils"
 
 import { Content } from "@/actions/contentActions"
 import { ContentStatus, ContentType } from "@prisma/client"
@@ -40,7 +40,7 @@ export default async function ContentPage({ data }: Props) {
               <div className="text-gray-500 font-light text-sm">
                 <time className="font-light text-sm">Cập nhật lúc {formatDate(data.updatedAt)}</time>
                 <span className="px-1">&#8226;</span>
-                <span className="text-gray-500 font-light">{numeral(data.view || 0).format("0a")} lượt xem</span>
+                <span className="text-gray-500 font-light">{numeral(data.view || 0).format("0.0a")} lượt xem</span>
               </div>
             </div>
           </Card>
