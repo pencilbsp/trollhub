@@ -101,7 +101,7 @@ export default function Rankings() {
             </div>
           )}
 
-          {!isLoading && data?.data.length && (
+          {!isLoading && !data?.data.length && (
             <p className="text-center">Không có dữ liệu.</p>
           )}
 
