@@ -1,6 +1,8 @@
 import slug from "slug";
 import { Category } from "@prisma/client";
 
+import Rankings from "@/components/Rankings";
+import NativeAds from "@/components/ads/NativeAds";
 import CategoryList from "@/components/sections/CategoryList";
 import HomeSlider, { Slide } from "@/components/sections/HomeSlider";
 import HighlightContents from "@/components/sections/HighlightContents";
@@ -8,7 +10,6 @@ import HighlightContents from "@/components/sections/HighlightContents";
 import prisma from "@/lib/prisma";
 import { ADULT_CATEGORY_ID, NATIVE_ADS_ID } from "@/config";
 import getRedisClient, { getKeyWithNamespace } from "@/lib/redis";
-import NativeAds from "@/components/ads/NativeAds";
 
 const EX = 30 * 60; // 30 Phút
 
@@ -147,7 +148,9 @@ export default async function Home() {
                 />
               ))}
           </div>
-          <div className="col-span-3 md:col-span-1">
+          <div className="col-span-3 md:col-span-1 space-y-6">
+            <Rankings />
+
             <CategoryList data={categories} />
           </div>
         </div>

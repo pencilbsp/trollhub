@@ -10,7 +10,7 @@ interface Props {
 
 export default function CategoryList({ data }: Props) {
   return (
-    <>
+    <div>
       <h2 className="font-bold uppercase text-2xl">Tất cả thể loại</h2>
       <div className="mt-4">
         {data.map(({ id, title }) => (
@@ -21,6 +21,6 @@ export default function CategoryList({ data }: Props) {
           </Link>
         ))}
       </div>
-    </>
+    </div>
   );
 }
