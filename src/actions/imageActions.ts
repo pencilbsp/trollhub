@@ -58,7 +58,10 @@ export async function getImages(
       });
     } else {
       return data.images.map(
-        (i: string) => `${USER_CONTENTS_HOST}/images/${chapter.fid}/${i}`
+        (i: string) =>
+          `${USER_CONTENTS_HOST}/images/${
+            chapter.fid
+          }/${i}?t=${chapter.updatedAt.getTime()}`
       );
     }
 

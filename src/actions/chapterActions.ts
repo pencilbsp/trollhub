@@ -35,6 +35,7 @@ export async function getChapter(id: string) {
           select: {
             id: true,
             title: true,
+            updatedAt: true,
           },
         },
       },
