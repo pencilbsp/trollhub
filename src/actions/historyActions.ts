@@ -96,16 +96,16 @@ export async function createHistory(contentId: string, chapterId: string) {
         },
         select,
       }),
-      prisma.chapter.update({
-        where: {
-          id: chapterId,
-        },
-        data: {
-          view: {
-            increment: 1,
-          },
-        },
-      }),
+      // prisma.chapter.update({
+      //   where: {
+      //     id: chapterId,
+      //   },
+      //   data: {
+      //     view: {
+      //       increment: 1,
+      //     },
+      //   },
+      // }),
     ])
 
     return { history }
