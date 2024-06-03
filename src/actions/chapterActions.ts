@@ -50,7 +50,7 @@ export async function getChapter(id: string) {
 
     if (!data) throw Error("Nội dung không tồn tại");
 
-    await redis.set(id, JSON.stringify(data), { EX: 1 * 60 * 60 });
+    await redis.set(redisKey, JSON.stringify(data), { EX: 1 * 60 * 60 });
 
     return data;
   } catch (error) {
