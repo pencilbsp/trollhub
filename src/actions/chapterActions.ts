@@ -195,7 +195,7 @@ export async function resetChapterStatus(id: string) {
     if (!chapter) throw new Error("Nội dung này không tồn tại hoặc đã bị xoá");
 
     const redis = await getRedisClient();
-    await redis.del(id);
+    await redis.del(getKeyWithNamespace(id));
 
     if (chapter.status === ChapterStatus.ready) {
       return {
