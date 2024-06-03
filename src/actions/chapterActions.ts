@@ -25,10 +25,17 @@ export const chapterQuery = (options: any): any => ({
 });
 
 export async function getChapter(id: string) {
-  let data;
   try {
+    const redis = await getRedisClient();
+    const redisKey = getKeyWithNamespace(id);
+    const cached = await redis.json(redisKey);
+
+    if (cached) {
+      return cached as any;
+    }
+
     const where = id.length !== 24 ? { fid: id } : { id };
-    data = await prisma.chapter.findFirst({
+    const data = await prisma.chapter.findUnique({
       where,
       include: {
         content: {
@@ -43,19 +50,11 @@ export async function getChapter(id: string) {
 
     if (!data) throw Error("Nội dung không tồn tại");
 
-    // if (data.type === "comic" && data.status === "pending") {
-    //   data.images = await cloneImages(data.id, data.fid!)
-    //   data.status = "ready"
-    // }
-
-    // if (data.type === "novel" && data.status === "pending") {
-    //   data.text = await cloneText(data.id, data.fid!)
-    //   data.status = "ready"
-    // }
+    await redis.set(id, JSON.stringify(data), { EX: 1 * 60 * 60 });
 
     return data;
   } catch (error) {
-    return data;
+    return null;
   }
 }
 
@@ -75,64 +74,62 @@ export async function getChapters(
 
 export async function getChapterMetadata(id: string): Promise<Metadata | null> {
   try {
-    const redisClient = await getRedisClient();
-    const key = getKeyWithNamespace(`${id}-metadata`);
-    let cachedMetadata: any = await redisClient.get(key);
-    if (!cachedMetadata) {
-      const chapter = await prisma.chapter.findUnique({
-        where: { id },
-        select: {
-          type: true,
-          title: true,
-          creator: {
-            select: {
-              name: true,
-            },
-          },
-          content: {
-            select: {
-              title: true,
-              thumbUrl: true,
-              description: true,
-            },
-          },
-        },
-      });
+    const redis = await getRedisClient();
+    const redisKey = getKeyWithNamespace(id, "metadata");
+    const cached = await redis.json<Metadata>(redisKey);
 
-      if (!chapter) return null;
-
-      const title = `${chapter.content.title} ${chapter.title}`;
-      let description = `Đọc truyện ${chapter?.content.title}`;
-      if (chapter.content.description)
-        description += `: ${chapter.content.description.slice(0, 198)}`;
-
-      cachedMetadata = {
-        title: title,
-        description: description,
-        keywords: generateKeywords(
-          title,
-          [],
-          chapter.creator.name,
-          chapter.type
-        ),
-        openGraph: {
-          title: title,
-          locale: "vi_VN",
-          description: description,
-          siteName: SITE_URL.origin,
-          images: { url: chapter.content.thumbUrl! },
-          type: chapter.type === "movie" ? "video.movie" : "website",
-        },
-      };
-
-      await redisClient.set(key, JSON.stringify(cachedMetadata), {
-        EX: METADATA_EX_TIME,
-      });
-    } else {
-      cachedMetadata = JSON.parse(cachedMetadata);
+    if (cached) {
+      return cached;
     }
 
-    return cachedMetadata as Metadata;
+    const chapter = await prisma.chapter.findUnique({
+      where: { id },
+      select: {
+        type: true,
+        title: true,
+        creator: {
+          select: {
+            name: true,
+          },
+        },
+        content: {
+          select: {
+            title: true,
+            thumbUrl: true,
+            description: true,
+          },
+        },
+      },
+    });
+
+    if (!chapter) return null;
+
+    const title = `${chapter.content.title} ${chapter.title}`;
+    let description = `Đọc truyện ${chapter?.content.title}`;
+
+    if (chapter.content.description) {
+      description += `: ${chapter.content.description.slice(0, 198)}`;
+    }
+
+    const metadata: Metadata = {
+      title: title,
+      description: description,
+      keywords: generateKeywords(title, [], chapter.creator.name, chapter.type),
+      openGraph: {
+        title: title,
+        locale: "vi_VN",
+        description: description,
+        siteName: SITE_URL.origin,
+        images: { url: chapter.content.thumbUrl! },
+        type: chapter.type === "movie" ? "video.movie" : "website",
+      },
+    };
+
+    await redis.set(redisKey, JSON.stringify(metadata), {
+      EX: METADATA_EX_TIME,
+    });
+
+    return metadata;
   } catch (error) {
     return null;
   }
@@ -140,12 +137,15 @@ export async function getChapterMetadata(id: string): Promise<Metadata | null> {
 
 export async function requestChapter(chapterId: string, message?: string) {
   try {
-    if (message && message.length > 500)
+    if (message && message.length > 500) {
       throw new Error("Lời nhắn không được vượt quá 500 kí tự.");
+    }
 
     const session = await getServerSession(authOptions);
-    if (!session || !session.user)
+
+    if (!session || !session.user) {
       throw new Error("Vui lòng đăng nhập để gửi yêu cầu.");
+    }
 
     let status = false;
     const request = await prisma.requestChapter.findUnique({
