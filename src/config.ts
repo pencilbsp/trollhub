@@ -39,3 +39,5 @@ export const ADULT_CATEGORY_ID = "653b8758642648daa52ea9a9";
 export const PTO_ADS_ID = process.env.PTO_ADS_ID;
 export const NATIVE_ADS_ID = process.env.NATIVE_ADS_ID;
 export const FLYICON_ADS_ID = process.env.FLYICON_ADS_ID;
+
+export const GALAKSION_ADS_SRC = process.env.GALAKSION_ADS_SRC;

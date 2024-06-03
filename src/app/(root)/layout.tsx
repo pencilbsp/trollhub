@@ -21,6 +21,7 @@ import {
   METADATA_BASE,
   FLYICON_ADS_ID,
   GA_MEASUREMENT_ID,
+  GALAKSION_ADS_SRC,
 } from "@/config";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -48,15 +49,16 @@ export default async function RootLayout({
 
   return (
     <html lang="vi" suppressHydrationWarning>
-      {/* <head>
-        <Script
-          async
-          strategy="afterInteractive"
-          custom-element="amp-auto-ads"
-          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"
-        />
-        {GOOGLE_ADSENSE_ID && <AdSense pId={GOOGLE_ADSENSE_ID} />}
-      </head> */}
+      <head>
+        {GALAKSION_ADS_SRC && (
+          <Script
+            async
+            data-cfasync="false"
+            src={GALAKSION_ADS_SRC}
+            strategy="afterInteractive"
+          />
+        )}
+      </head>
 
       {GA_MEASUREMENT_ID && (
         <>
@@ -65,12 +67,12 @@ export default async function RootLayout({
           />
           <Script id="google-analytics">
             {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
  
-          gtag('config', '${GA_MEASUREMENT_ID}');
-        `}
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
           </Script>
         </>
       )}
