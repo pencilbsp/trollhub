@@ -194,6 +194,9 @@ export async function resetChapterStatus(id: string) {
     const chapter = await prisma.chapter.findUnique({ where: { id } });
     if (!chapter) throw new Error("Nội dung này không tồn tại hoặc đã bị xoá");
 
+    const redis = await getRedisClient();
+    await redis.del(id);
+
     if (chapter.status === ChapterStatus.ready) {
       return {
         message: "Nội dung này đã sẵn sàng để xem",
