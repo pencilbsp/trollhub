@@ -24,7 +24,7 @@ export default async function ComicViewer({ chapter }: Props) {
 
           <div className="flex flex-col md:flex-row gap-3">
             <RequestButton chapterId={chapter.id} />
-            <ReloadButton id={chapter.id} status={chapter.status} />
+            <ReloadButton fid={chapter.fid} id={chapter.id} status={chapter.status} />
           </div>
         </div>
       ) : chapter.type === "comic" ? (

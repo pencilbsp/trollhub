@@ -189,13 +189,14 @@ export async function requestChapter(chapterId: string, message?: string) {
   }
 }
 
-export async function resetChapterStatus(id: string) {
+export async function resetChapterStatus(id: string, fid: string) {
   try {
     const chapter = await prisma.chapter.findUnique({ where: { id } });
     if (!chapter) throw new Error("Nội dung này không tồn tại hoặc đã bị xoá");
 
     const redis = await getRedisClient();
     await redis.del(getKeyWithNamespace(id));
+    await redis.del(getKeyWithNamespace(fid));
 
     if (chapter.status === ChapterStatus.ready) {
       return {

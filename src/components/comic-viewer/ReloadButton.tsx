@@ -10,16 +10,17 @@ import { resetChapterStatus } from "@/actions/chapterActions";
 
 type Props = {
   id: string;
+  fid: string;
   status: ChapterStatus;
 };
 
-export default function ReloadButton({ id, status }: Props) {
+export default function ReloadButton({ id, fid, status }: Props) {
   const { refresh } = useRouter();
   const [pending, startTransition] = useTransition();
 
   const onClick = () =>
     startTransition(async () => {
-      const result = await resetChapterStatus(id);
+      const result = await resetChapterStatus(id, fid);
       if (result.error) {
         toast.error(result.error.message);
       } else {
