@@ -26,13 +26,13 @@ export const chapterQuery = (options: any): any => ({
 
 export async function getChapter(id: string) {
   try {
-    const redis = await getRedisClient();
-    const redisKey = getKeyWithNamespace(id);
-    const cached = await redis.json(redisKey);
+    // const redis = await getRedisClient();
+    // const redisKey = getKeyWithNamespace(id);
+    // const cached = await redis.json(redisKey);
 
-    if (cached) {
-      return cached as any;
-    }
+    // if (cached) {
+    //   return cached as any;
+    // }
 
     const where = id.length !== 24 ? { fid: id } : { id };
     const data = await prisma.chapter.findUnique({
@@ -50,7 +50,7 @@ export async function getChapter(id: string) {
 
     if (!data) throw Error("Nội dung không tồn tại");
 
-    await redis.set(redisKey, JSON.stringify(data), { EX: 1 * 60 * 60 });
+    // await redis.set(redisKey, JSON.stringify(data), { EX: 1 * 60 * 60 });
 
     return data;
   } catch (error) {
@@ -194,9 +194,9 @@ export async function resetChapterStatus(id: string, fid: string) {
     const chapter = await prisma.chapter.findUnique({ where: { id } });
     if (!chapter) throw new Error("Nội dung này không tồn tại hoặc đã bị xoá");
 
-    const redis = await getRedisClient();
-    await redis.del(getKeyWithNamespace(id));
-    await redis.del(getKeyWithNamespace(fid));
+    // const redis = await getRedisClient();
+    // await redis.del(getKeyWithNamespace(id));
+    // await redis.del(getKeyWithNamespace(fid));
 
     if (chapter.status === ChapterStatus.ready) {
       return {
