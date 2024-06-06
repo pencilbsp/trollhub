@@ -107,6 +107,7 @@ async function getHomeData(): Promise<HomeData> {
       title: content.title,
       tagline: content.akaTitle[0],
       image: content.thumbUrl!.replace("_256x", "_720x"),
+      adultContent: content.categoryIds.includes(ADULT_CATEGORY_ID),
     }));
 
     homeData = { slide, highlights, categories };
@@ -130,7 +131,10 @@ export default async function Home() {
       </div>
 
       {NATIVE_ADS_ID && (
-        <div className="w-full sm:container xl:max-w-7xl" suppressHydrationWarning>
+        <div
+          className="w-full sm:container xl:max-w-7xl"
+          suppressHydrationWarning
+        >
           <NativeAds id={NATIVE_ADS_ID} />
         </div>
       )}
