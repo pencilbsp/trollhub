@@ -17,7 +17,7 @@ async function getHlsAvailable({
   vid,
 }: Props): Promise<{ providers: PlayerSource[]; default: string }> {
   try {
-    const q = new URLSearchParams({ fid, id: vid });
+    const q = new URLSearchParams({ fid, vid });
     const apiUrl = `${USER_CONTENTS_HOST}/api/get-m3u8-available?${q.toString()}`;
     const response = await fetch(apiUrl, { cache: "no-cache" });
     const data = await response.json();
