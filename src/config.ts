@@ -41,3 +41,26 @@ export const NATIVE_ADS_ID = process.env.NATIVE_ADS_ID;
 export const FLYICON_ADS_ID = process.env.FLYICON_ADS_ID;
 
 export const GALAKSION_ADS_SRC = process.env.GALAKSION_ADS_SRC;
+
+export const filterable = [
+  {
+    label: "Cũ nhất",
+    key: "createdAt_asc",
+    disabled: (type: string) => false,
+  },
+  {
+    label: "Mới nhất",
+    key: "createdAt_desc",
+    disabled: (type: string) => false,
+  },
+  {
+    label: "Yêu cầu ít nhất",
+    key: "chapterId_asc",
+    disabled: (type: string) => type === "own",
+  },
+  {
+    label: "Yêu cầu nhiều nhất",
+    key: "chapterId_desc",
+    disabled: (type: string) => type === "own",
+  },
+];

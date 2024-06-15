@@ -1,12 +1,12 @@
 "use server";
 import { Metadata } from "next";
 import { getServerSession } from "next-auth";
+import { ChapterStatus } from "@prisma/client";
 
 import prisma from "@/lib/prisma";
 import authOptions from "@/lib/auth";
 import { generateKeywords } from "@/lib/utils";
-import { ChapterStatus } from "@prisma/client";
-import { METADATA_EX_TIME, SITE_URL } from "@/config";
+import { METADATA_EX_TIME, SITE_URL, filterable } from "@/config";
 import getRedisClient, { getKeyWithNamespace } from "@/lib/redis";
 
 export type Chapter = NonNullable<Awaited<ReturnType<typeof getChapter>>>;
@@ -58,10 +58,7 @@ export async function getChapter(id: string) {
   }
 }
 
-export async function getChapters(
-  where: any,
-  options: any = { take: 12, skip: 0, orderBy: { createdAt: "desc" } }
-) {
+export async function getChapters(where: any, options: any = { take: 12, skip: 0, orderBy: { createdAt: "desc" } }) {
   // console.log(options)
   const data = await prisma.chapter.findMany({
     where,
@@ -182,8 +179,162 @@ export async function requestChapter(chapterId: string, message?: string) {
   } catch (error: any) {
     return {
       error: {
-        message: (error?.message ||
-          "Đã xảy ra lỗi, vui lòng thử lại sau.") as string,
+        message: (error?.message || "Đã xảy ra lỗi, vui lòng thử lại sau.") as string,
+      },
+    };
+  }
+}
+
+export async function getRequestedChapters(queryString: string) {
+  try {
+    const query = new URLSearchParams(queryString);
+    let sort = query.get("sort");
+    const type = query.get("type");
+    let end = Number(query.get("end"));
+    let start = Number(query.get("start"));
+
+    if (start < 0) {
+      start = 0;
+    }
+
+    if (end < 0 || end <= start) {
+      end = start + 12;
+    }
+
+    if (!sort || !filterable.map(({ key }) => key).includes(sort)) {
+      sort = "createdAt_desc";
+    }
+
+    const where: any = {};
+    const orderBy = { [sort.split("_")[0]]: sort.split("_")[1] };
+
+    if (orderBy.chapterId) {
+      const [totalAggregated, group] = await Promise.all([
+        prisma.requestChapter.aggregateRaw({
+          pipeline: [
+            {
+              $group: {
+                _id: "$chapterId",
+              },
+            },
+            {
+              $count: "count",
+            },
+          ],
+        }),
+        prisma.requestChapter.groupBy({
+          by: ["chapterId", "status"],
+          _count: {
+            chapterId: true,
+          },
+          orderBy: {
+            _count: orderBy,
+          },
+          skip: start,
+          take: end - start,
+        }),
+      ]);
+
+      const chapters = await prisma.chapter.findMany({
+        where: {
+          id: {
+            in: group.map(({ chapterId }) => chapterId),
+          },
+        },
+        select: {
+          id: true,
+          type: true,
+          title: true,
+          content: {
+            select: {
+              title: true,
+              thumbUrl: true,
+            },
+          },
+        },
+      });
+
+      const result = group.reduce((acc: any, item) => {
+        const chapter = chapters.find(({ id }) => id === item.chapterId);
+        acc.push({
+          ...chapter,
+          cid: item.chapterId,
+          status: item.status,
+          count: item._count.chapterId,
+        });
+        return acc;
+      }, []);
+
+      // @ts-ignore
+      return { data: { total: totalAggregated[0].count, requests: result } };
+    } else {
+      if (type === "own") {
+        const session = await getServerSession(authOptions);
+        if (!session) {
+          throw new Error("Vui lòng đăng nhập để thực hiện yêu cầu.");
+        }
+
+        where.userId = session.user.id;
+      }
+
+      const [total, requests] = await Promise.all([
+        prisma.requestChapter.count({
+          where,
+        }),
+        prisma.requestChapter.findMany({
+          where,
+          orderBy,
+          select: {
+            id: true,
+            status: true,
+            createdAt: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+            chapter: {
+              select: {
+                id: true,
+                type: true,
+                title: true,
+                content: {
+                  select: {
+                    title: true,
+                    thumbUrl: true,
+                  },
+                },
+              },
+            },
+          },
+          skip: start,
+          take: end - start,
+        }),
+      ]);
+
+      return {
+        data: {
+          total,
+          requests: requests.map(({ id, status, chapter, createdAt, user }) => ({
+            id,
+            user,
+            status,
+            createdAt,
+            cid: chapter.id,
+            type: chapter.type,
+            title: chapter.title,
+            content: { title: chapter.content.title, thumbUrl: chapter.content.thumbUrl },
+          })),
+        },
+      };
+    }
+  } catch (error: any) {
+    console.log(error);
+    return {
+      error: {
+        message: error.message,
       },
     };
   }
@@ -253,8 +404,7 @@ export async function checkRequestStatus(chapterId: string) {
   } catch (error: any) {
     return {
       error: {
-        message: (error?.message ||
-          "Đã xảy ra lỗi, vui lòng thử lại sau") as string,
+        message: (error?.message || "Đã xảy ra lỗi, vui lòng thử lại sau") as string,
       },
     };
   }

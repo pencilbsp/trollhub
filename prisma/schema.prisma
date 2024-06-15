@@ -235,7 +235,7 @@ model UserLikeReply {
 }
 
 enum RequestChapterStatus {
-  requeted
+  requested
   processing
   done
   rejected
@@ -246,7 +246,7 @@ model RequestChapter {
   chapterId String               @db.ObjectId
   chapter   Chapter              @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   userId    String
-  status    RequestChapterStatus @default(requeted)
+  status    RequestChapterStatus @default(requested)
   user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   updatedAt DateTime             @updatedAt
   createdAt DateTime             @default(now())

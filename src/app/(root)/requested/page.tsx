@@ -1,22 +1,19 @@
+import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 
 import authOptions from "@/lib/auth";
 // components
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import RequestedChapterPage from "@/components/sections/RequestedChapterPage";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Nội dung đã yêu cầu",
+    description: "Xem lại các yêu cầu và trạng thái cập nhật",
+  };
+}
 
 export default async function RequestedPage() {
   const session = await getServerSession(authOptions);
 
-  return (
-    <div className="container p-2 sm:px-8 xl:max-w-7xl">
-      <Tabs defaultValue={session ? "own" : "all"}>
-        <div className="flex items-center">
-          <TabsList>
-            <TabsTrigger value="all">Tất cả</TabsTrigger>
-            <TabsTrigger value="own" disabled={!session}>Của tôi</TabsTrigger>
-          </TabsList>
-        </div>
-      </Tabs>
-    </div>
-  );
+  return <RequestedChapterPage session={session} />;
 }

@@ -15,11 +15,7 @@ import { USER_CONTENTS_HOST } from "@/config";
 import { Button } from "@/components/ui/Button";
 import SpinerIcon from "@/components/icons/SpinerIcon";
 import { Card, CardContent } from "@/components/ui/Card";
-import {
-  Pagination,
-  PaginationItem,
-  PaginationContent,
-} from "@/components/ui/pagination";
+import { Pagination, PaginationItem, PaginationContent } from "@/components/ui/pagination";
 
 const step = 10;
 const fallbackData = { data: [], total: 0 };
@@ -69,7 +65,7 @@ export default function Rankings() {
               <Button
                 size="icon"
                 variant="outline"
-                className="h-6 w-6"
+                className="h-7 w-7"
                 onClick={handlePrev}
                 disabled={isLoading || range.start < step}
               >
@@ -81,7 +77,7 @@ export default function Rankings() {
               <Button
                 size="icon"
                 variant="outline"
-                className="h-6 w-6"
+                className="h-7 w-7"
                 onClick={handleNext}
                 disabled={isLoading || data?.total! <= range.end}
               >
@@ -101,13 +97,11 @@ export default function Rankings() {
             </div>
           )}
 
-          {!isLoading && !data?.data.length && (
-            <p className="text-center">Không có dữ liệu.</p>
-          )}
+          {!isLoading && !data?.data.length && <p className="text-center">Không có dữ liệu.</p>}
 
           {!isLoading &&
-            data?.data.length &&
-            data.data.map(({ id, type, thumbUrl, title, view }, index) => {
+            (data?.data.length || 0) > 0 &&
+            data?.data.map(({ id, type, thumbUrl, title, view }, index) => {
               const href = `/${type}/${slug(title)}-${id}`;
 
               return (
@@ -129,12 +123,8 @@ export default function Rankings() {
                         index !== data.data.length - 1 && "border-b"
                       )}
                     >
-                      <p className="line-clamp-2 font-medium group-hover:text-blue-500 transition-colors">
-                        {title}
-                      </p>
-                      <div className="ml-auto text-green-400 flex-shrink-0">
-                        +{numeral(view || 0).format("0.0a")}
-                      </div>
+                      <p className="line-clamp-2 font-medium group-hover:text-blue-500 transition-colors">{title}</p>
+                      <div className="ml-auto text-green-400 flex-shrink-0">+{numeral(view || 0).format("0.0a")}</div>
                     </div>
                   </Link>
                 </div>

@@ -18,7 +18,7 @@ type Props = {
 export default function NextChapter({ chapterId, title, contentId }: Props) {
   const { chapters } = useChapters(contentId)
   const nextChaper = useMemo(() => {
-    const index = chapters.findIndex(({ id }) => id === chapterId)
+    const index = (chapters as any).findIndex(({ id }: any) => id === chapterId)
     if (index < 0) return null
 
     const next = chapters[index - 1]
