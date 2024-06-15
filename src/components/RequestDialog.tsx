@@ -24,16 +24,17 @@ export default function RequestDialog() {
         const formData = new FormData(event.target as HTMLFormElement);
         const url = formData.get("url") as string;
         if (url) {
-          const response = await fetch(
-            USER_CONTENTS_HOST + "/api/request-content",
-            {
-              method: "POST",
-              body: JSON.stringify({ url }),
-              headers: { "Content-Type": "application/json" },
-            }
-          );
+          const response = await fetch(USER_CONTENTS_HOST + "/api/request-content", {
+            method: "POST",
+            body: JSON.stringify({ url }),
+            headers: { "Content-Type": "application/json" },
+          });
 
           const result = await response.json();
+          if (result.error) {
+            throw new Error(result.error.message);
+          }
+
           toast.success(result.message);
         }
       } catch (error: any) {
@@ -52,23 +53,14 @@ export default function RequestDialog() {
         <DialogHeader>
           <DialogTitle>Yêu cầu thêm hoặc cập nhật nội dung</DialogTitle>
           <DialogDescription>
-            Điền link phim, truyện, hoặc kênh mà bạn muốn chúng tôi thêm hoặc
-            cập nhật!
+            Điền link phim, truyện, hoặc kênh mà bạn muốn chúng tôi thêm hoặc cập nhật!
             <br />
-            Quá trình yêu cầu có thể mất nhiều thời gian nếu kênh chứa nhiều nội
-            dung, hãy kiên nhẫn chờ đợi!
+            Quá trình yêu cầu có thể mất nhiều thời gian nếu kênh chứa nhiều nội dung, hãy kiên nhẫn chờ đợi!
           </DialogDescription>
         </DialogHeader>
 
-        <form
-          className="flex w-full items-center space-x-2"
-          onSubmit={onSubmit}
-        >
-          <Input
-            name="url"
-            placeholder="Link Fuhu video, comic, novel hoặc chanel"
-            disabled={pending}
-          />
+        <form className="flex w-full items-center space-x-2" onSubmit={onSubmit}>
+          <Input name="url" placeholder="Link Fuhu video, comic, novel hoặc chanel" disabled={pending} />
           <LoadingButton
             type="submit"
             disabled={pending}

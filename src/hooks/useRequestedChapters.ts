@@ -28,6 +28,8 @@ export default function useRequestedChapters({ start = 0, end = 12, type, sort }
 
   const { data, isLoading } = useSWR(swrKey.toString(), getRequestedChapters, { fallbackData });
 
+  
+
   const handleNext = () => {
     // @ts-ignore
     if (!isLoading && data.data.total > range.end) {
