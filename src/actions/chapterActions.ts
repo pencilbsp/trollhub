@@ -331,8 +331,11 @@ export async function getRequestedChapters(queryString: string) {
       };
     }
   } catch (error: any) {
-    console.log(error);
     return {
+      data: {
+        total: 0,
+        requests: [],
+      },
       error: {
         message: error.message,
       },
