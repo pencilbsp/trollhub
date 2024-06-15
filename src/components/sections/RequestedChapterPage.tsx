@@ -124,7 +124,7 @@ export default function RequestedChapterPage({ session }: Props) {
                   </div>
                 )}
 
-                {!isLoading && requests.length === 0 && <p className="text-center">Không có dữ liệu.</p>}
+                {!isLoading && requests.length === 0 && <p className="text-center py-6">Không có dữ liệu.</p>}
 
                 {!isLoading && requests.length > 0 && (
                   <Table>
@@ -160,7 +160,12 @@ export default function RequestedChapterPage({ session }: Props) {
                               </Link>
                             </TableCell>
                             <TableCell align="right" className="px-4 md:px-6">
-                              <Badge variant="outline" className="capitalize">
+                              <Badge
+                                variant={
+                                  status === "done" ? "success" : status === "rejected" ? "destructive" : "outline"
+                                }
+                                className="capitalize"
+                              >
                                 {status}
                               </Badge>
                             </TableCell>
