@@ -1,5 +1,5 @@
 "use server"
-import { ContentType, ChapterStatus } from "@prisma/client"
+import { ContentType } from "@prisma/client"
 
 import prisma from "@/lib/prisma"
 import getRedisClient from "@/lib/redis"
