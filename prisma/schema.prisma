@@ -155,6 +155,7 @@ model Content {
   histories       History[]
   userLikeContent UserLikeContent[]
   view            Int?              @default(0)
+  hidden          Boolean           @default(false)
 }
 
 model Reply {

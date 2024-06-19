@@ -16,6 +16,7 @@ const get = (where: any, contentWhere: any) =>
       id: true,
       view: true,
       title: true,
+      hidden: true,
       thumbUrl: true,
       updatedAt: true,
       description: true,
@@ -97,6 +98,8 @@ export default async function getContent(id: string): Promise<Content | null> {
     } else {
       cachedContent = JSON.parse(cachedContent)
     }
+
+    if (cachedContent.hidden) throw new Error("Hidden content.")
 
     return cachedContent
   } catch (error) {
