@@ -17,6 +17,7 @@ const get = (id: string) =>
       view: true,
       title: true,
       status: true,
+      hidden: true,
       videoId: true,
       createdAt: true,
       updatedAt: true,
@@ -49,7 +50,7 @@ export async function getEpisode(id: string): Promise<EpisodeType> {
     if (cachedEpisode) return JSON.parse(cachedEpisode)
 
     const episode = await get(id)
-    if (!episode) throw new Error("notFound")
+    if (!episode || episode.hidden) throw new Error("notFound")
 
     const EX = episode.status === "ready" ? EX_TIME : 60
     await redisClient.set(id, JSON.stringify(episode), { EX })
