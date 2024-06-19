@@ -11,7 +11,7 @@ const redisClient =
   createClient({ url: REDIS_URL, username: REDIS_USER, password: REDIS_PASS });
 if (process.env.NODE_ENV !== "production") globalThis.redis = redisClient;
 
-interface RedisClient extends Omit<RedisClientType, "json"> {
+export interface RedisClient extends Omit<RedisClientType, "json"> {
   json: <T>(key: string) => Promise<T | null>;
 }
 
