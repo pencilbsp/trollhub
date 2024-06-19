@@ -12,10 +12,10 @@ import numeral from "@/lib/format-number";
 import { ContentRank } from "@/types/other";
 
 import { Button } from "@/components/ui/Button";
+import getRankingContents from "@/actions/rankings";
 import SpinerIcon from "@/components/icons/SpinerIcon";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Pagination, PaginationItem, PaginationContent } from "@/components/ui/pagination";
-import getRankingContents from "@/actions/rankings";
 
 const step = 10;
 const fallbackData = { data: [], total: 0 };
