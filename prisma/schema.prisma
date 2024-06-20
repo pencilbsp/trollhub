@@ -117,6 +117,7 @@ model Chapter {
   requestChapters RequestChapter[]
   videoId         String?
   hidden          Boolean          @default(false)
+  index           Int              @default(0)
 }
 
 enum ContentType {
