@@ -37,7 +37,11 @@ export async function getChapter(id: string) {
     const where = id.length !== 24 ? { fid: id } : { id };
     const data = await prisma.chapter.findUnique({
       where,
-      include: {
+      select: {
+        id: true,
+        fid: true,
+        type: true,
+        title: true,
         content: {
           select: {
             id: true,

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Suspense } from "react";
+// import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
 import { getSlugId } from "@/lib/utils";
@@ -37,16 +37,16 @@ export default async function ChapterPage({ params }: Props) {
                 <div className="my-4 md:my-3 relative">
                     <ChapterNav
                         id={chapter.id}
-                        title={chapter.title!}
+                        title={chapter.title}
                         contentType={chapter.type}
                         contentId={chapter.content.id}
                         contentTitle={chapter.content.title}
                     />
                 </div>
 
-                <Suspense fallback={<ComicViewerLoading />}>
-                    <ComicViewer chapter={chapter} />
-                </Suspense>
+                {/* <Suspense fallback={<ComicViewerLoading />}> */}
+                <ComicViewer chapter={chapter} />
+                {/* </Suspense> */}
             </div>
 
             <NextChapter title={chapter.title} chapterId={chapter.id} contentId={chapter.content.id} />
