@@ -1,6 +1,6 @@
 "use server";
 
-// import prisma from "./prisma";
+import prisma from "./prisma";
 import getRedisClient, { getKeyWithNamespace, type RedisClient } from "./redis";
 
 type ViewType = "content" | "chapter";
