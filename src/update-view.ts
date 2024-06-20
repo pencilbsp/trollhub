@@ -2,13 +2,12 @@ import Queue from "bull";
 import getRedisClient from "./lib/redis";
 import { getViewKeys, updateContentView } from "./lib/update-view";
 
-console.log("Update view...");
-
 declare global {
     var updateViewCron: Queue.Queue<any>;
 }
 
-export default function updateViewCron(cron?: string) {
+function updateViewCron(cron?: string) {
+    console.log("Update view...");
     if (!cron) return;
     if (globalThis.updateViewCron) return;
 
@@ -45,3 +44,5 @@ export default function updateViewCron(cron?: string) {
         console.log(`Cập nhật lượt xem ${job.id} đã thất bại! Lỗi: ${err}`);
     });
 }
+
+updateViewCron("0 0 * * *");
