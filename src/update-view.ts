@@ -2,6 +2,8 @@ import Queue from "bull";
 import getRedisClient from "./lib/redis";
 import { getViewKeys, updateContentView } from "./lib/update-view";
 
+console.log("Update view...");
+
 declare global {
     var updateViewCron: Queue.Queue<any>;
 }
