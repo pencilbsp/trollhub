@@ -26,13 +26,13 @@ export const chapterQuery = (options: any): any => ({
 
 export async function getChapter(id: string) {
   try {
-    // const redis = await getRedisClient();
-    // const redisKey = getKeyWithNamespace(id);
-    // const cached = await redis.json(redisKey);
+    const redis = await getRedisClient();
+    const redisKey = getKeyWithNamespace(id);
+    const cached = await redis.json(redisKey);
 
-    // if (cached) {
-    //   return cached as any;
-    // }
+    if (cached) {
+      return cached as any;
+    }
 
     const where = id.length !== 24 ? { fid: id } : { id };
     const data = await prisma.chapter.findUnique({
@@ -50,7 +50,7 @@ export async function getChapter(id: string) {
 
     if (!data) throw Error("Nội dung không tồn tại");
 
-    // await redis.set(redisKey, JSON.stringify(data), { EX: 1 * 60 * 60 });
+    await redis.set(redisKey, JSON.stringify(data), { EX: METADATA_EX_TIME });
 
     return data;
   } catch (error) {
