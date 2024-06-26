@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 // import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
@@ -9,47 +9,58 @@ import { getChapter, getChapterMetadata } from "@/actions/chapterActions";
 import updateView from "@/lib/update-view";
 import ChapterNav from "@/components/ChapterNav";
 import NextChapter from "@/components/NextChapter";
+import { ComicViewer } from "@/components/comic-viewer";
 import { TooltipProvider } from "@/components/ui/Tooltip";
-import { ComicViewer, ComicViewerLoading } from "@/components/comic-viewer";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 interface Props {
-    params: { slug: string };
+  params: { slug: string };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const chapterId = getSlugId(params.slug);
-    const metadata = await getChapterMetadata(chapterId);
-    if (!metadata) return notFound();
+  const chapterId = getSlugId(params.slug);
+  const metadata = await getChapterMetadata(chapterId);
+  if (!metadata) return notFound();
 
-    return metadata;
+  return metadata;
 }
 
 export default async function ChapterPage({ params }: Props) {
-    const chapterId = getSlugId(params.slug);
-    const chapter = await getChapter(chapterId);
-    if (!chapter) return notFound();
+  const chapterId = getSlugId(params.slug);
+  const chapter = await getChapter(chapterId);
+  if (!chapter) return notFound();
 
-    updateView(chapter.id, "chapter");
+  updateView(chapter.id, "chapter");
 
-    return (
-        <TooltipProvider>
-            <div className="container px-4 xl:max-w-6xl">
-                <div className="my-4 md:my-3 relative">
-                    <ChapterNav
-                        id={chapter.id}
-                        title={chapter.title}
-                        contentType={chapter.type}
-                        contentId={chapter.content.id}
-                        contentTitle={chapter.content.title}
-                    />
-                </div>
+  return (
+    <TooltipProvider>
+      <div className="container px-4 xl:max-w-6xl">
+        <div className="my-4 md:my-3 relative">
+          <ChapterNav
+            id={chapter.id}
+            title={chapter.title}
+            contentType={chapter.type}
+            contentId={chapter.content.id}
+            contentTitle={chapter.content.title}
+          />
+        </div>
 
-                {/* <Suspense fallback={<ComicViewerLoading />}> */}
-                <ComicViewer chapter={chapter} />
-                {/* </Suspense> */}
-            </div>
+        {/* <Suspense fallback={<ComicViewerLoading />}> */}
+        <ComicViewer chapter={chapter} />
+        {/* </Suspense> */}
+      </div>
 
-            <NextChapter title={chapter.title} chapterId={chapter.id} contentId={chapter.content.id} />
-        </TooltipProvider>
-    );
+      <NextChapter
+        title={chapter.title}
+        chapterId={chapter.id}
+        contentId={chapter.content.id}
+      />
+    </TooltipProvider>
+  );
 }
