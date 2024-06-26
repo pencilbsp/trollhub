@@ -22,6 +22,9 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
   return (
     <html lang="vi" suppressHydrationWarning>
       <body className={inter.className}>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+        </head>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <div className="h-screen flex flex-col">
             <div className="border-b bg-background/80 backdrop-blur-xl z-50 h-16">
