@@ -1,28 +1,41 @@
 import useSWR from "swr"
+import { ChangeEvent, useMemo, useState } from "react"
 
-import { XOR } from "@/types/utils"
 import { getChapters } from "@/actions/chapterActions"
-import { ChapterList as IChapterList } from "@/actions/contentActions"
 
-export type Chapter = Awaited<ReturnType<typeof getChapters>>
-type ChapterList = XOR<Chapter, IChapterList>
+export type ChapterResult = NonNullable<Awaited<ReturnType<typeof getChapters>>>
 
 const fetcher = async (id: string) => {
   const contentId = id.split("|")[0]
-  const result = await getChapters({ contentId }, { orderBy: { createdAt: "desc" } })
-  return result.data
+  return getChapters({ contentId }, { orderBy: { createdAt: "desc" } })
 }
 
-export default function useChapters(contentId: string, fallbackData: ChapterList = []) {
-  const { data, error, isLoading, mutate } = useSWR<ChapterList>(`${contentId}|chapters`, fetcher, {
-    fallbackData,
-    revalidateOnFocus: false,
-  })
+
+export default function useChapters(contentId: string, fallbackData: ChapterResult = { total: 0, data: [] }) {
+  const swrKey = `${contentId}|chapters`
+  const [search, setSearch] = useState("")
+  const { data, error, isLoading, mutate } = useSWR<ChapterResult>(swrKey, fetcher, { fallbackData })
+
+  const onFilter = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.value) {
+      setSearch(event.currentTarget.value)
+    } else {
+      setSearch("")
+    }
+  }
+
+  const filtered = useMemo(() => {
+    if (!data) return []
+    if (!search) return data.data
+    return data.data.filter(({ title }) => title && title.indexOf(search) > -1)
+  }, [search])
 
   return {
     mutate,
+    onFilter,
     isLoading,
     isError: error,
-    chapters: data || [],
+    chapters: filtered,
+    total: data?.total || 0,
   }
 }

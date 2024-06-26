@@ -16,7 +16,11 @@ type Props = {
 };
 
 export default function ComicViewer({ chapter }: Props) {
-    const { data: images, isLoading } = useSWR(chapter.fid, async (fid: string) => {
+    const {
+        mutate,
+        isLoading,
+        data: images,
+    } = useSWR(chapter.fid, async (fid: string) => {
         try {
             const response = await fetch(`${USER_CONTENTS_HOST}/api/fttps:webp/${fid}`);
             const data = await response.json();
@@ -38,7 +42,7 @@ export default function ComicViewer({ chapter }: Props) {
 
                     <div className="flex flex-col md:flex-row gap-3">
                         <RequestButton chapterId={chapter.id} />
-                        <ReloadButton fid={chapter.fid} id={chapter.id} status={chapter.status} />
+                        <ReloadButton fid={chapter.fid} id={chapter.id} mutate={mutate} />
                     </div>
                 </div>
             ) : chapter.type === "comic" ? (
