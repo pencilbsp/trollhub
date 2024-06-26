@@ -28,7 +28,7 @@ export default function useChapters(contentId: string, fallbackData: ChapterResu
     if (!data) return []
     if (!search) return data.data
     return data.data.filter(({ title }) => title && title.indexOf(search) > -1)
-  }, [search])
+  }, [search, data])
 
   return {
     mutate,
