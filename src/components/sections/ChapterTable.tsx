@@ -40,17 +40,16 @@ export default function ChapterTable({
     if (!createdAt) createdAt = "desc";
     if (!hiddenColumns) hiddenColumns = [];
 
-    const { chapters, mutate } = useChapters(contentId, data);
+    // @ts-ignore
+    const { chapters, mutate } = useChapters(contentId, data ? { data: data, total: data.length } : undefined);
 
     const handleSort = (value: Prisma.SortOrder) => {
         mutate(
-            [
-                // @ts-ignore
-                ...chapters.sort((a: any, b: any) => {
-                    if (value === "desc") [a, b] = [b, a];
-                    return a.createdAt.getTime() - b.createdAt.getTime();
-                }),
-            ],
+            // @ts-ignore
+            [...chapters.sort((a, b) => {
+                if (value === "desc") [a, b] = [b, a];
+                return a.createdAt.getTime() - b.createdAt.getTime();
+            })],
             { revalidate: false }
         );
     };
