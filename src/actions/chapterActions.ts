@@ -34,7 +34,12 @@ export async function getChapter(id: string) {
       return cached as any;
     }
 
-    const where = id.length !== 24 ? { fid: id } : { id };
+    const where: any = { hidden: false };
+    if (id.length !== 24) {
+      where.fid = id;
+    } else {
+      where.id = id;
+    }
     const data = await prisma.chapter.findUnique({
       where,
       select: {
@@ -62,7 +67,10 @@ export async function getChapter(id: string) {
   }
 }
 
-export async function getChapters(where: any, options: any = { take: 12, skip: 0, orderBy: { createdAt: "desc" } }) {
+export async function getChapters(
+  where: any,
+  options: any = { take: 12, skip: 0, orderBy: { createdAt: "desc" } }
+) {
   // console.log(options)
   const data = await prisma.chapter.findMany({
     where,
@@ -183,7 +191,8 @@ export async function requestChapter(chapterId: string, message?: string) {
   } catch (error: any) {
     return {
       error: {
-        message: (error?.message || "Đã xảy ra lỗi, vui lòng thử lại sau.") as string,
+        message: (error?.message ||
+          "Đã xảy ra lỗi, vui lòng thử lại sau.") as string,
       },
     };
   }
@@ -321,16 +330,21 @@ export async function getRequestedChapters(queryString: string) {
       return {
         data: {
           total,
-          requests: requests.map(({ id, status, chapter, createdAt, user }) => ({
-            id,
-            user,
-            status,
-            createdAt,
-            cid: chapter.id,
-            type: chapter.type,
-            title: chapter.title,
-            content: { title: chapter.content.title, thumbUrl: chapter.content.thumbUrl },
-          })),
+          requests: requests.map(
+            ({ id, status, chapter, createdAt, user }) => ({
+              id,
+              user,
+              status,
+              createdAt,
+              cid: chapter.id,
+              type: chapter.type,
+              title: chapter.title,
+              content: {
+                title: chapter.content.title,
+                thumbUrl: chapter.content.thumbUrl,
+              },
+            })
+          ),
         },
       };
     }
@@ -411,7 +425,8 @@ export async function checkRequestStatus(chapterId: string) {
   } catch (error: any) {
     return {
       error: {
-        message: (error?.message || "Đã xảy ra lỗi, vui lòng thử lại sau") as string,
+        message: (error?.message ||
+          "Đã xảy ra lỗi, vui lòng thử lại sau") as string,
       },
     };
   }
