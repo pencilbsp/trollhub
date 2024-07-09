@@ -53,23 +53,14 @@ export default function ChapterTable({
   if (!createdAt) createdAt = "desc";
   if (!hiddenColumns) hiddenColumns = [];
 
-  const { chapters, mutate } = useChapters(
+  const { chapters, setSort } = useChapters(
     contentId,
     // @ts-ignore
     data ? { data: data, total: data.length } : undefined
   );
 
   const handleSort = (value: Prisma.SortOrder) => {
-    mutate(
-      // @ts-ignore
-      [
-        ...chapters.sort((a, b) => {
-          if (value === "desc") [a, b] = [b, a];
-          return a.createdAt.getTime() - b.createdAt.getTime();
-        }),
-      ],
-      { revalidate: false }
-    );
+    setSort(value);
   };
 
   return (
@@ -90,8 +81,7 @@ export default function ChapterTable({
       </div>
       <Card className="mt-4">
         <div className="max-h-80 overflow-y-auto">
-          {/* @ts-ignore */}
-          {chapters.length > 0 && (
+          {chapters?.length > 0 && (
             <Table>
               <TableHeader className="sticky top-0 dark:bg-gray-950 bg-gray-50 mx-4">
                 <TableRow>

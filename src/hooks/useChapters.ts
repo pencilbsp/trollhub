@@ -2,6 +2,7 @@ import useSWR from "swr";
 import { ChangeEvent, useMemo, useState } from "react";
 
 import { getChapters } from "@/actions/chapterActions";
+import { Prisma } from "@prisma/client";
 
 export type ChapterResult = NonNullable<
   Awaited<ReturnType<typeof getChapters>>
@@ -21,6 +22,7 @@ export default function useChapters(
 ) {
   const swrKey = `${contentId}|chapters`;
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<Prisma.SortOrder>("desc");
   const { data, error, isLoading, mutate } = useSWR<ChapterResult>(
     swrKey,
     fetcher,
@@ -37,12 +39,20 @@ export default function useChapters(
 
   const filtered = useMemo(() => {
     if (!data) return [];
-    if (!search) return data.data;
-    return data.data.filter(({ title }) => title && title.indexOf(search) > -1);
-  }, [search, data]);
+
+    console.log(data.data);
+    const chapters = data.data.sort((a, b) => {
+      if (sort === "desc") [a, b] = [b, a];
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    });
+
+    if (!search) return chapters;
+    return chapters.filter(({ title }) => title && title.indexOf(search) > -1);
+  }, [search, data, sort]);
 
   return {
     mutate,
+    setSort,
     onFilter,
     isLoading,
     isError: error,
