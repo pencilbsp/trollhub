@@ -40,7 +40,6 @@ export default function useChapters(
   const filtered = useMemo(() => {
     if (!data) return [];
 
-    console.log(data.data);
     const chapters = data.data.sort((a, b) => {
       if (sort === "desc") [a, b] = [b, a];
       return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
