@@ -4,7 +4,7 @@ export const INIT_TAKE_CONTENT = 8;
 const devMode = process.env.NODE_ENV !== "production";
 
 export const SITE_NAME = "Trollhub";
-export const SITE_URL = new URL(process.env.NEXTAUTH_URL!);
+export const SITE_URL = new URL(process.env.NEXT_PUBLIC_SITE_URL!);
 
 // export const USER_CONTENTS_HOST = devMode
 //   ? process.env.NEXT_PUBLIC_USER_CONTENTS_HOST
