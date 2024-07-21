@@ -8,7 +8,7 @@ declare global {
 
 const redisClient =
   global.redis ||
-  createClient({ url: REDIS_URL, username: REDIS_USER, password: REDIS_PASS });
+  createClient({ url: REDIS_URL });
 if (process.env.NODE_ENV !== "production") globalThis.redis = redisClient;
 
 export interface RedisClient extends Omit<RedisClientType, "json"> {
