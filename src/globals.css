@@ -103,6 +103,10 @@
     @apply top-20;
   }
 
+  body.header-pinned header {
+    @apply border-b;
+  }
+
   .line-mask {
     mask-image: linear-gradient(rgb(0, 0, 0), transparent);
   }
@@ -122,4 +126,14 @@
 
 .lazy-wrapper > img {
   @apply w-full inline-block;
+}
+
+.sizing-content {
+  field-sizing: content;
+}
+
+.transition-background {
+  transition-property: background;
+  transition-timing-function: ease;
+  transition-duration: 0.25s;
 }

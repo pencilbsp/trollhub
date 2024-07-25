@@ -12,7 +12,8 @@ module.exports = {
       extend: {
         backgroundImage: {
           "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-          "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+          "gradient-conic":
+            "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         },
         transitionProperty: {
           top: "top",
@@ -77,15 +78,24 @@ module.exports = {
             "background-position": "-135% 0%",
           },
         },
+        "text-gradient": {
+          to: {
+            "background-position": "-200%",
+          },
+        },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
         shine: "shine 1.3s infinite",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "text-gradient":
+          "text-gradient 4s linear 0s infinite normal forwards running",
+        spin_3s_linear_infinite: "spin 3s linear infinite",
       },
       backgroundImage: {
-        shine: "linear-gradient(-90deg, hsl(var(--background)) 0%, hsl(var(--shine)) 50%, hsl(var(--background)) 100%)",
         curtain: 'url("/picture-photo.svg")',
+        shine:
+          "linear-gradient(-90deg, hsl(var(--background)) 0%, hsl(var(--shine)) 50%, hsl(var(--background)) 100%)",
       },
       backgroundSize: {
         "1/3": "calc(100%/3)",
@@ -97,8 +107,8 @@ module.exports = {
     require("tailwindcss-animate"),
     require("@vidstack/react/tailwind.cjs"),
     ({ addVariant }) => {
-      addVariant("hocus", ["&:hover", "&:focus-visible"])
-      addVariant("group-hocus", [".group:hover &", ".group:focus-visible &"])
+      addVariant("hocus", ["&:hover", "&:focus-visible"]);
+      addVariant("group-hocus", [".group:hover &", ".group:focus-visible &"]);
     },
   ],
-}
+};

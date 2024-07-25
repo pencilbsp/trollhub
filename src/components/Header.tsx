@@ -32,7 +32,7 @@ export default function Header() {
       onUnpin={() => document.body.classList.remove("header-pinned")}
       onUnfix={() => document.body.classList.remove("header-pinned")}
     >
-      <header className="sticky top-0 flex flex-col justify-around items-center w-full border-b bg-background/80 backdrop-blur-xl z-50">
+      <header className="sticky top-0 flex flex-col justify-around items-center w-full bg-background/80 backdrop-blur-xl z-50">
         <div className="container flex h-16 items-center px-4">
           <div className="flex flex-1 items-center justify-between">
             <Sheet open={isOpen} onOpenChange={setOpen}>
