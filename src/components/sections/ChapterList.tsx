@@ -51,7 +51,7 @@ export default function ChapterList({ chapters, contentTitle, currentId, isLoadi
                             >
                                 <Link
                                     className="flex justify-between p-2 gap-x-4"
-                                    href={`/chapter/${slug(contentTitle)}-${chap.id}`}
+                                    href={`/chapter/${slug(contentTitle)}-${slug(chap.title!)}-${chap.id}`}
                                 >
                                     <div className="flex overflow-hidden">
                                         <span className="truncate">{chap.title?.trim()}</span>

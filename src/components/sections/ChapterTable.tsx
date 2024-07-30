@@ -106,7 +106,7 @@ export default function ChapterTable({
                     const slugTitle = `${contentTitle}-${title}`;
                     const href = `/${
                       type === ContentType.movie ? "episode" : "chapter"
-                    }/${slug(slugTitle)}-${id}`;
+                    }/${slug(contentTitle)}-${slug(slugTitle)}-${id}`;
 
                     return (
                       <ChapterRow
