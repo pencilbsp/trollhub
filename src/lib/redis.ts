@@ -1,6 +1,6 @@
 import { createClient, RedisClientType } from "redis";
 
-import { REDIS_URL, REDIS_USER, REDIS_PASS, REDIS_NAMESPACE } from "@/config";
+import { REDIS_URL, REDIS_NAMESPACE } from "@/config";
 
 declare global {
   var redis: RedisClient;

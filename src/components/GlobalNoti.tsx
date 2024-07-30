@@ -29,17 +29,17 @@ export default function GlobalNoti() {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://t.ly/fuhuzz"
+          href="https://trollhub.me"
           className="text-small flex items-end sm:text-[0.93rem] text-foreground hover:opacity-80 transition-opacity"
         >
           <span className="inline-flex md:ml-1 animate-text-gradient font-medium bg-clip-text text-transparent bg-[linear-gradient(90deg,#D6009A_0%,#8a56cc_50%,#D6009A_100%)] dark:bg-[linear-gradient(90deg,#FFEBF9_0%,#8a56cc_50%,#FFEBF9_100%)]">
-            Tìm chúng tôi tại đây: t.ly/fuhuzz
+            Tìm chúng tôi tại đây: trollhub.me
           </span>
         </a>
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://t.ly/fuhuzz"
+          href="https://trollhub.me"
           className="flex group min-w-[120px] items-center font-semibold text-foreground shadow-sm gap-1.5 relative overflow-hidden rounded-full p-[1px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#F54180_0%,#338EF7_50%,#F54180_100%)]"></span>
