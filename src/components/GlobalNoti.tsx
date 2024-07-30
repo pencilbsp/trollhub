@@ -57,10 +57,10 @@ export default function GlobalNoti() {
             >
               <path
                 fill="none"
-                stroke-width="1.5"
+                strokeWidth="1.5"
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 d="M4 12h16m0 0l-6-6m6 6l-6 6"
               ></path>
             </svg>
