@@ -47,8 +47,6 @@ model User {
   image           String?
   Account         Account[]
   Session         Session[]
-  // channel       Creator?  @relation(fields: [creatorId], references: [id])
-  // creatorId     String?   @unique @db.ObjectId
   replies         Reply[]
   comments        Comment[]
   histories       History[]
@@ -96,28 +94,33 @@ enum ChapterStatus {
   pending
 }
 
+enum ChapterProviders {
+  b2
+  local
+}
+
 model Chapter {
-  id              String           @id @default(auto()) @map("_id") @db.ObjectId
-  fid             String           @unique
+  id              String             @id @default(auto()) @map("_id") @db.ObjectId
+  fid             String             @unique
   title           String?
   images          String[]
   text            String?
   mobileOnly      Boolean
   type            ContentType
-  status          ChapterStatus    @default(pending)
-  contentId       String           @db.ObjectId
+  status          ChapterStatus      @default(pending)
+  contentId       String             @db.ObjectId
   comments        Comment[]
-  content         Content          @relation(fields: [contentId], references: [id])
-  creatorId       String           @db.ObjectId
-  creator         Creator          @relation(fields: [creatorId], references: [id])
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  content         Content            @relation(fields: [contentId], references: [id])
+  creatorId       String             @db.ObjectId
+  creator         Creator            @relation(fields: [creatorId], references: [id])
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
   histories       History[]
-  view            Int?             @default(0)
+  view            Int?               @default(0)
   requestChapters RequestChapter[]
   videoId         String?
-  hidden          Boolean          @default(false)
-  index           Int              @default(0)
+  hidden          Boolean            @default(false)
+  providers       ChapterProviders[]
 }
 
 enum ContentType {
