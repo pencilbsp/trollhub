@@ -13,6 +13,7 @@ import { cn, formatDate } from '@/lib/utils';
 
 import useChapters from '@/hooks/useChapters';
 
+import Empty from '@/components/ui/Empty';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from '@/components/ui/Table';
@@ -44,7 +45,7 @@ export default function ChapterTable({ data, contentId, createdAt, currentId, co
 
     return (
         <div>
-            <div className="flex items-center justify-between space-x-1">
+            <div className="flex items-center justify-between space-x-1 mb-4">
                 <h3 className="font-bold text-xl uppercase truncate">{contentType === 'movie' ? 'Danh sách tập' : 'Danh sách chương'}</h3>
                 <Select defaultValue={createdAt} onValueChange={handleSort}>
                     <SelectTrigger className="w-28 h-8">
@@ -56,9 +57,9 @@ export default function ChapterTable({ data, contentId, createdAt, currentId, co
                     </SelectContent>
                 </Select>
             </div>
-            <Card className="mt-4">
-                <div className="max-h-80 overflow-y-auto">
-                    {chapters?.length > 0 && (
+            {chapters?.length > 0 ? (
+                <Card>
+                    <div className="max-h-80 overflow-y-auto">
                         <Table>
                             <TableHeader className="sticky top-0 mx-4">
                                 <TableRow>
@@ -89,9 +90,11 @@ export default function ChapterTable({ data, contentId, createdAt, currentId, co
                                 })}
                             </TableBody>
                         </Table>
-                    )}
-                </div>
-            </Card>
+                    </div>
+                </Card>
+            ) : (
+                <Empty>{`Hiện tại chưa có ${contentType === 'movie' ? 'tập' : 'chương'} nào`}</Empty>
+            )}
         </div>
     );
 }

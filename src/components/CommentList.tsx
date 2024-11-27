@@ -1,14 +1,12 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
 
 import useComment from '@/hooks/useComment';
 
+import Empty from '@/components/ui/Empty';
 import Comment from '@/components/Comment';
-import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import CommentEditor from '@/components/CommentEditor';
 import { TextShimmer } from '@/components/ui/TextShimmer';
@@ -19,7 +17,6 @@ interface Props {
 }
 
 export default function CommentList({ contentId }: Props) {
-    const current = usePathname();
     const { data: session } = useSession();
     const { comments, isMore, isLoading, sort, sortComment, loadComments, loadMoreComments } = useComment(contentId);
 
@@ -29,7 +26,7 @@ export default function CommentList({ contentId }: Props) {
     }, []);
 
     return (
-        <div className="">
+        <div>
             <div className="flex items-center justify-between">
                 <h3 className="font-bold text-xl uppercase">Bình luận</h3>
                 <Select defaultValue={sort} onValueChange={sortComment}>
@@ -42,39 +39,29 @@ export default function CommentList({ contentId }: Props) {
                     </SelectContent>
                 </Select>
             </div>
-            <Card className="p-4 mt-4">
-                {session ? (
-                    <CommentEditor user={session.user} contentId={contentId} />
-                ) : (
-                    <p className="text-center text-lg">
-                        <Link className="text-blue-500 hover:underline" href={'/login' + (current ? `?next=${decodeURIComponent(current)}` : '')}>
-                            Đăng nhập
-                        </Link>{' '}
-                        để gửi bình luận!
-                    </p>
-                )}
+            <div className="mt-4">
+                {session && <CommentEditor user={session.user} contentId={contentId} />}
 
-                {
-                    <div className="flex flex-col gap-y-4 my-4">
-                        {comments.length > 0 &&
-                            comments.map((comment, index) => <Comment index={index} key={comment.id} comment={comment} contentId={contentId} currentUser={session?.user} />)}
-                    </div>
-                }
+                <div className="flex flex-col space-y-6 my-4">
+                    {comments.length > 0 ? (
+                        comments.map((comment, index) => <Comment index={index} key={comment.id} comment={comment} contentId={contentId} currentUser={session?.user} />)
+                    ) : (
+                        <Empty>Chưa có bình luận nào</Empty>
+                    )}
+                </div>
 
-                <div className="flex w-full flex-col justify-center items-center">
+                <div className="flex w-full flex-col justify-center items-center mt-4">
                     {isLoading ? (
-                        <button className="flex items-center" disabled>
-                            <TextShimmer>Đang tải bình luận...</TextShimmer>
-                        </button>
+                        <TextShimmer>Đang tải bình luận...</TextShimmer>
                     ) : (
                         isMore && (
-                            <Button onClick={loadMoreComments} className="w-full py-1 px-4">
+                            <Button onClick={loadMoreComments} variant="outline" className="py-1 px-4">
                                 Tải thêm bình luận
                             </Button>
                         )
                     )}
                 </div>
-            </Card>
+            </div>
         </div>
     );
 }

@@ -37,7 +37,7 @@ const CommentEditorInput = forwardRef<HTMLTextAreaElement, Props>(({ field, plac
     };
 
     return (
-        <div className="flex flex-col w-full rounded-lg bg-background p-3 relative border border-border/50 border-dashed">
+        <div className="flex flex-col w-full rounded-2xl bg-card p-3 relative border border-border">
             {isSubmitting && <BorderTrail size={120} className="bg-gradient-to-l from-blue-200 via-blue-500 to-blue-200 dark:from-blue-400 dark:via-blue-500 dark:to-blue-700" />}
             <textarea
                 rows={1}

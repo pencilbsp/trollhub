@@ -52,13 +52,18 @@ const CommentEditor = forwardRef<HTMLTextAreaElement, Props>(({ user, contentId,
     };
 
     return (
-        <FormProvider className="flex space-x-2" methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <FormProvider className="flex space-x-3" methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Avatar className={cn('border-2', avatarSize === 'small' ? 'w-8 h-8' : 'w-10 h-10')}>
-                <AvatarImage src={user.image!} alt={user.name!} />
-                <AvatarFallback>{avatarNameFallback(user.name)}</AvatarFallback>
+                <AvatarImage src={user.image || ''} alt={user.name || ''} />
+                <AvatarFallback>{avatarNameFallback(user.name || '')}</AvatarFallback>
             </Avatar>
 
-            <Controller name="text" control={control} render={({ field }) => <CommentEditorInput field={{ ...field }} placeholder={placeholder} ref={ref} onSubmit={onSubmit} />} />
+            <Controller
+                disabled={!user}
+                name="text"
+                control={control}
+                render={({ field }) => <CommentEditorInput field={{ ...field }} placeholder={placeholder} ref={ref} onSubmit={onSubmit} />}
+            />
         </FormProvider>
     );
 });
