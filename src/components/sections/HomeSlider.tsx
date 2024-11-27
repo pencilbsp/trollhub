@@ -1,16 +1,16 @@
 "use client";
 
+import slug from "slug";
 import Link from "next/link";
 import Image from "next/image";
 
 import { ContentType } from "@prisma/client";
 
 // Swiper components, modules and styles
+import { cn } from "@/lib/utils";
+import useSettings from "@/hooks/useSettings";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper as SwiperReact, SwiperSlide } from "swiper/react";
-import slug from "slug";
-import useSettings from "@/hooks/useSettings";
-import { cn } from "@/lib/utils";
 
 export interface Slide {
   id: string;

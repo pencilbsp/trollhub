@@ -25,7 +25,7 @@ export default function NavLink({ href, children, Icon, className, onClick }: Pr
       href={href}
       onClick={onClick}
       className={cn([
-        "flex gap-x-2 transition-colors hover:text-blue-600 text-foreground/60",
+        "flex gap-x-2 transition-colors hover:text-blue-600",
         isActive ? "text-blue-600" : "",
         className,
       ])}

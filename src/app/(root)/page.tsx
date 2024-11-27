@@ -101,12 +101,12 @@ async function getHomeData(): Promise<HomeData> {
       take: 6,
     });
 
-    const slide: Slide[] = contents.map((content) => ({
+    const slide = contents.map((content) => ({
       id: content.id,
       type: content.type,
       title: content.title,
-      tagline: content.akaTitle[0],
-      image: content.thumbUrl!.replace("_256x", "_720x"),
+      tagline: content.akaTitle[0] ?? "",
+      image: content.thumbUrl?.replace("_256x", "_720x"),
       adultContent: content.categoryIds.includes(ADULT_CATEGORY_ID),
     }));
 

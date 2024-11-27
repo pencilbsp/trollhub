@@ -13,6 +13,7 @@ import CommentList from "../CommentList"
 import ChapterTable from "./ChapterTable"
 import { Card } from "@/components/ui/Card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
+import { Button } from "../ui/Button";
 
 interface Props {
   data: Content
@@ -38,7 +39,7 @@ export default async function ContentPage({ data }: Props) {
                 <h4 className="font-semibold text-xl text-gray-700 dark:text-gray-300">{data.creator.name}</h4>
               </Link>
               <div className="text-gray-500 font-light text-sm">
-                <time className="font-light text-sm">Cập nhật lúc {formatDate(data.updatedAt)}</time>
+                <time className="font-light text-sm"><span className="hidden sm:inline">Cập nhật lúc</span> {formatDate(data.updatedAt)}</time>
                 <span className="px-1">&#8226;</span>
                 <span className="text-gray-500 font-light">{numeral(data.view || 0).format("0.0a")} lượt xem</span>
               </div>
@@ -112,19 +113,19 @@ export default async function ContentPage({ data }: Props) {
               </div>
 
               <div className="border-b">
-                <div className="mb-2 flex justify-end">
-                  <button className="flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-900 transition-colors rounded-md py-1.5 px-4">
+                <div className="mb-3 flex justify-end space-x-3">
+                  <Button className="min-w-0" variant="outline">
                     <ThumbsUpIcon size={20} className="stroke-current" />
-                    <span className="ml-2">Thích</span>
-                  </button>
-                  <button className="flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-900 transition-colors rounded-md py-1.5 px-4">
+                    <span className="ml-2 truncate">Thích</span>
+                  </Button>
+                  <Button className="min-w-0" variant="outline">
                     <BellPlusIcon size={20} className="stroke-current" />
-                    <span className="ml-2">Theo dõi</span>
-                  </button>
-                  <button className="flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-900 transition-colors rounded-md py-1.5 px-4">
+                    <span className="ml-2 truncate">Theo dõi</span>
+                  </Button>
+                  <Button className="min-w-0" variant="outline">
                     <AlertOctagonIcon size={20} className="stroke-current" />
-                    <span className="ml-2">Báo cáo</span>
-                  </button>
+                    <span className="ml-2 truncate">Báo cáo</span>
+                  </Button>
                 </div>
               </div>
             </div>

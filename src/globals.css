@@ -3,137 +3,137 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 240 10% 3.9%;
 
-    --shine: 240 4.8% 95.9%;
+        --shine: 240 4.8% 95.9%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+        --card: 0 0% 97.6%;
+        --card-foreground: 240 10% 3.9%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 240 10% 3.9%;
 
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
+        --primary: 240 5.9% 10%;
+        --primary-foreground: 0 0% 98%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+        --secondary: 240 4.8% 95.9%;
+        --secondary-foreground: 240 5.9% 10%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+        --muted: 240 4.8% 95.9%;
+        --muted-foreground: 240 3.8% 46.1%;
 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+        --accent: 240 0% 88%;
+        --accent-foreground: 240 5.9% 10%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
+        --border: 220 13% 91%;
+        --input: 240 5.9% 90%;
+        --ring: 240 10% 3.9%;
 
-    --radius: 0.5rem;
+        --radius: 0.75rem;
 
-    /* Video player */
-    --media-brand: 245 245 245;
-    --media-focus: 78 156 246;
-    --video-border: none;
-    --video-border-radius: 0;
-  }
+        /* Video player */
+        --media-brand: 245 245 245;
+        --media-focus: 78 156 246;
+        --video-border: none;
+        --video-border-radius: 0;
+    }
 
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    .dark {
+        --background: 0 0% 12.9%;
+        --foreground: 0 0% 98%;
 
-    --shine: 240 3.7% 15.9%;
+        --shine: 240 3.7% 15.9%;
 
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
+        --card: 0 0% 9%;
+        --card-foreground: 0 0% 90%;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+        --popover: 0 0% 18.4%;
+        --popover-foreground: 0 0% 98%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+        --primary: 0 0% 98%;
+        --primary-foreground: 240 5.9% 10%;
 
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
+        --secondary: 240 5.9% 10%;
+        --secondary-foreground: 0 0% 98%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+        --muted: 240 3.7% 15.9%;
+        --muted-foreground: 240 5% 64.9%;
 
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+        --accent: 240 0% 20%;
+        --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-  }
+        --border: 0 0% 19%;
+        --input: 240 3.7% 15.9%;
+        --ring: 240 4.9% 83.9%;
+    }
 
-  * {
-    @apply border-border;
-  }
+    * {
+        @apply border-border;
+    }
 
-  body {
-    @apply bg-background text-foreground;
-  }
+    body {
+        @apply bg-background text-foreground;
+    }
 
-  .icons {
-    @apply bg-[url('/icons.png')] w-5 h-5 bg-no-repeat inline-block bg-[length:25px_1461px];
-  }
+    .icons {
+        @apply bg-[url('/icons.png')] w-5 h-5 bg-no-repeat inline-block bg-[length:25px_1461px];
+    }
 
-  .icon-filter {
-    @apply invert-[21%] sepia-[22%] saturate-[640%] hue-rotate-[178deg] brightness-[95%] contrast-[86%];
-  }
+    .icon-filter {
+        @apply invert-[21%] sepia-[22%] saturate-[640%] hue-rotate-[178deg] brightness-[95%] contrast-[86%];
+    }
 
-  .chapter-nav {
-    @apply h-[52px] md:h-[67px] bg-muted/80 dark:bg-background/80 dark:border flex px-3 py-1 md:p-3 rounded-full items-center w-full gap-x-2 backdrop-blur-xl;
-  }
+    .chapter-nav {
+        @apply h-[52px] md:h-[67px] bg-muted/80 dark:bg-background/80 dark:border flex px-3 py-1 md:p-3 rounded-full items-center w-full gap-x-2 backdrop-blur-xl;
+    }
 
-  .chapter-nav.stickied {
-    @apply fixed top-4 border shadow-lg max-w-[calc(100%-32px)] xl:max-w-[1120px] transition-[top];
-  }
+    .chapter-nav.stickied {
+        @apply fixed top-4 border shadow-lg max-w-[calc(100%-32px)] xl:max-w-[1120px] transition-[top];
+    }
 
-  body.header-pinned .stickied {
-    @apply top-20;
-  }
+    body.header-pinned .stickied {
+        @apply top-20;
+    }
 
-  body.header-pinned header {
-    @apply border-b;
-  }
+    body.header-pinned header {
+        @apply border-b;
+    }
 
-  .line-mask {
-    mask-image: linear-gradient(rgb(0, 0, 0), transparent);
-  }
+    .line-mask {
+        mask-image: linear-gradient(rgb(0, 0, 0), transparent);
+    }
 }
 
 .CircularProgressbar-path {
-  @apply stroke-blue-500 !important;
+    @apply stroke-blue-500 !important;
 }
 
 .CircularProgressbar-trail {
-  @apply stroke-gray-300/50 dark:stroke-gray-700/50 !important;
+    @apply stroke-gray-300/50 dark:stroke-gray-700/50 !important;
 }
 
 .lazy-wrapper {
-  @apply absolute inset-0 leading-[0] bg-cover object-cover w-full h-full;
+    @apply absolute inset-0 leading-[0] bg-cover object-cover w-full h-full;
 }
 
 .lazy-wrapper > img {
-  @apply w-full inline-block;
+    @apply w-full inline-block;
 }
 
 .sizing-content {
-  field-sizing: content;
+    field-sizing: content;
 }
 
 .transition-background {
-  transition-property: background;
-  transition-timing-function: ease;
-  transition-duration: 0.25s;
+    transition-property: background;
+    transition-timing-function: ease;
+    transition-duration: 0.25s;
 }

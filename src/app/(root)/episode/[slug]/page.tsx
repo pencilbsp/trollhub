@@ -14,8 +14,8 @@ import { avatarNameFallback, formatDate, getSlugId } from "@/lib/utils";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import VideoView from "@/components/VideoView";
+import CommentList from "@/components/CommentList";
 import { PlayerLoading } from "@/components/VideoPlayer";
-import CommentList from "@/components/sections/CommentList";
 import ChapterTable from "@/components/sections/ChapterTable";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 

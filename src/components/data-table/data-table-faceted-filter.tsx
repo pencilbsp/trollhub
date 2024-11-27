@@ -14,8 +14,8 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command"
+import { Separator } from "@/components/ui/Separator"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover"
-import { Separator } from "@/components/ui/separator"
 
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>

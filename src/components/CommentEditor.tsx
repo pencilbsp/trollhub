@@ -1,90 +1,68 @@
-"use client";
+'use client';
 
-import { User } from "next-auth";
-import { ClipboardEvent, FormEvent, useRef, useState, useTransition } from "react";
+import * as Yup from 'yup';
+import { toast } from 'sonner';
+import { User } from 'next-auth';
+import { forwardRef } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-import { SendHorizonalIcon, StickerIcon, ImagePlusIcon } from "lucide-react";
+import useComment from '@/hooks/useComment';
+import { createComment } from '@/actions/commentActions';
+import { avatarNameFallback, cn } from '@/lib/utils';
 
-import { avatarNameFallback } from "@/lib/utils";
-import { createComment } from "@/actions/commentActions";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
-import { toast } from "sonner";
+import FormProvider from '@/components/FormProvider';
+import CommentEditorInput from '@/components/CommentEditorInput';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/Avatar';
 
 interface Props {
-  user: User;
-  contentId: string;
-  onNewComment: (newComment: any) => void;
+    user: User;
+    contentId: string;
+    commentId?: string;
+    className?: string;
+    placeholder?: string;
+    avatarSize?: 'small' | 'normal';
 }
 
-export default function CommentEditor({ user, contentId, onNewComment }: Props) {
-  const [send, setSend] = useState(false);
-  const inputRef = useRef<HTMLDivElement>(null);
-  const [isPending, startTransition] = useTransition();
+const schema = Yup.object({
+    commentId: Yup.string().optional(),
+    text: Yup.string().required('Text is required'),
+    userId: Yup.string().required('User ID is required'),
+    contentId: Yup.string().required('Content ID is required'),
+}).required();
 
-  const handlePostComment = async () => {
-    if (inputRef.current?.innerText && !isPending) {
-      const result = await createComment({
-        contentId,
-        userId: user.id,
-        text: inputRef.current.innerText,
-      });
+const CommentEditor = forwardRef<HTMLTextAreaElement, Props>(({ user, contentId, placeholder, avatarSize, commentId }, ref) => {
+    const { addNewComment } = useComment(contentId);
+    const methods = useForm({ defaultValues: { contentId, text: '', commentId, userId: user.id }, resolver: yupResolver(schema) });
 
-      if (result.error) {
-        toast.error(result.error.message);
-      } else {
-        setSend(false);
-        onNewComment(result.data);
-        inputRef.current.innerText = "";
-      }
-    }
-  };
+    const { handleSubmit, control, reset } = methods;
 
-  const handlePaste = (event: ClipboardEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const addText = event.clipboardData.getData("text/plain");
-    document.execCommand("insertHTML", false, addText);
-  };
+    const onSubmit = async (data: Yup.InferType<typeof schema>) => {
+        try {
+            const result = await createComment(data);
+            if (result.error) {
+                throw new Error(result.error.message);
+            } else {
+                reset();
+                addNewComment(result.data);
+            }
+        } catch (error) {
+            toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
+        }
+    };
 
-  const handleInput = (_: FormEvent<HTMLDivElement>) => {
-    if (inputRef.current) {
-      const text = Boolean(inputRef.current.textContent);
-      send !== text && setSend(text);
-    }
-  };
+    return (
+        <FormProvider className="flex space-x-2" methods={methods} onSubmit={handleSubmit(onSubmit)}>
+            <Avatar className={cn('border-2', avatarSize === 'small' ? 'w-8 h-8' : 'w-10 h-10')}>
+                <AvatarImage src={user.image!} alt={user.name!} />
+                <AvatarFallback>{avatarNameFallback(user.name)}</AvatarFallback>
+            </Avatar>
 
-  return (
-    <div className="flex gap-2 mb-4">
-      <Avatar className="w-10 h-10 border">
-        {user.image && <AvatarImage src={user.image} />}
-        <AvatarFallback>{avatarNameFallback(user.name!)}</AvatarFallback>
-      </Avatar>
-      <div className="flex flex-col w-full rounded-lg border border-input bg-background p-2">
-        <div
-          ref={inputRef}
-          contentEditable
-          onPaste={handlePaste}
-          onInput={handleInput}
-          className="w-full focus:outline-none text-sm pb-2"
-        ></div>
-        <div className="flex w-full justify-between items-center">
-          <div className="flex items-center gap-x-2">
-            <button className="group w-7 h-7 flex justify-center items-center rounded-full bg-muted">
-              <StickerIcon className="stroke-foreground/60 group-hover:stroke-blue-500" size={18} />
-            </button>
-            <button className="group w-7 h-7 flex justify-center items-center rounded-full bg-muted">
-              <ImagePlusIcon className="stroke-foreground/60 group-hover:stroke-blue-500" size={18} />
-            </button>
-          </div>
-          <button
-            disabled={!send || isPending}
-            onClick={() => startTransition(handlePostComment)}
-            className="flex items-center px-2 py-1 border rounded-md text-blue-500 text-sm disabled:cursor-not-allowed disabled:text-foreground/60"
-          >
-            {isPending ? "Đang đăng..." : "Bình luận"}
-            <SendHorizonalIcon size={18} className="ml-1" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+            <Controller name="text" control={control} render={({ field }) => <CommentEditorInput field={{ ...field }} placeholder={placeholder} ref={ref} onSubmit={onSubmit} />} />
+        </FormProvider>
+    );
+});
+
+CommentEditor.displayName = 'CommentEditor';
+
+export default CommentEditor;

@@ -85,7 +85,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
                         </Drawer.Trigger>
                         <Drawer.Portal>
                             <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-                            <Drawer.Content className="backdrop-blur-xl bg-background/80 flex flex-col rounded-t-[10px] mt-24 fixed bottom-0 left-0 right-0">
+                            <Drawer.Content className="backdrop-blur bg-background/75 flex flex-col rounded-t-[10px] mt-24 fixed bottom-0 left-0 right-0">
                                 <ChapterList
                                     currentId={id}
                                     // @ts-ignore

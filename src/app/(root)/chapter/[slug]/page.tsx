@@ -1,6 +1,6 @@
 import slug from 'slug';
 import { Metadata, Viewport } from 'next';
-import { notFound, redirect, RedirectType } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 import { getSlugId } from '@/lib/utils';
 
@@ -36,10 +36,10 @@ export default async function ChapterPage({ params }: Props) {
     const chapter = await getChapter(chapterId);
     if (!chapter) return notFound();
 
-    const link = `/chapter/${slug(chapter.content.title.trim())}-${slug(chapter.title.trim())}-${chapter.id}`;
+    const paramsSlug = `${slug(chapter.content.title.trim())}-${slug(chapter.title.trim())}-${chapter.id}`;
 
-    if (!link.includes(params.slug)) {
-        return redirect(link, RedirectType.push);
+    if (paramsSlug !== params.slug) {
+        return redirect(`/chapter/${paramsSlug}`);
     }
 
     updateView(chapter.id, 'chapter');

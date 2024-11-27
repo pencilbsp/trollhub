@@ -44,8 +44,8 @@ export default function ChapterTable({ data, contentId, createdAt, currentId, co
 
     return (
         <div>
-            <div className="flex items-center justify-between">
-                <h3 className="font-bold text-xl uppercase">{contentType === 'movie' ? 'Danh sách tập' : 'Danh sách chương'}</h3>
+            <div className="flex items-center justify-between space-x-1">
+                <h3 className="font-bold text-xl uppercase truncate">{contentType === 'movie' ? 'Danh sách tập' : 'Danh sách chương'}</h3>
                 <Select defaultValue={createdAt} onValueChange={handleSort}>
                     <SelectTrigger className="w-28 h-8">
                         <SelectValue placeholder="Sắp xếp" />
@@ -60,7 +60,7 @@ export default function ChapterTable({ data, contentId, createdAt, currentId, co
                 <div className="max-h-80 overflow-y-auto">
                     {chapters?.length > 0 && (
                         <Table>
-                            <TableHeader className="sticky top-0 dark:bg-gray-950 bg-gray-50 mx-4">
+                            <TableHeader className="sticky top-0 mx-4">
                                 <TableRow>
                                     <TableHead>Tên</TableHead>
                                     {!hiddenColumns.includes('update') && <TableHead className="text-right truncate">Cập nhật</TableHead>}
@@ -157,7 +157,7 @@ function ChapterRow({ href, isActive, mobileOnly, title, view, hiddenColumns, cr
                         {mobileOnly && <TabletSmartphoneIcon size={16} className="ml-2 text-red-400 inline-block flex-shrink-0" />}
                     </div>
                     {isActive && (
-                        <Badge variant="outline" className="ml-2 px-1.5 font-sans border-blue-500/70 bg-blue-500/90 text-background">
+                        <Badge variant="outline" className="ml-2 px-1.5 font-sans border-blue-500/70 bg-blue-500/90 text-background shrink-0">
                             Đang xem
                         </Badge>
                     )}

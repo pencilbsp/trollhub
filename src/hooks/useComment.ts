@@ -1,79 +1,90 @@
-import useSWR from "swr";
-import { useTransition } from "react";
-import { Prisma } from "@prisma/client";
+import { ArrayElement } from '@/types/utils';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { getComments as getCommentsAction } from '@/actions/commentActions';
+import {
+    setComments,
+    updateCommentLike,
+    loadComments as loadCommentsSlice,
+    addNewComment as addNewCommentSlice,
+    appendReplies as appendRepliesSlice,
+    deleteComment as deleteCommentSlice,
+    appendComments as appendCommentsSlice,
+} from '@/store/features/commentSlice';
+import { Prisma } from '@prisma/client';
 
-import { ArrayElement } from "@/types/utils";
-import { getComments } from "@/actions/commentActions";
-
-type FallbackData = Awaited<ReturnType<typeof getComments>>;
-export type Comment = ArrayElement<FallbackData["list"]>;
-
-const fallbackData: FallbackData = {
-  list: [],
-  total: 0,
-  isMore: false,
-  options: {
-    take: 6,
-    skip: 0,
-    sort: "desc",
-  },
-};
-
-const fetcher = (id: string) => getComments(id);
+type FallbackData = Awaited<ReturnType<typeof getCommentsAction>>;
+export interface Comment extends ArrayElement<FallbackData['list']> {
+    commentId?: string;
+}
 
 export default function useComment(contentId: string) {
-  const [isPending, startTransition] = useTransition();
-  const { data, isLoading, error, mutate } = useSWR(contentId, fetcher, { fallbackData });
+    const dispatch = useAppDispatch();
+    const { isLoading, isMore, total, comments, sort, take } = useAppSelector(
+        (state: {
+            comments: {
+                take: number;
+                total: number;
+                isMore: boolean;
+                isLoading: boolean;
+                comments: Comment[];
+                sort: Prisma.SortOrder;
+            };
+        }) => state.comments
+    );
 
-  const addComment = async (comment: Comment) => {
-    const list = [comment, ...data.list];
-    mutate({ ...data, list: list }, { revalidate: false });
-  };
+    const loadComments = async () => {
+        dispatch(loadCommentsSlice({}));
+        const result = await getCommentsAction(contentId, { take, sort });
+        dispatch(setComments(result));
+    };
 
-  const likeComment = async (id: string, liked: boolean) => {
-    const list = [...data.list];
-    const index = list.findIndex((c) => c.id === id);
+    const loadMoreComments = async () => {
+        dispatch(loadCommentsSlice({}));
+        const result = await getCommentsAction(contentId, { skip: comments.length, take, sort });
+        dispatch(appendCommentsSlice(result));
+    };
 
-    if (index > -1) {
-      const c = list[index];
-      const totalLike = liked ? c.totalLike + 1 : c.totalLike - 1;
-      list[index] = { ...c, liked, totalLike };
-      mutate({ ...data, list }, { revalidate: false });
-    }
-  };
+    const sortComment = async (sort: Prisma.SortOrder) => {
+        dispatch(loadCommentsSlice({ sort }));
+        const result = await getCommentsAction(contentId, { sort, take });
+        dispatch(setComments(result));
+    };
 
-  const deleteComment = async (id: string) => {
-    const list = [...data.list];
-    const index = list.findIndex((c) => c.id === id);
+    const addNewComment = async (comment: Comment) => {
+        dispatch(addNewCommentSlice(comment));
+    };
 
-    if (index > -1) {
-      list.splice(index, 1);
-      mutate({ ...data, list }, { revalidate: false });
-    }
-  };
+    const likeComment = (id: string, commentId?: string) => {
+        dispatch(updateCommentLike({ id, commentId }));
+    };
 
-  const sortComment = async (sort: Prisma.SortOrder) => {
-    const sorted = await getComments(contentId, { sort });
-    mutate(sorted, { revalidate: false });
-  };
+    const deleteComment = (id: string, commentId?: string) => {
+        dispatch(deleteCommentSlice({ id, commentId }));
+    };
 
-  const loadMoreComment = () =>
-    startTransition(async () => {
-      if (!isPending) {
-        const more = await getComments(contentId, { ...data.options, skip: data.list.length });
-        mutate({ ...data, list: [...data.list, ...more.list], isMore: more.isMore }, { revalidate: false });
-      }
-    });
+    const appendComments = async (more: FallbackData) => {
+        dispatch(appendCommentsSlice(more));
+    };
 
-  return {
-    mutate,
-    comment: data,
-    isError: error,
-    isLoading: isLoading || isPending,
-    addComment,
-    likeComment,
-    sortComment,
-    deleteComment,
-    loadMoreComment,
-  };
+    const appendReplies = (commentId: string, replies: Comment[]) => {
+        dispatch(appendRepliesSlice({ commentId, replies }));
+    };
+
+    return {
+        take,
+        sort,
+        total,
+        isMore,
+        comments,
+        isLoading,
+
+        sortComment,
+        likeComment,
+        loadComments,
+        appendReplies,
+        addNewComment,
+        deleteComment,
+        appendComments,
+        loadMoreComments,
+    };
 }

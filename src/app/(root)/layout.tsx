@@ -5,6 +5,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { getServerSession } from 'next-auth/next';
 
+import StoreProvider from '../StoreProvider';
+
 import '@/globals.css';
 // context
 import authOptions from '@/lib/auth';
@@ -80,19 +82,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <body className={inter.className} suppressHydrationWarning>
                 {PTO_ADS_ID && <PTOAds id={PTO_ADS_ID} />}
                 {FLYICON_ADS_ID && <FlyiconAds id={FLYICON_ADS_ID} />}
-
-                <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-                    <NextAuthProvider session={session}>
-                        <SettingsProvider>
-                            <SettingsDialog />
-                            <GlobalNoti />
-                            <div className="relative flex flex-col">
-                                <Header />
-                                {children}
-                            </div>
-                        </SettingsProvider>
-                    </NextAuthProvider>
-                </ThemeProvider>
+                <StoreProvider>
+                    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+                        <NextAuthProvider session={session}>
+                            <SettingsProvider>
+                                <SettingsDialog />
+                                <GlobalNoti />
+                                <div className="relative flex flex-col">
+                                    <Header />
+                                    {children}
+                                </div>
+                            </SettingsProvider>
+                        </NextAuthProvider>
+                    </ThemeProvider>
+                </StoreProvider>
             </body>
         </html>
     );
