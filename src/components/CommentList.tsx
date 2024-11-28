@@ -42,7 +42,7 @@ export default function CommentList({ contentId }: Props) {
             <div className="mt-4">
                 {session && <CommentEditor user={session.user} contentId={contentId} />}
 
-                <div className="flex flex-col space-y-6 my-4">
+                <div className="flex flex-col space-y-5 my-4">
                     {comments.length > 0 ? (
                         comments.map((comment, index) => <Comment index={index} key={comment.id} comment={comment} contentId={contentId} currentUser={session?.user} />)
                     ) : (

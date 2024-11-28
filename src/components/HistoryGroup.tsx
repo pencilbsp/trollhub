@@ -9,6 +9,7 @@ import { cn, formatDate, formatToNow, generateHref } from '@/lib/utils';
 
 import Thumbnail from './Thumbnail';
 import { Button } from './ui/Button';
+import { DeleteButton } from './icons/DeleteButton';
 
 type Props = {
     name: string;
@@ -54,22 +55,22 @@ export default function HistoryGroup({ name, isLatest, histories, onDelete }: Pr
                                 className="max-w-[110px] rounded-xl border-2 mt-0 overflow-hidden object-cover"
                             />
                             <div className="flex flex-col ml-3 w-full">
-                                <div className="flex flex-col space-y-2">
-                                    <time className="text-xs md:text-base text-muted-foreground">{today ? formatToNow(updatedAt) : formatDate(updatedAt)}</time>
-                                    <Link href={href}>
-                                        <p className="font-semibold text-sm md:text-base lg:text-lg line-clamp-2">{chapter.title}</p>
-                                    </Link>
+                                <div className="flex flex-col space-y-1">
+                                    <time className="text-muted-foreground">{today ? formatToNow(updatedAt) : formatDate(updatedAt)}</time>
                                     <Link href={chapterHref}>
-                                        <h3 className="text-xs md:text-sm line-clamp-1">{content.title}</h3>
+                                        <p className="font-semibold lg:text-lg line-clamp-1">{chapter.title}</p>
+                                    </Link>
+                                    <Link href={href}>
+                                        <h3 className="line-clamp-2">{content.title}</h3>
                                     </Link>
                                 </div>
                                 <div className="flex gap-x-3 justify-end w-full mt-auto">
                                     <Button variant="outline" asChild>
                                         <Link href={chapterHref}>Tiếp tục</Link>
                                     </Button>
-                                    <Button variant="outline" onClick={() => onDelete(id)} className="text-red-500 hover:text-red-500">
-                                        <Trash2Icon size={18} />
-                                    </Button>
+                                    <DeleteButton variant="outline" onClick={() => onDelete(id)} className="text-red-500 hover:text-red-500">
+                                        <span className='ml-2'>Xoá</span>
+                                    </DeleteButton>
                                 </div>
                             </div>
                         </div>

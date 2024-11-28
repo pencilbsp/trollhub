@@ -42,27 +42,22 @@ function Comment({ comment, currentUser, contentId }: Props) {
     }, [showInput]);
 
     return (
-        <div>
+        <div className="space-y-3">
             <div className="relative">
                 <CommentItem contentId={contentId} comment={comment} showInput={showInput} currentUser={currentUser} onShowInput={() => setShowInput(!showInput)} />
             </div>
 
             {currentUser && showInput && (
-                <div className="pl-12 py-2 relative">
+                <div className="pl-12 relative">
                     <CommentEditor ref={replyRef} commentId={id} avatarSize="small" user={currentUser} contentId={contentId} placeholder="Phản hồi của bạn..." />
                 </div>
             )}
 
-            {replies.length > 0 && (
-                <>
-                    {replies.map((reply: any, index: number) => {
-                        return <CommentItem key={reply.id} comment={reply} contentId={contentId} showInput={showInput} currentUser={currentUser} />;
-                    })}
-                </>
-            )}
+            {replies.length > 0 &&
+                replies.map((reply: any) => <CommentItem key={reply.id} comment={reply} contentId={contentId} showInput={showInput} currentUser={currentUser} />)}
 
             {replyCount - replies.length > 0 && (
-                <div className={cn('pl-12 pt-2 relative text-sm text-primary/70', showInput && 'pb-2')}>
+                <div className={cn('pl-12 relative text-sm text-primary/70', showInput && 'pb-2')}>
                     {isLoading ? (
                         <TextShimmer
                             duration={1}
@@ -124,7 +119,7 @@ const CommentItem = ({ comment, currentUser, showInput, onShowInput, contentId }
         });
 
     return (
-        <div className={cn('relative flex space-x-3', commentId && 'pl-12 pt-2')}>
+        <div className={cn('relative flex space-x-3', commentId && 'pl-12')}>
             <Avatar className={'border-2'} size={commentId ? 'lg' : 'default'}>
                 {user.image && <AvatarImage src={user.image} />}
                 <AvatarFallback>{avatarNameFallback(user.name)}</AvatarFallback>
