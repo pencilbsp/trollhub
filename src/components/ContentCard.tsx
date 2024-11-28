@@ -1,6 +1,5 @@
 'use client';
 
-import slug from 'slug';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
@@ -13,8 +12,8 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/Card'
 
 import numeral from '@/lib/format-number';
 import useSettings from '@/hooks/useSettings';
-import { avatarNameFallback, cn, formatToNow } from '@/lib/utils';
 import { Content, Creator, ContentStatus, ContentType } from '@prisma/client';
+import { avatarNameFallback, cn, formatToNow, generateHref } from '@/lib/utils';
 
 function getContentIcon(type: ContentType) {
     if (type === ContentType.movie) return FilmIcon;
@@ -37,7 +36,7 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
     const { id, type, creator, thumbUrl, title, updatedAt, description, status, adultContent, view } = data;
 
     const ContentIcon = getContentIcon(type);
-    const href = `/${type}/${slug(title)}-${id}`;
+    const href = generateHref({ type, title, id });
 
     useEffect(() => {
         if (descriptionRef.current) {
@@ -116,7 +115,7 @@ function ContentVertical({ data }: { data: ContentWithCreator }) {
     const { id, creator, thumbUrl, title, status, type, adultContent, updatedAt } = data;
     const isShow = adultContent && !showAdultContent;
     const ContentIcon = getContentIcon(type);
-    const href = `/${type}/${slug(title)}-${id}`;
+    const href = generateHref({ type, title, id });
 
     return (
         <Link href={href} className="group flex">

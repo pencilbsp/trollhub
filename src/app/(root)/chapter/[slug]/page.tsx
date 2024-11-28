@@ -1,8 +1,7 @@
-import slug from 'slug';
 import { Metadata, Viewport } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
-import { getSlugId } from '@/lib/utils';
+import { generateHref, getSlugId } from '@/lib/utils';
 
 import { getChapter, getChapterMetadata } from '@/actions/chapterActions';
 
@@ -36,7 +35,9 @@ export default async function ChapterPage({ params }: Props) {
     const chapter = await getChapter(chapterId);
     if (!chapter) return notFound();
 
-    const paramsSlug = `${slug(chapter.content.title.trim())}-${slug(chapter.title.trim())}-${chapter.id}`;
+    const content = chapter.content;
+
+    const paramsSlug = generateHref({ contentTitle: content.title, title: chapter.title, id: chapter.id });
 
     if (paramsSlug !== params.slug) {
         return redirect(`/chapter/${paramsSlug}`);
@@ -48,13 +49,13 @@ export default async function ChapterPage({ params }: Props) {
         <TooltipProvider>
             <div className="container px-4 xl:max-w-6xl">
                 <div className="my-4 md:my-3 relative">
-                    <ChapterNav id={chapter.id} title={chapter.title} contentType={chapter.type} contentId={chapter.content.id} contentTitle={chapter.content.title} />
+                    <ChapterNav id={chapter.id} title={chapter.title} contentType={chapter.type} contentId={content.id} contentTitle={content.title} />
                 </div>
 
                 <ComicViewer chapter={chapter} />
             </div>
 
-            <NextChapter title={chapter.title} chapterId={chapter.id} contentId={chapter.content.id} />
+            <NextChapter currentTitle={chapter.title} chapterId={chapter.id} contentId={content.id} contentTitle={content.title} />
         </TooltipProvider>
     );
 }

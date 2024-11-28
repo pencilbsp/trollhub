@@ -122,28 +122,42 @@ export async function generateSitemap({ id, type, take }: { id: number; take: nu
     });
 
     return contents.map((content) => ({
-        url: `${SITE_URL.origin}/${content.type}/${slug(content.title)}-${content.id}`,
         lastModified: content.updatedAt,
+        url: SITE_URL.origin + generateHref({ type: content.type, id: content.id, title: content.title }),
     }));
 }
 
 export function chaptersMapTable(data: any) {
-    return data.map((i: any) => {
-        const contentSlug = slug(i.content.title);
+    return data.map((chapter: any) => {
+        const { content, title, id, type, createdAt, status, mobileOnly, fid } = chapter;
+        const contentSlug = slug(content.title);
 
         return {
-            id: i.id,
-            title: i.title!,
-            createdAt: i.createdAt,
-            contentId: i.content.id,
-            status: i.status.toString(),
-            contentTitle: i.content.title!,
-            mobileOnly: i.mobileOnly.toString(),
-            contentUrl: `/${i.type}/${contentSlug}-${i.content.id}`,
-            url: `/${i.type !== 'movie' ? 'chapter' : 'episode'}/${contentSlug}-${slug(i.title)}-${i.id}`,
-            app: `https://fuhu.page.link/?link=https://fuhux.com/${i.type === 'movie' ? 'movie-eps' : i.type === 'comic' ? 'comic-chapter' : 'novel-chapter'}/${contentSlug}_${
-                i.fid
-            }.html&apn=net.zfunhub&ibi=net.mbf.FunHub&isi=1572604579`,
+            id,
+            title,
+            createdAt: createdAt,
+            contentId: content.id,
+            status: status.toString(),
+            contentTitle: content.title,
+            mobileOnly: mobileOnly.toString(),
+            url: generateHref({ type, id, title, contentTitle: content.title }),
+            contentUrl: generateHref({ type: content.type, id: content.id, title: content.title }),
+            app: `https://fuhu.page.link/?link=https://fuhux.com/${
+                type === 'movie' ? 'movie-eps' : type === 'comic' ? 'comic-chapter' : 'novel-chapter'
+            }/${contentSlug}_${fid}.html&apn=net.zfunhub&ibi=net.mbf.FunHub&isi=1572604579`,
         };
     });
+}
+
+export function generateHref({ type, id, title, contentTitle }: any) {
+    const titleSlug = slug(title.trim());
+
+    if (!contentTitle) {
+        const path = type ? '/' + type + '/' : '';
+        return path + [titleSlug, id].join('-');
+    }
+
+    const contentSlug = slug(contentTitle.trim());
+    const path = type ? (type === ContentType.movie ? '/episode/' : '/chapter/') : '';
+    return path + [contentSlug, titleSlug, id].join('-');
 }

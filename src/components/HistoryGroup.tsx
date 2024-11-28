@@ -5,7 +5,7 @@ import { isToday } from 'date-fns';
 import { Trash2Icon } from 'lucide-react';
 
 import { History } from '@/actions/historyActions';
-import { cn, formatDate, formatToNow } from '@/lib/utils';
+import { cn, formatDate, formatToNow, generateHref } from '@/lib/utils';
 
 import Thumbnail from './Thumbnail';
 import { Button } from './ui/Button';
@@ -41,8 +41,8 @@ export default function HistoryGroup({ name, isLatest, histories, onDelete }: Pr
 
             <div className="flex-1 flex flex-col space-y-4 mt-3">
                 {histories.map(({ id, content, updatedAt, chapter }) => {
-                    const href = `/${content.type}/${slug(content.title)}-${content.id}`;
-                    const chapterHref = `/${content.type === 'movie' ? 'episode' : 'chapter'}/${slug(content.title)}-${chapter.id}`;
+                    const href = generateHref({ id: content.id, type: content.type, title: content.title });
+                    const chapterHref = generateHref({ id: chapter.id, title: chapter.title, contentTitle: content.title, type: content.type });
 
                     return (
                         <div key={id} className="flex">

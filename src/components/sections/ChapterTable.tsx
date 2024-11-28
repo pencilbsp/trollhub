@@ -1,6 +1,5 @@
 'use client';
 
-import slug from 'slug';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { TabletSmartphoneIcon } from 'lucide-react';
@@ -9,7 +8,7 @@ import { ContentType, Prisma } from '@prisma/client';
 import { ChapterList } from '@/actions/contentActions';
 
 import numeral from '@/lib/format-number';
-import { cn, formatDate } from '@/lib/utils';
+import { cn, formatDate, generateHref } from '@/lib/utils';
 
 import useChapters from '@/hooks/useChapters';
 
@@ -72,8 +71,7 @@ export default function ChapterTable({ data, contentId, createdAt, currentId, co
                                 {/* @ts-ignore */}
                                 {chapters.map(({ id, title, createdAt, mobileOnly, type, view }) => {
                                     const isActive = id === currentId;
-                                    const slugTitle = `${contentTitle}-${title}`;
-                                    const href = `/${type === ContentType.movie ? 'episode' : 'chapter'}/${slug(slugTitle)}-${id}`;
+                                    const href = generateHref({ contentTitle, title, id, type });
 
                                     return (
                                         <ChapterRow

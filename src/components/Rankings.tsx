@@ -1,21 +1,20 @@
 'use client';
 
-import slug from 'slug';
 import useSWR from 'swr';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
 import numeral from '@/lib/format-number';
 import { ContentRank } from '@/types/other';
+import { cn, generateHref } from '@/lib/utils';
 
 import { Button } from '@/components/ui/Button';
+import { Spinner } from '@/components/ui/Spinner';
 import getRankingContents from '@/actions/rankings';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Pagination, PaginationItem, PaginationContent } from '@/components/ui/pagination';
-import { Spinner } from './ui/Spinner';
 
 const step = 10;
 const fallbackData = { data: [], total: 0 };
@@ -78,7 +77,7 @@ export default function Rankings() {
                     {!isLoading &&
                         (data?.data.length || 0) > 0 &&
                         data?.data.map(({ id, type, thumbUrl, title, view }, index) => {
-                            const href = `/${type}/${slug(title || '')}-${id}`;
+                            const href = generateHref({ type, title, id });
 
                             return (
                                 <div key={id} className="pl-4">
