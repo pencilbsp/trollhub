@@ -43,7 +43,6 @@ export const metadata: Metadata = {
 export default async function RootLayout(props: { children: React.ReactNode }) {
     const headersList = headers();
     const isGoogleBot = headersList.get('x-is-googlebot');
-    console.log('isGoogleBot', isGoogleBot);
 
     const { children } = props;
     const session = await getServerSession(authOptions);
@@ -51,14 +50,14 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
     return (
         <html lang="vi" suppressHydrationWarning>
             <head>
-                {!isGoogleBot && GALAKSION_ADS_SRC && (
+                {isGoogleBot && GALAKSION_ADS_SRC && (
                     <Fragment>
                         <Script data-cfasync="false" async src={GALAKSION_ADS_SRC} />
                     </Fragment>
                 )}
             </head>
 
-            {!isGoogleBot && GA_MEASUREMENT_ID && (
+            {isGoogleBot && GA_MEASUREMENT_ID && (
                 <>
                     <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
                     <Script id="google-analytics">
@@ -74,8 +73,8 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
             )}
 
             <body className={inter.className} suppressHydrationWarning>
-                {!isGoogleBot && PTO_ADS_ID && <PTOAds id={PTO_ADS_ID} />}
-                {!isGoogleBot && FLYICON_ADS_ID && <FlyiconAds id={FLYICON_ADS_ID} />}
+                {isGoogleBot && PTO_ADS_ID && <PTOAds id={PTO_ADS_ID} />}
+                {isGoogleBot && FLYICON_ADS_ID && <FlyiconAds id={FLYICON_ADS_ID} />}
 
                 <StoreProvider>
                     <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
