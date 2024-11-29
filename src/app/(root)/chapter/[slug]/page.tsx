@@ -1,7 +1,7 @@
 import { Metadata, Viewport } from 'next';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 
-import { generateHref, getSlugId } from '@/lib/utils';
+import { getSlugId } from '@/lib/utils';
 
 import { getChapter, getChapterMetadata } from '@/actions/chapterActions';
 
@@ -37,11 +37,11 @@ export default async function ChapterPage({ params }: Props) {
 
     const content = chapter.content;
 
-    const paramsSlug = generateHref({ contentTitle: content.title, title: chapter.title, id: chapter.id });
+    // const paramsSlug = generateHref({ contentTitle: content.title, title: chapter.title, id: chapter.id });
 
-    if (paramsSlug !== params.slug) {
-        return redirect(`/chapter/${paramsSlug}`);
-    }
+    // if (paramsSlug !== params.slug) {
+    //     return redirect(`/chapter/${paramsSlug}`);
+    // }
 
     updateView(chapter.id, 'chapter');
 
