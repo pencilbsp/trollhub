@@ -1,18 +1,18 @@
-import Queue from "bull";
-import getRedisClient from "./lib/redis";
-import { getViewKeys, updateContentView } from "./lib/update-view";
+import Queue from 'bull';
+import getRedisClient from './lib/redis';
+import { getViewKeys, updateContentView } from './lib/update-view';
 
 declare global {
     var updateViewCron: Queue.Queue<any>;
 }
 
 function updateViewCron(cron?: string) {
-    console.log("Update view...");
+    console.log('Update view...');
     if (!cron) return;
     if (globalThis.updateViewCron) return;
 
     // Update view vào 00:00 hàng ngày
-    const updateViewQueue = new Queue("updateViewQueue");
+    const updateViewQueue = new Queue('updateViewQueue');
     globalThis.updateViewCron = updateViewQueue;
 
     updateViewQueue.process(async (job) => {
@@ -35,14 +35,14 @@ function updateViewCron(cron?: string) {
         {},
         {
             repeat: { cron },
-        }
+        },
     );
 
-    updateViewQueue.on("completed", (job, result) => {});
+    updateViewQueue.on('completed', (job, result) => {});
 
-    updateViewQueue.on("failed", (job, err) => {
+    updateViewQueue.on('failed', (job, err) => {
         console.log(`Cập nhật lượt xem ${job.id} đã thất bại! Lỗi: ${err}`);
     });
 }
 
-updateViewCron("0 0 * * *");
+updateViewCron('0 0 * * *');

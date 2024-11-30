@@ -69,8 +69,8 @@ async function getHomeData(): Promise<HomeData> {
     if (!homeData) {
         const highlights = await Promise.all(
             ['fh-sentimental', 'fh-tieu-thuyet', 'fh-tv-show', 'fh-boys-love', 'fh-girls-love', 'fh-truyen-nam', 'fh-modern', 'fh-historical-drama', 'fh-romance'].map((slug) =>
-                get(slug)
-            )
+                get(slug),
+            ),
         );
 
         const categories = await prisma.category.findMany({

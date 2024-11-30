@@ -164,7 +164,7 @@ export async function getComments(contentId: string, options?: Options) {
             // @ts-ignore
             const data = await prisma[isReply ? 'reply' : 'comment'].isLiked(comment.id, session?.user.id);
             return { ...comment, isLiked: data[0] ? true : false, totalLike: data[1], replyCount: data[2] || 0, replies: [] };
-        })
+        }),
     );
 
     const isMore = total > commentsWithLike.length + skip!;

@@ -1,29 +1,27 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
-import { generateContentMetadata, getSlugId } from "@/lib/utils";
+import { generateContentMetadata, getSlugId } from '@/lib/utils';
 
-import { PageParams } from "@/types/page";
-import updateView from "@/lib/update-view";
-import getContent from "@/actions/contentActions";
-import ContentPage from "@/components/sections/ContentPage";
+import { PageParams } from '@/types/page';
+import updateView from '@/lib/update-view';
+import getContent from '@/actions/contentActions';
+import ContentPage from '@/components/sections/ContentPage';
 
-export async function generateMetadata({
-  params,
-}: PageParams): Promise<Metadata> {
-  const contentId = getSlugId(params.slug);
-  const data = await getContent(contentId);
-  if (!data) return notFound();
+export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
+    const contentId = getSlugId(params.slug);
+    const data = await getContent(contentId);
+    if (!data) return notFound();
 
-  return generateContentMetadata(data);
+    return generateContentMetadata(data);
 }
 
 export default async function ComicPage({ params }: PageParams) {
-  const contentId = getSlugId(params.slug);
-  const data = await getContent(contentId);
-  if (!data) return notFound();
+    const contentId = getSlugId(params.slug);
+    const data = await getContent(contentId);
+    if (!data) return notFound();
 
-  updateView(data.id, "content");
+    updateView(data.id, 'content');
 
-  return <ContentPage data={data} />;
+    return <ContentPage data={data} />;
 }

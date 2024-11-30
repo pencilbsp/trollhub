@@ -35,7 +35,7 @@ export default function ChapterTable({ data, contentId, createdAt, currentId, co
     const { chapters, setSort } = useChapters(
         contentId,
         // @ts-ignore
-        data ? { data: data, total: data.length } : undefined
+        data ? { data: data, total: data.length } : undefined,
     );
 
     const handleSort = (value: Prisma.SortOrder) => {

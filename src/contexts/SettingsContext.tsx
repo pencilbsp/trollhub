@@ -1,67 +1,67 @@
-"use client";
+'use client';
 
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useState } from 'react';
 
-import { PlayerInterface } from "@/types/other";
-import useLocalStorage from "@/hooks/useLocalStorage";
+import { PlayerInterface } from '@/types/other';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 const defaultSettings: {
-  open: boolean;
-  showAdultContent: boolean;
-  playerInterface: PlayerInterface;
+    open: boolean;
+    showAdultContent: boolean;
+    playerInterface: PlayerInterface;
 } = {
-  open: false,
-  showAdultContent: false,
-  playerInterface: "jwplayer",
+    open: false,
+    showAdultContent: false,
+    playerInterface: 'jwplayer',
 };
 
 const initialState = {
-  ...defaultSettings,
-  toggleOpenSetting: () => {},
-  changePlayerInterface: () => {},
-  toggleShowAdultContent: () => {},
+    ...defaultSettings,
+    toggleOpenSetting: () => {},
+    changePlayerInterface: () => {},
+    toggleShowAdultContent: () => {},
 };
 
 export const SettingsContext = createContext(initialState);
 
 type Props = {
-  children: ReactNode;
+    children: ReactNode;
 };
 
 export default function SettingsProvider({ children }: Props) {
-  const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useLocalStorage("settings", {
-    playerInterface: initialState.playerInterface,
-    showAdultContent: initialState.showAdultContent,
-  });
-
-  const toggleShowAdultContent = (show: boolean) => {
-    setSettings({
-      ...settings,
-      showAdultContent: show,
+    const [open, setOpen] = useState(false);
+    const [settings, setSettings] = useLocalStorage('settings', {
+        playerInterface: initialState.playerInterface,
+        showAdultContent: initialState.showAdultContent,
     });
-  };
 
-  const changePlayerInterface = (playerInterface: PlayerInterface) => {
-    setSettings({
-      ...settings,
-      playerInterface,
-    });
-  };
+    const toggleShowAdultContent = (show: boolean) => {
+        setSettings({
+            ...settings,
+            showAdultContent: show,
+        });
+    };
 
-  const toggleOpenSetting = () => setOpen(!open);
+    const changePlayerInterface = (playerInterface: PlayerInterface) => {
+        setSettings({
+            ...settings,
+            playerInterface,
+        });
+    };
 
-  return (
-    <SettingsContext.Provider
-      value={{
-        ...settings,
-        open,
-        toggleOpenSetting,
-        changePlayerInterface,
-        toggleShowAdultContent,
-      }}
-    >
-      {children}
-    </SettingsContext.Provider>
-  );
+    const toggleOpenSetting = () => setOpen(!open);
+
+    return (
+        <SettingsContext.Provider
+            value={{
+                ...settings,
+                open,
+                toggleOpenSetting,
+                changePlayerInterface,
+                toggleShowAdultContent,
+            }}
+        >
+            {children}
+        </SettingsContext.Provider>
+    );
 }

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { toast } from "sonner";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { ChapterStatus } from "@prisma/client";
+import { toast } from 'sonner';
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { ChapterStatus } from '@prisma/client';
 
-import LoadingButton from "@/components/LoadingButton";
-import { resetChapterStatus } from "@/actions/chapterActions";
+import LoadingButton from '@/components/LoadingButton';
+import { resetChapterStatus } from '@/actions/chapterActions';
 
 type Props = {
     id: string;
@@ -26,7 +26,7 @@ export default function ReloadButton({ id, fid, mutate }: Props) {
                 toast.error(result.error.message);
             } else {
                 toast.success(result.message);
-                if (typeof mutate === "function") {
+                if (typeof mutate === 'function') {
                     mutate();
                 } else {
                     refresh();

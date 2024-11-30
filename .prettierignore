@@ -1,4 +1,7 @@
 bun.lockb
 
 .next/
+.vscode/
+
+public/
 node_modules/

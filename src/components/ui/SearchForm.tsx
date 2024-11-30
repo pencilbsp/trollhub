@@ -29,7 +29,7 @@ const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.I
             ref={ref}
             className={cn(
                 'flex h-10 text-lg w-full rounded-md bg-transparent py-3 outline-none placeholder:text-current placeholder:text-lg disabled:cursor-not-allowed disabled:opacity-50',
-                className
+                className,
             )}
             {...props}
         />
@@ -39,7 +39,7 @@ const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.I
 CommandInput.displayName = CommandPrimitive.Input.displayName;
 
 const CommandList = React.forwardRef<React.ElementRef<typeof CommandPrimitive.List>, React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>>(
-    ({ className, ...props }, ref) => <CommandPrimitive.List ref={ref} className={cn('max-h-[640px] overflow-y-auto overflow-x-hidden px-2 py-1', className)} {...props} />
+    ({ className, ...props }, ref) => <CommandPrimitive.List ref={ref} className={cn('max-h-[640px] overflow-y-auto overflow-x-hidden px-2 py-1', className)} {...props} />,
 );
 
 CommandList.displayName = CommandPrimitive.List.displayName;
@@ -56,17 +56,17 @@ const CommandGroup = React.forwardRef<React.ElementRef<typeof CommandPrimitive.G
             ref={ref}
             className={cn(
                 'overflow-hidden py-1 text-sm text-foreground [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-base [&_[cmdk-group-heading]]:text-muted-foreground',
-                className
+                className,
             )}
             {...props}
         />
-    )
+    ),
 );
 
 CommandGroup.displayName = CommandPrimitive.Group.displayName;
 
 const CommandSeparator = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Separator>, React.ComponentPropsWithoutRef<typeof CommandPrimitive.Separator>>(
-    ({ className, ...props }, ref) => <CommandPrimitive.Separator ref={ref} className={cn('h-px bg-border', className)} {...props} />
+    ({ className, ...props }, ref) => <CommandPrimitive.Separator ref={ref} className={cn('h-px bg-border', className)} {...props} />,
 );
 CommandSeparator.displayName = CommandPrimitive.Separator.displayName;
 
@@ -76,11 +76,11 @@ const CommandItem = React.forwardRef<React.ElementRef<typeof CommandPrimitive.It
             ref={ref}
             className={cn(
                 'relative flex cursor-default select-none items-center rounded-md px-3 py-2 outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-                className
+                className,
             )}
             {...props}
         />
-    )
+    ),
 );
 
 CommandItem.displayName = CommandPrimitive.Item.displayName;

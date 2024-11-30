@@ -69,7 +69,7 @@ export default function HistoryGroup({ name, isLatest, histories, onDelete }: Pr
                                         <Link href={chapterHref}>Tiếp tục</Link>
                                     </Button>
                                     <DeleteButton variant="outline" onClick={() => onDelete(id)} className="text-red-500 hover:text-red-500">
-                                        <span className='ml-2'>Xoá</span>
+                                        <span className="ml-2">Xoá</span>
                                     </DeleteButton>
                                 </div>
                             </div>

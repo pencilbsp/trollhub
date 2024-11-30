@@ -1,18 +1,18 @@
-"use server";
+'use server';
 
-import prisma from "../lib/prisma";
-import { getContentMostViews } from "../lib/update-view";
+import prisma from '../lib/prisma';
+import { getContentMostViews } from '../lib/update-view';
 
 export default async function getRankingContents(queryString: string) {
     try {
         const query = new URLSearchParams(queryString);
 
-        let type = query.get("type") as any;
-        let end = Number(query.get("end") || 10);
-        let start = Number(query.get("start") || 0);
+        let type = query.get('type') as any;
+        let end = Number(query.get('end') || 10);
+        let start = Number(query.get('start') || 0);
 
-        if (!["content", "chapter"].includes(type)) {
-            type = "content";
+        if (!['content', 'chapter'].includes(type)) {
+            type = 'content';
         }
 
         if (end < 0 || end < start) {
@@ -33,30 +33,30 @@ export default async function getRankingContents(queryString: string) {
                 },
             },
             select:
-                type === "content"
+                type === 'content'
                     ? {
-                        id: true,
-                        fid: true,
-                        type: true,
-                        title: true,
-                        akaTitle: true,
-                        thumbUrl: true,
-                        updatedAt: true,
-                        creator: {
-                            select: {
-                                name: true,
-                                avatar: true,
-                                userName: true,
-                            },
-                        },
-                    }
+                          id: true,
+                          fid: true,
+                          type: true,
+                          title: true,
+                          akaTitle: true,
+                          thumbUrl: true,
+                          updatedAt: true,
+                          creator: {
+                              select: {
+                                  name: true,
+                                  avatar: true,
+                                  userName: true,
+                              },
+                          },
+                      }
                     : {
-                        id: true,
-                        fid: true,
-                        type: true,
-                        title: true,
-                        updatedAt: true,
-                    },
+                          id: true,
+                          fid: true,
+                          type: true,
+                          title: true,
+                          updatedAt: true,
+                      },
         });
 
         return {
@@ -70,6 +70,6 @@ export default async function getRankingContents(queryString: string) {
         };
     } catch (error) {
         console.log(error);
-        return { error: { message: "Đã có lỗi xảy ra, vui lòng thử lại sau." }, data: [], total: 0 };
+        return { error: { message: 'Đã có lỗi xảy ra, vui lòng thử lại sau.' }, data: [], total: 0 };
     }
 }

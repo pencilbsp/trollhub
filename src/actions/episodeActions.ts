@@ -1,62 +1,62 @@
-"use server"
-import { ContentType } from "@prisma/client"
+'use server';
+import { ContentType } from '@prisma/client';
 
-import prisma from "@/lib/prisma"
-import getRedisClient from "@/lib/redis"
-import { EPISODE_EX_TIME as EX_TIME } from "@/config"
+import prisma from '@/lib/prisma';
+import getRedisClient from '@/lib/redis';
+import { EPISODE_EX_TIME as EX_TIME } from '@/config';
 
 const get = (id: string) =>
-  prisma.chapter.findUnique({
-    where: {
-      id: id,
-      type: ContentType.movie,
-    },
-    select: {
-      id: true,
-      fid: true,
-      view: true,
-      title: true,
-      status: true,
-      hidden: true,
-      videoId: true,
-      createdAt: true,
-      updatedAt: true,
-      content: {
-        select: {
-          id: true,
-          type: true,
-          title: true,
-          thumbUrl: true,
-          description: true,
+    prisma.chapter.findUnique({
+        where: {
+            id: id,
+            type: ContentType.movie,
         },
-      },
-      creator: {
         select: {
-          id: true,
-          name: true,
-          avatar: true,
-          userName: true,
+            id: true,
+            fid: true,
+            view: true,
+            title: true,
+            status: true,
+            hidden: true,
+            videoId: true,
+            createdAt: true,
+            updatedAt: true,
+            content: {
+                select: {
+                    id: true,
+                    type: true,
+                    title: true,
+                    thumbUrl: true,
+                    description: true,
+                },
+            },
+            creator: {
+                select: {
+                    id: true,
+                    name: true,
+                    avatar: true,
+                    userName: true,
+                },
+            },
         },
-      },
-    },
-  })
+    });
 
-export type EpisodeType = Awaited<ReturnType<typeof get>>
+export type EpisodeType = Awaited<ReturnType<typeof get>>;
 
 export async function getEpisode(id: string): Promise<EpisodeType> {
-  try {
-    const redisClient = await getRedisClient()
-    const cachedEpisode = await redisClient.get(id)
-    if (cachedEpisode) return JSON.parse(cachedEpisode)
+    try {
+        const redisClient = await getRedisClient();
+        const cachedEpisode = await redisClient.get(id);
+        if (cachedEpisode) return JSON.parse(cachedEpisode);
 
-    const episode = await get(id)
-    if (!episode || episode.hidden) throw new Error("notFound")
+        const episode = await get(id);
+        if (!episode || episode.hidden) throw new Error('notFound');
 
-    const EX = episode.status === "ready" ? EX_TIME : 60
-    await redisClient.set(id, JSON.stringify(episode), { EX })
+        const EX = episode.status === 'ready' ? EX_TIME : 60;
+        await redisClient.set(id, JSON.stringify(episode), { EX });
 
-    return episode
-  } catch (error: any) {
-    return null
-  }
+        return episode;
+    } catch (error: any) {
+        return null;
+    }
 }

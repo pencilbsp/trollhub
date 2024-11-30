@@ -29,7 +29,7 @@ export default function useComment(contentId: string) {
                 comments: Comment[];
                 sort: Prisma.SortOrder;
             };
-        }) => state.comments
+        }) => state.comments,
     );
 
     const loadComments = async () => {

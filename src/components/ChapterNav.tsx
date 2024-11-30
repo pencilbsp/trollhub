@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import slug from "slug";
-import Link from "next/link";
-import { Drawer } from "vaul";
-import { toast } from "sonner";
-import { motion } from "framer-motion";
-import { useSession } from "next-auth/react";
-import { ContentType } from "@prisma/client";
-import { ArrowUpIcon, ListIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import slug from 'slug';
+import Link from 'next/link';
+import { Drawer } from 'vaul';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import { useSession } from 'next-auth/react';
+import { ContentType } from '@prisma/client';
+import { ArrowUpIcon, ListIcon } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { cn } from "@/lib/utils";
-import useHistory from "@/hooks/useHistory";
-import useChapters from "@/hooks/useChapters";
-import useOffSetTop from "@/hooks/useOffSetTop";
-import useResponsive from "@/hooks/useResponsive";
+import { cn } from '@/lib/utils';
+import useHistory from '@/hooks/useHistory';
+import useChapters from '@/hooks/useChapters';
+import useOffSetTop from '@/hooks/useOffSetTop';
+import useResponsive from '@/hooks/useResponsive';
 
-import { createHistory } from "@/actions/historyActions";
-import ChapterIcon from "@/components/icons/ChapterIcon";
-import ChapterList from "@/components/sections/ChapterList";
-import CircleProgressIcon from "@/components/icons/CircleProgressIcon";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
-import { Tooltip, TooltipArrow, TooltipContent, TooltipTrigger } from "@/components/ui/Tooltip";
+import { createHistory } from '@/actions/historyActions';
+import ChapterIcon from '@/components/icons/ChapterIcon';
+import ChapterList from '@/components/sections/ChapterList';
+import CircleProgressIcon from '@/components/icons/CircleProgressIcon';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
+import { Tooltip, TooltipArrow, TooltipContent, TooltipTrigger } from '@/components/ui/Tooltip';
 
 interface Props {
     id: string;
@@ -32,9 +32,9 @@ interface Props {
 }
 
 const scrollToTop = (smooth: boolean = false) => {
-    if (typeof document === "undefined") return;
+    if (typeof document === 'undefined') return;
 
-    if (smooth) window.scrollTo({ top: 0, behavior: "smooth" });
+    if (smooth) window.scrollTo({ top: 0, behavior: 'smooth' });
     else document.documentElement.scrollTop = 0;
 };
 
@@ -55,7 +55,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
         return { chapterIdx, percent };
     }, [chapters, id]);
 
-    const isMobile = useResponsive("down", "md");
+    const isMobile = useResponsive('down', 'md');
 
     useEffect(() => {
         setDrawer(isMobile);
@@ -74,7 +74,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
     }, [contentId, id, session.data?.user.id]);
 
     return (
-        <motion.aside className={cn("chapter-nav z-10", offset && "stickied")}>
+        <motion.aside className={cn('chapter-nav z-10', offset && 'stickied')}>
             <nav>
                 {drawer ? (
                     <Drawer.Root>

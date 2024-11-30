@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 type DebouncedCallback = (args: any) => void;
 
 const useDebounce = (callback: DebouncedCallback, delay: number) => {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    // Cleanup the previous timeout on re-render
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+    useEffect(() => {
+        // Cleanup the previous timeout on re-render
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
+
+    const debouncedCallback: DebouncedCallback = (...args) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        // @ts-ignore
+        timeoutRef.current = setTimeout(() => {
+            callback(...args);
+        }, delay);
     };
-  }, []);
 
-  const debouncedCallback: DebouncedCallback = (...args) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    // @ts-ignore
-    timeoutRef.current = setTimeout(() => {
-      callback(...args);
-    }, delay);
-  };
-
-  return debouncedCallback;
+    return debouncedCallback;
 };
 
 export default useDebounce;
