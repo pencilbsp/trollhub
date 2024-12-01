@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
-// Swiper components, modules and styles
 import { Navigation, Pagination } from 'swiper/modules';
 import { Swiper as SwiperReact, SwiperSlide } from 'swiper/react';
 
@@ -11,14 +10,16 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 import { cn } from '@/lib/utils';
-import ContentCard, { type Content } from '@/components/ContentCard';
+import { type HighlightContent } from '@/actions/homeActions';
+
+import { ContentVertical } from '@/components/ContentCard';
 
 interface Props {
     title: string;
     swiper?: boolean;
     moreLink?: string;
     className?: string;
-    data?: Content[];
+    data?: HighlightContent[];
 }
 
 export default function HighlightContents({ title, moreLink, data, swiper, className }: Props) {
@@ -39,13 +40,13 @@ export default function HighlightContents({ title, moreLink, data, swiper, class
                     {data &&
                         data.map((content) => (
                             <SwiperSlide key={content.id} className="h-full">
-                                <ContentCard data={content} direction="vertical" />
+                                <ContentVertical data={content} />
                             </SwiperSlide>
                         ))}
                 </SwiperReact>
             ) : (
                 <div className="grid grid-cols-2 grid-rows-4 sm:grid-cols-3 sm:grid-rows-3 lg:grid-cols-4 lg:grid-rows-2 gap-4 md:gap-2 xl:gap-4 w-full">
-                    {data && data.map((content) => <ContentCard direction="vertical" key={content.id} data={content} />)}
+                    {data && data.map((content) => <ContentVertical key={content.id} data={content} />)}
                 </div>
             )}
         </div>

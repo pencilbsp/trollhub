@@ -92,5 +92,6 @@ async function getHomeData() {
 }
 
 export type HomeData = Awaited<ReturnType<typeof getHomeData>>;
+export type HighlightContent = HomeData['highlights'][number]['contents'][number];
 
 export default getHomeData;

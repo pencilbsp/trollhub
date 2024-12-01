@@ -7,8 +7,8 @@ import { Fragment, useEffect, useTransition } from 'react';
 import { INIT_TAKE_CONTENT } from '@/config';
 import { type CategoryContent, getContentsByCategoryId } from '@/actions/contentActions';
 
-import ContentCard from '@/components/ContentCard';
 import { TextShimmer } from '@/components/ui/TextShimmer';
+import { ContentHorizontal } from '@/components/ContentCard';
 
 interface Props {
     id: string;
@@ -61,7 +61,7 @@ function LoadMoreContent({ id }: LoadMoreContentProps) {
         <Fragment>
             {contents &&
                 contents.map((content: any) => {
-                    return <ContentCard key={content.id} direction="horizontal" data={content} />;
+                    return <ContentHorizontal key={content.id} data={content} />;
                 })}
             {hasMore && (
                 <div ref={ref} className="">
@@ -77,7 +77,7 @@ function LoadMoreContent({ id }: LoadMoreContentProps) {
 export default function CategoryContents({ contents, id }: Props) {
     return (
         <div className="flex flex-col gap-6">
-            {contents && contents.map((content) => <ContentCard key={content.id} direction="horizontal" data={content} />)}
+            {contents && contents.map((content) => <ContentHorizontal key={content.id} data={content} />)}
             <LoadMoreContent id={id} />
         </div>
     );

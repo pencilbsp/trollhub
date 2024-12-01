@@ -14,11 +14,9 @@ export default async function Home() {
     const redisKey = getKeyWithNamespace('HOME_DATA');
     let homeData = await redisClient.json<HomeData>(redisKey);
 
-    
     if (!homeData) {
         homeData = await getHomeData();
         await redisClient.set(redisKey, JSON.stringify(homeData), { EX: HOME_EX_TIME });
-        console.log('homeData', homeData);
     }
 
     const { slide, highlights, categories } = homeData;
@@ -42,7 +40,7 @@ export default async function Home() {
                     <div className="flex flex-col gap-6 col-span-3 md:col-span-2">
                         {Array.isArray(highlights) &&
                             highlights.map(({ id, contents, title }) => (
-                                <HighlightContents key={id} title={title} data={contents as any} moreLink={generateHref({ id, title, type: 'the-loai' })} />
+                                <HighlightContents key={id} title={title} data={contents} moreLink={generateHref({ id, title, type: 'the-loai' })} />
                             ))}
                     </div>
                     <div className="col-span-3 md:col-span-1 space-y-6">

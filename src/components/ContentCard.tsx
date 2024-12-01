@@ -15,6 +15,7 @@ import useSettings from '@/hooks/useSettings';
 import { CategoryContent } from '@/actions/contentActions';
 import { avatarNameFallback, cn, formatToNow, generateHref } from '@/lib/utils';
 import { Content as IContent, Creator, ContentStatus, ContentType } from '@prisma/client';
+import { HighlightContent } from '@/actions/homeActions';
 
 function getContentIcon(type: ContentType) {
     if (type === ContentType.movie) return FilmIcon;
@@ -27,9 +28,9 @@ export interface Content extends IContent {
     creator: Pick<Creator, 'name' | 'avatar' | 'userName'>;
 }
 
-type ContentProps = { data: Content | CategoryContent };
+type ContentHorizontalProps = { data: Content | CategoryContent };
 
-function ContentHorizontal({ data }: ContentProps) {
+function ContentHorizontal({ data }: ContentHorizontalProps) {
     const descriptionRef = useRef<HTMLDivElement>(null);
     const { id, type, creator, thumbUrl, title, updatedAt, description, status, adultContent, view } = data;
 
@@ -108,7 +109,9 @@ function ContentHorizontal({ data }: ContentProps) {
     );
 }
 
-function ContentVertical({ data }: ContentProps) {
+type ContentVerticalProps = { data: Content | CategoryContent | HighlightContent };
+
+function ContentVertical({ data }: ContentVerticalProps) {
     const { showAdultContent } = useSettings();
     const { id, creator, thumbUrl, title, status, type, adultContent, updatedAt } = data;
     const isShow = adultContent && !showAdultContent;
@@ -156,11 +159,13 @@ function ContentVertical({ data }: ContentProps) {
     );
 }
 
-interface Props {
-    direction: 'horizontal' | 'vertical';
-    data: Content | CategoryContent;
-}
+// interface Props {
+//     direction: 'horizontal' | 'vertical';
+//     data: Content | CategoryContent | HighlightContent;
+// }
 
-export default function ContentCard({ data, direction }: Props) {
-    return <Fragment>{direction === 'horizontal' ? <ContentHorizontal data={data} /> : <ContentVertical data={data} />}</Fragment>;
-}
+export { ContentHorizontal, ContentVertical };
+
+// export default function ContentCard({ data, direction }: Props) {
+//     return <Fragment>{direction === 'horizontal' ? <ContentHorizontal data={data} /> : <ContentVertical data={data} />}</Fragment>;
+// }

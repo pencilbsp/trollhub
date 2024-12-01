@@ -2,64 +2,24 @@ import slug from 'slug';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-
-import prisma from '@/lib/prisma';
-import { ADULT_CATEGORY_ID, SITE_NAME, SITE_URL } from '@/config';
-import { avatarNameFallback } from '@/lib/utils';
 import { ShareIcon, ThumbsUpIcon } from 'lucide-react';
 
+import { SITE_NAME, SITE_URL } from '@/config';
+import { avatarNameFallback } from '@/lib/utils';
+import { getCreator, getCreatorWithContent } from '@/actions/creatorAction';
+
+import { Button } from '@/components/ui/Button';
 import LoadMoreContent from '@/components/sections/LoadMoreContent';
 import HighlightContents from '@/components/sections/HighlightContents';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
-import { Button } from '@/components/ui/Button';
 
 interface Props {
     params: { slug: string };
 }
 
-const TAKE = 12;
-
-async function getCreator(userName: string, withContent = true) {
-    const data: any = await prisma.creator.findUnique({
-        where: {
-            userName: '@' + userName,
-        },
-        include: withContent
-            ? {
-                  contents: {
-                      take: TAKE,
-                      orderBy: {
-                          updatedAt: 'desc',
-                      },
-                      select: {
-                          id: true,
-                          type: true,
-                          title: true,
-                          status: true,
-                          thumbUrl: true,
-                          updatedAt: true,
-                          categoryIds: true,
-                      },
-                  },
-              }
-            : undefined,
-    });
-
-    if (!data) return null;
-    return data.contents
-        ? {
-              ...data,
-              contents: data.contents.map((content: any) => {
-                  const adultContent = content.categoryIds.includes(ADULT_CATEGORY_ID);
-                  return { ...content, adultContent, categoryIds: undefined };
-              }),
-          }
-        : data;
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const userName = params.slug;
-    const creator = await getCreator(userName, false);
+    const creator = await getCreator(userName);
     if (!creator) return notFound();
 
     const title = `${creator.name}: Trang chính thức của ${creator.name} trên ${SITE_NAME}`;
@@ -83,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ChannelPage({ params }: Props) {
     const userName = params.slug;
-    const creator = await getCreator(userName);
+    const creator = await getCreatorWithContent(userName);
     if (!creator) return notFound();
 
     return (
@@ -128,7 +88,6 @@ export default async function ChannelPage({ params }: Props) {
                     </div>
 
                     <HighlightContents
-                        // @ts-ignore
                         data={creator.contents.map((content) => ({
                             ...content,
                             creator: { name: creator.name, avatar: creator.avatar },
