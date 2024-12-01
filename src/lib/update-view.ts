@@ -1,6 +1,5 @@
 'use server';
 
-import { C } from '@vidstack/react/types/vidstack.js';
 import prisma from './prisma';
 import getRedisClient, { getKeyWithNamespace, type RedisClient } from './redis';
 
