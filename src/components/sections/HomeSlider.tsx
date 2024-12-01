@@ -1,6 +1,5 @@
 'use client';
 
-import slug from 'slug';
 import Link from 'next/link';
 import Image from 'next/image';
 

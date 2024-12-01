@@ -11,14 +11,14 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 import { cn } from '@/lib/utils';
-import ContentCard, { ContentWithCreator } from '@/components/ContentCard';
+import ContentCard, { type Content } from '@/components/ContentCard';
 
 interface Props {
     title: string;
     swiper?: boolean;
     moreLink?: string;
     className?: string;
-    data?: ContentWithCreator[];
+    data?: Content[];
 }
 
 export default function HighlightContents({ title, moreLink, data, swiper, className }: Props) {
