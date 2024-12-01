@@ -4,8 +4,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ShareIcon, ThumbsUpIcon } from 'lucide-react';
 
-import { SITE_NAME, SITE_URL } from '@/config';
 import { avatarNameFallback } from '@/lib/utils';
+import { INIT_TAKE_CONTENT, SITE_NAME, SITE_URL } from '@/config';
 import { getCreator, getCreatorWithContent } from '@/actions/creatorAction';
 
 import { Button } from '@/components/ui/Button';
@@ -96,8 +96,7 @@ export default async function ChannelPage({ params }: Props) {
                         title="Nội dung mới nhất"
                     />
 
-                    {/* @ts-ignore */}
-                    <LoadMoreContent creatorId={creator.id} skip={creator.contents.length} take={TAKE} />
+                    <LoadMoreContent creatorId={creator.id} skip={creator.contents.length} take={INIT_TAKE_CONTENT} />
                 </div>
             </div>
         </div>
