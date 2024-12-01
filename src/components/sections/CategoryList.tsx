@@ -5,7 +5,7 @@ import { Category } from '@prisma/client';
 import { Button } from '@/components/ui/Button';
 
 interface Props {
-    data: Omit<Category, 'contentIds'>[];
+    data: Category[];
 }
 
 export default function CategoryList({ data }: Props) {

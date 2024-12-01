@@ -15,8 +15,9 @@ export default async function Home() {
     let homeData = await redisClient.json<HomeData>(redisKey);
 
     if (!homeData) {
-        const response = await fetch(USER_CONTENTS_HOST + '/api/home-data', { cache: 'no-store' });
-        homeData = (await response.json()) as HomeData;
+        const response = await fetch(USER_CONTENTS_HOST + '/api/home-data', { cache: 'no-cache' });
+        const result = await response.json();
+        homeData = result.data as HomeData;
         await redisClient.set(redisKey, JSON.stringify(homeData), { EX: HOME_EX_TIME });
     }
 
