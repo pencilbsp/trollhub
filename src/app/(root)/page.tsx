@@ -5,9 +5,9 @@ import CategoryList from '@/components/sections/CategoryList';
 import HighlightContents from '@/components/sections/HighlightContents';
 // utils
 import { generateHref } from '@/lib/utils';
-import { HOME_EX_TIME, NATIVE_ADS_ID } from '@/config';
-import getHomeData, { type HomeData } from '@/actions/homeActions';
+import { type HomeData } from '@/actions/homeActions';
 import getRedisClient, { getKeyWithNamespace } from '@/lib/redis';
+import { HOME_EX_TIME, NATIVE_ADS_ID, USER_CONTENTS_HOST } from '@/config';
 
 export default async function Home() {
     const redisClient = await getRedisClient();
@@ -15,7 +15,8 @@ export default async function Home() {
     let homeData = await redisClient.json<HomeData>(redisKey);
 
     if (!homeData) {
-        homeData = await getHomeData();
+        const response = await fetch(USER_CONTENTS_HOST + '/api/home-data');
+        homeData = (await response.json()) as HomeData;
         await redisClient.set(redisKey, JSON.stringify(homeData), { EX: HOME_EX_TIME });
     }
 

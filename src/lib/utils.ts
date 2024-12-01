@@ -46,7 +46,7 @@ export function generateKeywords(title: string, data: string[], userName: string
     keywords.push(
         ...(type === 'movie'
             ? ['xem phim', 'xem phim online', 'phim vietsub']
-            : ['đọc truyện', 'truyện hay', 'đọc truyện online', 'đọc truyenfull', 'truyện tranh', 'truyện ngôn tình']),
+            : ['đọc truyện', 'truyện hay', 'đọc truyện online', 'đọc truyenfull', 'truyện tranh', 'truyện ngôn tình'])
     );
 
     return keywords;
@@ -150,7 +150,10 @@ export function chaptersMapTable(data: any) {
 }
 
 export function generateHref({ type, id, title, contentTitle }: any) {
-    const titleSlug = slug(title.trim());
+    if (!title) {
+        console.log({ type, id, title, contentTitle });
+    }
+    const titleSlug = slug(title?.trim() || '');
 
     if (!contentTitle) {
         const path = type ? '/' + type + '/' : '';
