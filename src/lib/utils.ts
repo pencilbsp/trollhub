@@ -150,9 +150,6 @@ export function chaptersMapTable(data: any) {
 }
 
 export function generateHref({ type, id, title, contentTitle }: any) {
-    if (!title) {
-        console.log({ type, id, title, contentTitle });
-    }
     const titleSlug = slug(title?.trim() || '');
 
     if (!contentTitle) {
