@@ -48,7 +48,7 @@ export default async function getSearchResult(keyword: string, searchProps?: Sea
                 $text: { $search: `\"${keyword}\"`, $diacriticSensitive: false },
             },
         },
-        { $unset: ['categoryIds', 'fid', 'createdAt'] },
+        { $unset: ['fid', 'createdAt'] },
         {
             $lookup: {
                 as: 'creator',
