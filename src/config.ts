@@ -30,9 +30,9 @@ export const REDIS_PASS = process.env.REDIS_PASS;
 export const REDIS_USER = process.env.REDIS_USER || 'default';
 export const REDIS_NAMESPACE = process.env.REDIS_NAMESPACE || '';
 
+export const HOME_EX_TIME = 30 * 60; // 30 Phút
 export const METADATA_EX_TIME = 24 * 60 * 60; // 1 Ngày
 export const EPISODE_EX_TIME = METADATA_EX_TIME * 2; // 2 ngày
-export const HOME_EX_TIME = 30 * 60; // 30 Phút
 
 export const STREAME_DASH_API = process.env.STREAME_DASH_API!;
 
