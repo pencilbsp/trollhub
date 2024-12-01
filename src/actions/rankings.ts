@@ -69,7 +69,6 @@ export default async function getRankingContents(queryString: string) {
             total: keys.length,
         };
     } catch (error) {
-        console.log(error);
         return { error: { message: 'Đã có lỗi xảy ra, vui lòng thử lại sau.' }, data: [], total: 0 };
     }
 }

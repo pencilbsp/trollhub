@@ -4,13 +4,20 @@ import prisma from '@/lib/prisma';
 import getRedisClient, { getKeyWithNamespace } from '@/lib/redis';
 import { ADULT_CATEGORY_ID, INIT_CHAPTER, INIT_TAKE_CONTENT, METADATA_EX_TIME } from '@/config';
 
+type Options = {
+    skip?: number;
+    take?: number;
+    select?: { [key: string]: boolean };
+};
+
 export type Content = NonNullable<Awaited<ReturnType<typeof get>>>;
 export type ChapterList = Content['chapter'];
+export type CategoryContent = NonNullable<Awaited<ReturnType<typeof getContentsByCategoryId>>>['contents'][number];
 
 const EX = Math.floor(METADATA_EX_TIME / 8);
 
-const get = (where: any, contentWhere: any) =>
-    prisma.content.findFirst({
+const get = (where: any, contentWhere: any) => {
+    return prisma.content.findFirst({
         where,
         select: {
             id: true,
@@ -58,30 +65,41 @@ const get = (where: any, contentWhere: any) =>
                         select: {
                             id: true,
                             title: true,
-                            creator: true,
                             thumbUrl: true,
                             description: true,
                             type: true,
                             status: true,
                             updatedAt: true,
+                            creator: {
+                                select: {
+                                    name: true,
+                                    avatar: true,
+                                    userName: true,
+                                },
+                            },
                         },
                         take: INIT_TAKE_CONTENT,
                         orderBy: {
-                            updatedAt: 'asc',
+                            updatedAt: 'desc',
                         },
                     },
                 },
             },
             categories: {
                 select: {
-                    id: true,
-                    title: true,
+                    category: {
+                        select: {
+                            id: true,
+                            title: true,
+                        },
+                    },
                 },
             },
         },
     });
+};
 
-export default async function getContent(id: string): Promise<Content | null> {
+async function getContent(id: string): Promise<Content | null> {
     try {
         const redisClient = await getRedisClient();
         const key = getKeyWithNamespace(id);
@@ -107,54 +125,57 @@ export default async function getContent(id: string): Promise<Content | null> {
     }
 }
 
-export const contentQuery = (options: any) => ({
-    select: {
-        id: true,
-        title: true,
-        contents: {
-            select: {
-                id: true,
-                type: true,
-                title: true,
-                status: true,
-                creator: true,
-                thumbUrl: true,
-                updatedAt: true,
-                description: true,
-                categoryIds: true,
-            },
-            orderBy: {
-                updatedAt: 'desc',
-            },
-            ...options,
-        },
-    },
-});
-
-export async function getContentsByCategoryId(id: string, options = { take: INIT_TAKE_CONTENT, skip: 0 }) {
+async function getContentsByCategoryId(id: string, options = { take: INIT_TAKE_CONTENT, skip: 0 }) {
     const data = await prisma.category.findUnique({
         where: { id },
-        ...contentQuery(options),
+        select: {
+            id: true,
+            title: true,
+            contents: {
+                take: options.take,
+                skip: options.skip,
+                orderBy: {
+                    createdAt: 'desc',
+                },
+                select: {
+                    contentId: true,
+                    content: {
+                        select: {
+                            id: true,
+                            type: true,
+                            view: true,
+                            title: true,
+                            status: true,
+                            thumbUrl: true,
+                            updatedAt: true,
+                            description: true,
+                            categoryIds: true,
+                            creator: {
+                                select: {
+                                    name: true,
+                                    avatar: true,
+                                    userName: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
     });
 
     if (!data) return null;
 
     return {
         ...data,
-        contents: data.contents.map((content) => {
+        contents: data.contents.map(({ content }) => {
             const adultContent = content.categoryIds.includes(ADULT_CATEGORY_ID);
-            return { ...content, adultContent, categoryIds: undefined };
+            return { ...content, adultContent };
         }),
     };
 }
 
-type Options = {
-    skip?: number;
-    take?: number;
-    select?: { [key: string]: boolean };
-};
-
-export async function getContents(where: any, options: Options) {
+async function getContents(where: any, options: Options) {
     const total = await prisma.content.count({ where });
     const contents = await prisma.content.findMany({
         where,
@@ -188,3 +209,5 @@ export async function getContents(where: any, options: Options) {
         total,
     };
 }
+
+export { getContents, getContentsByCategoryId, getContent };

@@ -5,7 +5,7 @@ import { generateContentMetadata, getSlugId } from '@/lib/utils';
 
 import { PageParams } from '@/types/page';
 import updateView from '@/lib/update-view';
-import getContent from '@/actions/contentActions';
+import { getContent } from '@/actions/contentActions';
 import ContentPage from '@/components/sections/ContentPage';
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
@@ -15,14 +15,13 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 
     return generateContentMetadata(data);
 }
+
 export default async function ComicPage({ params }: PageParams) {
     const contentId = getSlugId(params.slug);
     const data = await getContent(contentId);
     if (!data) return notFound();
 
     updateView(data.id, 'content');
-
-    // const headers = new Headers();
 
     return <ContentPage data={data} />;
 }

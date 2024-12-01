@@ -7,8 +7,9 @@ import Image from 'next/image';
 import { ContentType } from '@prisma/client';
 
 // Swiper components, modules and styles
-import { cn } from '@/lib/utils';
+import { cn, generateHref } from '@/lib/utils';
 import useSettings from '@/hooks/useSettings';
+import { type HomeData } from '@/actions/homeActions';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Swiper as SwiperReact, SwiperSlide } from 'swiper/react';
 
@@ -30,7 +31,7 @@ interface ButtonProps {
 }
 
 interface Props {
-    data: Slide[];
+    data: HomeData['slide'];
 }
 
 export default function HomeSlider({ data }: Props) {
@@ -39,7 +40,7 @@ export default function HomeSlider({ data }: Props) {
     return (
         <SwiperReact autoplay navigation className="h-full w-full sm:rounded-lg" modules={[Autoplay, Navigation, Pagination]} pagination={{ type: 'bullets', clickable: true }}>
             {data.map(({ id, image, tagline, title, type, adultContent }) => {
-                const href = `/${type}/${slug(title)}-${id}`;
+                const href = generateHref({ id, title, type });
                 const isShow = adultContent && !showAdultContent;
 
                 return (

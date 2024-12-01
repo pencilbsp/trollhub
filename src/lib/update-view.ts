@@ -1,12 +1,13 @@
 'use server';
 
+import { C } from '@vidstack/react/types/vidstack.js';
 import prisma from './prisma';
 import getRedisClient, { getKeyWithNamespace, type RedisClient } from './redis';
 
 type ViewType = 'content' | 'chapter';
 // type View = { type: ViewType; view: number };
 
-export async function getViewKeys(redisClient: RedisClient, match = 'view_*') {
+export async function getViewKeys(redisClient: RedisClient, match = getKeyWithNamespace('view_*')) {
     let cursor = 0;
     const keys = [];
 
@@ -54,14 +55,14 @@ export default async function updateView(contentId: string, type: ViewType) {
 
 export async function getContentMostViews(type: 'content' | 'chapter') {
     const redisClient = await getRedisClient();
-    const keys = await getViewKeys(redisClient, `view_${type}_*`);
+    const keys = await getViewKeys(redisClient, getKeyWithNamespace(`view_${type}_*`));
 
     const views: { id: string; view: number }[] = [];
 
     do {
         try {
             const view = await redisClient.get(keys[0]);
-            views.push({ id: keys[0].split('_')[2], view: Number(view) });
+            views.push({ id: keys[0].split('_').at(-1)!, view: Number(view) });
         } catch (error) {}
 
         keys.shift();

@@ -1,17 +1,18 @@
 'use client';
 
 import useSWR from 'swr';
-import { useEffect, useTransition } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { Fragment, useEffect, useTransition } from 'react';
 
 import { INIT_TAKE_CONTENT } from '@/config';
+import { type CategoryContent, getContentsByCategoryId } from '@/actions/contentActions';
+
+import ContentCard from '@/components/ContentCard';
 import { TextShimmer } from '@/components/ui/TextShimmer';
-import { getContentsByCategoryId } from '@/actions/contentActions';
-import ContentCard, { ContentWithCreator } from '@/components/ContentCard';
 
 interface Props {
     id: string;
-    contents: ContentWithCreator[];
+    contents: CategoryContent[];
 }
 
 interface LoadMoreContentProps {
@@ -24,7 +25,7 @@ const fetcher = async (id: string) => {
     const searchParams = new URLSearchParams(id);
     const page = Number(searchParams.get('page') || fallbackData.page);
     const take = Number(searchParams.get('take') || fallbackData.take);
-    const category: any = await getContentsByCategoryId(id, { take, skip: page * take });
+    const category = await getContentsByCategoryId(id, { take, skip: page * take });
     const contents = category?.contents || [];
     return { contents, take, page, hasMore: contents.length > 0 };
 };
@@ -57,10 +58,9 @@ function LoadMoreContent({ id }: LoadMoreContentProps) {
     }, [inView]);
 
     return (
-        <>
+        <Fragment>
             {contents &&
                 contents.map((content: any) => {
-                    // @ts-ignore
                     return <ContentCard key={content.id} direction="horizontal" data={content} />;
                 })}
             {hasMore && (
@@ -70,18 +70,14 @@ function LoadMoreContent({ id }: LoadMoreContentProps) {
                     </div>
                 </div>
             )}
-        </>
+        </Fragment>
     );
 }
 
 export default function CategoryContents({ contents, id }: Props) {
     return (
         <div className="flex flex-col gap-6">
-            {contents &&
-                contents.map((content) => (
-                    // @ts-ignore
-                    <ContentCard key={content.id} direction="horizontal" data={content} />
-                ))}
+            {contents && contents.map((content) => <ContentCard key={content.id} direction="horizontal" data={content} />)}
             <LoadMoreContent id={id} />
         </div>
     );

@@ -1,118 +1,27 @@
-import { Category } from '@prisma/client';
-
 import Rankings from '@/components/Rankings';
 import NativeAds from '@/components/ads/NativeAds';
+import HomeSlider from '@/components/sections/HomeSlider';
 import CategoryList from '@/components/sections/CategoryList';
-import HomeSlider, { Slide } from '@/components/sections/HomeSlider';
 import HighlightContents from '@/components/sections/HighlightContents';
 // utils
-import prisma from '@/lib/prisma';
 import { generateHref } from '@/lib/utils';
-import { ADULT_CATEGORY_ID, NATIVE_ADS_ID } from '@/config';
+import { HOME_EX_TIME, NATIVE_ADS_ID } from '@/config';
+import getHomeData, { type HomeData } from '@/actions/homeActions';
 import getRedisClient, { getKeyWithNamespace } from '@/lib/redis';
 
-const EX = 30 * 60; // 30 Phút
-
-const get = async (slug: string) => {
-    const data = await prisma.category.findUnique({
-        where: { slug },
-        select: {
-            id: true,
-            slug: true,
-            title: true,
-            contents: {
-                take: 8,
-                select: {
-                    id: true,
-                    type: true,
-                    title: true,
-                    status: true,
-                    thumbUrl: true,
-                    updatedAt: true,
-                    categoryIds: true,
-                    creator: {
-                        select: {
-                            name: true,
-                            avatar: true,
-                        },
-                    },
-                },
-                orderBy: {
-                    updatedAt: 'desc',
-                },
-            },
-        },
-    });
-
-    if (!data) throw new Error();
-
-    return {
-        ...data,
-        contents: data.contents.map((content) => {
-            const adultContent = content.categoryIds.includes(ADULT_CATEGORY_ID);
-            return { ...content, adultContent, categoryIds: undefined };
-        }),
-    };
-};
-
-type HomeData = {
-    slide: Slide[];
-    highlights: Awaited<ReturnType<typeof get>>[];
-    categories: Category[];
-};
-
-async function getHomeData(): Promise<HomeData> {
+export default async function Home() {
     const redisClient = await getRedisClient();
-    const key = getKeyWithNamespace('home-data');
-    let homeData: any = await redisClient.get(key);
+    const redisKey = getKeyWithNamespace('HOME_DATA');
+    let homeData = await redisClient.json<HomeData>(redisKey);
 
+    
     if (!homeData) {
-        const highlights = await Promise.all(
-            ['fh-sentimental', 'fh-tieu-thuyet', 'fh-tv-show', 'fh-boys-love', 'fh-girls-love', 'fh-truyen-nam', 'fh-modern', 'fh-historical-drama', 'fh-romance'].map((slug) =>
-                get(slug),
-            ),
-        );
-
-        const categories = await prisma.category.findMany({
-            where: {},
-            select: {
-                id: true,
-                slug: true,
-                title: true,
-            },
-        });
-
-        const contents = await prisma.content.findMany({
-            where: {},
-            orderBy: {
-                updatedAt: 'desc',
-            },
-            include: {
-                categories: true,
-            },
-            take: 6,
-        });
-
-        const slide = contents.map((content) => ({
-            id: content.id,
-            type: content.type,
-            title: content.title,
-            tagline: content.akaTitle[0] ?? '',
-            image: content.thumbUrl?.replace('_256x', '_720x'),
-            adultContent: content.categoryIds.includes(ADULT_CATEGORY_ID),
-        }));
-
-        homeData = { slide, highlights, categories };
-        await redisClient.set(key, JSON.stringify(homeData), { EX });
-    } else {
-        homeData = JSON.parse(homeData);
+        homeData = await getHomeData();
+        await redisClient.set(redisKey, JSON.stringify(homeData), { EX: HOME_EX_TIME });
+        console.log('homeData', homeData);
     }
 
-    return homeData;
-}
-
-export default async function Home() {
-    const { slide, highlights, categories } = await getHomeData();
+    const { slide, highlights, categories } = homeData;
 
     return (
         <main className="flex flex-col gap-6 items-center justify-between">

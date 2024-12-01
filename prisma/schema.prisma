@@ -73,11 +73,21 @@ model Creator {
 }
 
 model Category {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  title      String
-  slug       String    @unique
-  contentIds String[]  @db.ObjectId
-  contents   Content[] @relation(fields: [contentIds], references: [id])
+  id       String              @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  slug     String              @unique
+  contents CategoryOnContent[]
+}
+
+model CategoryOnContent {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String   @db.ObjectId
+  content    Content  @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  contentId  String   @db.ObjectId
+  createdAt  DateTime @default(now())
+
+  @@unique([categoryId, contentId])
 }
 
 model Country {
@@ -136,31 +146,31 @@ enum ContentStatus {
 }
 
 model Content {
-  id              String            @id @default(auto()) @map("_id") @db.ObjectId
-  fid             String            @unique
+  id              String              @id @default(auto()) @map("_id") @db.ObjectId
+  fid             String              @unique
   title           String
   akaTitle        String[]
   type            ContentType
   author          String?
-  thumbUrl        String?
+  thumbUrl        String
   description     String?
   keywords        String?
   chapter         Chapter[]
-  totalChap       Int?              @default(0)
+  totalChap       Int?                @default(0)
   comments        Comment[]
-  status          ContentStatus     @default(updating)
-  categoryIds     String[]          @db.ObjectId
-  categories      Category[]        @relation(fields: [categoryIds], references: [id])
-  countryIds      String[]          @db.ObjectId
-  countries       Country[]         @relation(fields: [countryIds], references: [id])
-  creatorId       String            @db.ObjectId
-  creator         Creator           @relation(fields: [creatorId], references: [id])
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  status          ContentStatus       @default(updating)
+  categoryIds     String[]            @db.ObjectId
+  categories      CategoryOnContent[]
+  countryIds      String[]            @db.ObjectId
+  countries       Country[]           @relation(fields: [countryIds], references: [id])
+  creatorId       String              @db.ObjectId
+  creator         Creator             @relation(fields: [creatorId], references: [id])
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
   histories       History[]
   userLikeContent UserLikeContent[]
-  view            Int?              @default(0)
-  hidden          Boolean           @default(false)
+  view            Int?                @default(0)
+  hidden          Boolean             @default(false)
 }
 
 model Reply {

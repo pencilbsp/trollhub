@@ -1,22 +1,19 @@
-import slug from 'slug';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ThumbsUpIcon, BellPlusIcon, AlertOctagonIcon } from 'lucide-react';
 
 import numeral from '@/lib/format-number';
-import { avatarNameFallback, formatDate } from '@/lib/utils';
+import { avatarNameFallback, formatDate, generateHref } from '@/lib/utils';
 
 import { Content } from '@/actions/contentActions';
 import { ContentStatus, ContentType } from '@prisma/client';
 
-import CommentList from '../CommentList';
-import ChapterTable from './ChapterTable';
 import { Card } from '@/components/ui/Card';
+import CommentList from '@/components/CommentList';
+import ChapterTable from '@/components/sections/ChapterTable';
+import { ReportButton } from '@/components/icons/ReportButton';
+import { UpvoteButton } from '@/components/icons/UpvoteButton';
+import { SubcribeButton } from '@/components/icons/SubcribeButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
-import { Button } from '../ui/Button';
-import { UpvoteButton } from '../icons/UpvoteButton';
-import { SubcribeButton } from '../icons/SubcribeButton';
-import { ReportButton } from '../icons/ReportButton';
 
 interface Props {
     data: Content;
@@ -104,8 +101,8 @@ export default async function ContentPage({ data }: Props) {
 
                                     <li>
                                         <b className="mr-2">Thể loại:</b>
-                                        {data.categories.map(({ title, id }, index) => {
-                                            const href = `/the-loai/${slug(title)}-${id}`;
+                                        {data.categories.map(({ category: { title, id } }, index) => {
+                                            const href = generateHref({ id, title, type: 'the-loai' });
                                             return (
                                                 <Link key={id} href={href} className="text-blue-400 mr-1 hover:underline hover:text-blue-500">
                                                     {title}

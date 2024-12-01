@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { FilmIcon, ShareIcon, ImageIcon, EyeOffIcon, ThumbsUpIcon, BookOpenTextIcon, MessageCircleIcon } from 'lucide-react';
 
 import Thumbnail from './Thumbnail';
@@ -12,8 +12,9 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/Card'
 
 import numeral from '@/lib/format-number';
 import useSettings from '@/hooks/useSettings';
-import { Content, Creator, ContentStatus, ContentType } from '@prisma/client';
+import { CategoryContent } from '@/actions/contentActions';
 import { avatarNameFallback, cn, formatToNow, generateHref } from '@/lib/utils';
+import { Content as IContent, Creator, ContentStatus, ContentType } from '@prisma/client';
 
 function getContentIcon(type: ContentType) {
     if (type === ContentType.movie) return FilmIcon;
@@ -21,17 +22,14 @@ function getContentIcon(type: ContentType) {
     return BookOpenTextIcon;
 }
 
-export interface ContentWithCreator extends Content {
-    creator: Creator;
+export interface Content extends IContent {
     adultContent: boolean;
+    creator: Pick<Creator, 'name' | 'avatar' | 'userName'>;
 }
 
-interface Props {
-    data: ContentWithCreator;
-    direction: 'horizontal' | 'vertical';
-}
+type ContentProps = { data: Content | CategoryContent };
 
-function ContentHorizontal({ data }: { data: ContentWithCreator }) {
+function ContentHorizontal({ data }: ContentProps) {
     const descriptionRef = useRef<HTMLDivElement>(null);
     const { id, type, creator, thumbUrl, title, updatedAt, description, status, adultContent, view } = data;
 
@@ -110,7 +108,7 @@ function ContentHorizontal({ data }: { data: ContentWithCreator }) {
     );
 }
 
-function ContentVertical({ data }: { data: ContentWithCreator }) {
+function ContentVertical({ data }: ContentProps) {
     const { showAdultContent } = useSettings();
     const { id, creator, thumbUrl, title, status, type, adultContent, updatedAt } = data;
     const isShow = adultContent && !showAdultContent;
@@ -158,6 +156,11 @@ function ContentVertical({ data }: { data: ContentWithCreator }) {
     );
 }
 
+interface Props {
+    direction: 'horizontal' | 'vertical';
+    data: Content | CategoryContent;
+}
+
 export default function ContentCard({ data, direction }: Props) {
-    return <>{direction === 'horizontal' ? <ContentHorizontal data={data} /> : <ContentVertical data={data} />}</>;
+    return <Fragment>{direction === 'horizontal' ? <ContentHorizontal data={data} /> : <ContentVertical data={data} />}</Fragment>;
 }
