@@ -58,9 +58,8 @@ model User {
 
 model Creator {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  fid       String?
+  fid       String    @unique
   name      String
-  // user      User?
   userName  String    @unique
   avatar    String?
   cover     String?

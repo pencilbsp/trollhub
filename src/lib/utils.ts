@@ -109,7 +109,7 @@ export async function generateSitemap({ id, type, take }: { id: number; take: nu
             type,
         },
         skip: skip,
-        take: skip + take,
+        take: take,
         orderBy: {
             id: 'desc',
         },
