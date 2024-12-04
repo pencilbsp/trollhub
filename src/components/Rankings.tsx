@@ -83,7 +83,7 @@ export default function Rankings() {
                                 <div key={id} className="pl-4">
                                     <Link href={href} className="flex gap-3">
                                         <div className="w-12 h-12 flex-shrink-0">
-                                            <Image width={0} height={0} sizes="100vh" alt={title} src={thumbUrl} className="w-full h-full border rounded-md object-cover" />
+                                            <Image unoptimized width={0} height={0} sizes="100vh" alt={title} src={thumbUrl} className="w-full h-full border rounded-md object-cover" />
                                         </div>
                                         <div className={cn('flex justify-between items-center pb-1.5 w-full pr-4 space-x-2', index !== data.data.length - 1 && 'border-b')}>
                                             <p className="line-clamp-2 font-medium group-hover:text-blue-500 transition-colors">{title}</p>

@@ -52,7 +52,7 @@ export default function HomeSlider({ data }: Props) {
                                         background: `url(${image}) center center / cover scroll no-repeat`,
                                     }}
                                 />
-                                <Image width={0} height={0} src={image} alt={title} sizes="100vw" className={cn('absolute h-full w-auto', isShow && 'blur-lg')} />
+                                <Image unoptimized width={0} height={0} src={image} alt={title} sizes="100vw" className={cn('absolute h-full w-auto', isShow && 'blur-lg')} />
                             </div>
 
                             <div className="h-full w-full absolute left-0 top-0 bg-black opacity-20" />

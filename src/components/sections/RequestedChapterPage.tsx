@@ -121,6 +121,7 @@ export default function RequestedChapterPage({ session }: Props) {
                                                     <TableRow key={id}>
                                                         <TableCell className="hidden sm:table-cell px-4 md:px-6">
                                                             <Image
+                                                                unoptimized
                                                                 width="56"
                                                                 height="56"
                                                                 alt="Product image"

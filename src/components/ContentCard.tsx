@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Fragment, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { FilmIcon, ShareIcon, ImageIcon, EyeOffIcon, ThumbsUpIcon, BookOpenTextIcon, MessageCircleIcon } from 'lucide-react';
 
 import Thumbnail from './Thumbnail';
@@ -133,7 +133,7 @@ function ContentVertical({ data }: ContentVerticalProps) {
                 </CardHeader>
 
                 <CardContent className="aspect-[3/4] relative rounded-lg overflow-hidden p-0">
-                    <Image width={0} height={0} alt={title} sizes="100vw" src={thumbUrl!} className={cn('w-full h-full object-cover', isShow && 'blur-md')} />
+                    <Image unoptimized width={0} height={0} alt={title} sizes="100vw" src={thumbUrl!} className={cn('w-full h-full object-cover', isShow && 'blur-md')} />
                     {isShow && (
                         <div className="absolute inset-0 p-3 flex flex-col justify-center items-center text-muted font-light">
                             <EyeOffIcon className="cursor-pointer w-4 h-4" />

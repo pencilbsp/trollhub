@@ -51,7 +51,7 @@ export default async function ContentPage({ data }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-6">
                         <div className="flex justify-center md:block col-span-1">
                             <div className="max-w-[50%] md:max-w-full rounded-xl border overflow-hidden">
-                                <Image className="w-full" src={data.thumbUrl!} alt={data.title} sizes="100vh" width={0} height={0} />
+                                <Image unoptimized className="w-full" src={data.thumbUrl!} alt={data.title} sizes="100vh" width={0} height={0} />
                             </div>
                         </div>
                         <div className="col-span-2 flex flex-col gap-3">
