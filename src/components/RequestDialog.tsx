@@ -44,15 +44,14 @@ export default function RequestDialog() {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Yêu cầu thêm hoặc cập nhật nội dung</DialogTitle>
-                    <DialogDescription>
-                        Điền link phim, truyện, hoặc kênh mà bạn muốn chúng tôi thêm hoặc cập nhật!
-                        <br />
-                        Quá trình yêu cầu có thể mất nhiều thời gian nếu kênh chứa nhiều nội dung, hãy kiên nhẫn chờ đợi!
+                    <DialogTitle className="pb-3">Yêu cầu thêm hoặc cập nhật nội dung</DialogTitle>
+                    <DialogDescription className="leading-6">
+                        Điền link phim, truyện, hoặc kênh mà bạn muốn chúng tôi thêm hoặc cập nhật. Quá trình yêu cầu có thể mất nhiều thời gian nếu kênh chứa nhiều nội dung, hãy
+                        kiên nhẫn chờ đợi.
                     </DialogDescription>
                 </DialogHeader>
 
-                <form className="flex w-full items-center space-x-2" onSubmit={onSubmit}>
+                <form className="flex w-full items-center space-x-2 mt-4" onSubmit={onSubmit}>
                     <Input name="url" placeholder="Link Fuhu video, comic, novel hoặc chanel" disabled={pending} />
                     <LoadingButton type="submit" disabled={pending} isLoading={pending} className="flex-shrink-0" loadingText="Đang xử lý...">
                         Gửi yêu cầu
