@@ -71,8 +71,8 @@ export async function getContentMostViews(type: 'content' | 'chapter') {
 }
 
 export async function updateContentView(redisClient: RedisClient, key: string) {
-    const id = key.split('_')[2];
-    const type = key.split('_')[1];
+    const id = key.split('_').at(-1);
+    const type = key.split('_').at(-2);
 
     const count = await redisClient.get(key);
 
