@@ -151,7 +151,7 @@ model Content {
   akaTitle        String[]
   type            ContentType
   author          String?
-  thumbUrl        String
+  thumbUrl        String?
   description     String?
   keywords        String?
   chapter         Chapter[]
