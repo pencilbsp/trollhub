@@ -84,7 +84,7 @@ async function getHomeData() {
         type: content.type,
         title: content.title,
         tagline: content.akaTitle[0] ?? '',
-        image: content.thumbUrl.replace('_256x', '_720x'),
+        image: content.thumbUrl?.replace('_256x', '_720x') || '',
         adultContent: content.categories.some((c) => c.category.id === ADULT_CATEGORY_ID),
     }));
 
