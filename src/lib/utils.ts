@@ -9,7 +9,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 import prisma from './prisma';
 import { SITE_URL } from '@/config';
 import { ContentType } from '@prisma/client';
-import { Content } from '@/actions/contentActions';
+import { Content } from '@/actions/guest/content-actions';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -46,7 +46,7 @@ export function generateKeywords(title: string, data: string[], userName: string
     keywords.push(
         ...(type === 'movie'
             ? ['xem phim', 'xem phim online', 'phim vietsub']
-            : ['đọc truyện', 'truyện hay', 'đọc truyện online', 'đọc truyenfull', 'truyện tranh', 'truyện ngôn tình'])
+            : ['đọc truyện', 'truyện hay', 'đọc truyện online', 'đọc truyenfull', 'truyện tranh', 'truyện ngôn tình']),
     );
 
     return keywords;

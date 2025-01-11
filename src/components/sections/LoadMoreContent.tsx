@@ -1,7 +1,7 @@
 'use client';
 
-import LoadingButton from '@/components/LoadingButton';
-import { ContentVertical } from '@/components/ContentCard';
+import LoadingButton from '@/components/loading-button';
+import { ContentVertical } from '@/components/content-card';
 import useCreatorContents from '@/hooks/useCreatorContents';
 
 type Props = {

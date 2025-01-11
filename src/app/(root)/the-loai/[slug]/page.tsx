@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { PageParams } from '@/types/page';
-import { getContentsByCategoryId } from '@/actions/contentActions';
+import { getContentsByCategoryId } from '@/actions/guest/content-actions';
 import CategoryContents from '@/components/sections/CategoryContents';
 
 export default async function CategoryPage({ params }: PageParams) {

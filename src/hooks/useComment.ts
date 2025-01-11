@@ -1,6 +1,6 @@
 import { ArrayElement } from '@/types/utils';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { getComments as getCommentsAction } from '@/actions/commentActions';
+import { getComments as getCommentsAction } from '@/actions/guest/comment-actions';
 import {
     setComments,
     updateCommentLike,

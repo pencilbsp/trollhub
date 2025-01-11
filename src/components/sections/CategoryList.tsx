@@ -2,7 +2,7 @@ import slug from 'slug';
 import Link from 'next/link';
 
 import { Category } from '@prisma/client';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 
 interface Props {
     data: Category[];

@@ -3,7 +3,7 @@
 import useSWR from 'swr';
 import { useState, useTransition } from 'react';
 
-import { getContents } from '@/actions/contentActions';
+import { getContents } from '@/actions/guest/content-actions';
 
 const fetcher = (_: String) => [];
 

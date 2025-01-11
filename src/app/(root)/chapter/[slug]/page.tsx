@@ -3,13 +3,13 @@ import { notFound } from 'next/navigation';
 
 import { getSlugId } from '@/lib/utils';
 
-import { getChapter, getChapterMetadata } from '@/actions/chapterActions';
+import { getChapter, getChapterMetadata } from '@/actions/guest/chapter-actions';
 
 import updateView from '@/lib/update-view';
-import ChapterNav from '@/components/ChapterNav';
-import NextChapter from '@/components/NextChapter';
+import ChapterNav from '@/components/chapter-nav';
+import NextChapter from '@/components/next-chapter';
 import { ComicViewer } from '@/components/comic-viewer';
-import { TooltipProvider } from '@/components/ui/Tooltip';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 export const viewport: Viewport = {
     width: 'device-width',

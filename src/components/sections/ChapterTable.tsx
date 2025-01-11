@@ -5,18 +5,18 @@ import { useEffect, useRef } from 'react';
 import { TabletSmartphoneIcon } from 'lucide-react';
 
 import { ContentType, Prisma } from '@prisma/client';
-import { ChapterList } from '@/actions/contentActions';
+import { ChapterList } from '@/actions/guest/content-actions';
 
 import numeral from '@/lib/format-number';
 import { cn, formatDate, generateHref } from '@/lib/utils';
 
 import useChapters from '@/hooks/useChapters';
 
-import Empty from '@/components/ui/Empty';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from '@/components/ui/Table';
-import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from '@/components/ui/Select';
+import Empty from '@/components/ui/empty';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableRow, TableBody, TableCell, TableHead, TableHeader } from '@/components/ui/table';
+import { Select, SelectItem, SelectValue, SelectContent, SelectTrigger } from '@/components/ui/select';
 
 interface Props {
     contentId: string;

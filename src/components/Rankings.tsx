@@ -10,10 +10,10 @@ import numeral from '@/lib/format-number';
 import { ContentRank } from '@/types/other';
 import { cn, generateHref } from '@/lib/utils';
 
-import { Button } from '@/components/ui/Button';
-import { Spinner } from '@/components/ui/Spinner';
-import getRankingContents from '@/actions/rankings';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
+import getRankingContents from '@/actions/guest/rankings';
+import { Card, CardContent } from '@/components/ui/card';
 import { Pagination, PaginationItem, PaginationContent } from '@/components/ui/pagination';
 
 const step = 10;
@@ -83,7 +83,15 @@ export default function Rankings() {
                                 <div key={id} className="pl-4">
                                     <Link href={href} className="flex gap-3">
                                         <div className="w-12 h-12 flex-shrink-0">
-                                            <Image unoptimized width={0} height={0} sizes="100vh" alt={title} src={thumbUrl} className="w-full h-full border rounded-md object-cover" />
+                                            <Image
+                                                unoptimized
+                                                width={0}
+                                                height={0}
+                                                sizes="100vh"
+                                                alt={title}
+                                                src={thumbUrl}
+                                                className="w-full h-full border rounded-md object-cover"
+                                            />
                                         </div>
                                         <div className={cn('flex justify-between items-center pb-1.5 w-full pr-4 space-x-2', index !== data.data.length - 1 && 'border-b')}>
                                             <p className="line-clamp-2 font-medium group-hover:text-blue-500 transition-colors">{title}</p>

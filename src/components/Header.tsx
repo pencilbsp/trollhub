@@ -7,18 +7,18 @@ import Headroom from 'react-headroom';
 import { ViewVerticalIcon } from '@radix-ui/react-icons';
 import { HomeIcon, HammerIcon, LifeBuoyIcon } from 'lucide-react';
 
-import NavLink from './NavLink';
-import { ToggleTheme } from './ToggleTheme';
+import NavLink from './nav-link';
+import { ToggleTheme } from './toggle-theme';
 
 import { User } from 'next-auth';
 import { usePathname } from 'next/navigation';
 
-import { UserNav } from './UserNav';
-import SearchModel from './SearchModel';
-import RequestDialog from './RequestDialog';
+import { UserNav } from './user-nav';
+import SearchModel from './search-model';
+import RequestDialog from './request-dialog';
 import { useSession } from 'next-auth/react';
-import { Button } from '@/components/ui/Button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/Sheet';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 export default function Header() {
     const [isOpen, setOpen] = React.useState(false);

@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import { Prisma } from '@prisma/client';
 import { ChangeEvent, useMemo, useState } from 'react';
 
-import { getChapters } from '@/actions/chapterActions';
+import { getChapters } from '@/actions/guest/chapter-actions';
 
 export type ChapterResult = NonNullable<Awaited<ReturnType<typeof getChapters>>>;
 

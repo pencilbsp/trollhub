@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ColumnDef } from '@tanstack/react-table';
 
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
 import { formatToNow } from '@/lib/utils';

@@ -1,11 +1,11 @@
-import Rankings from '@/components/Rankings';
+import Rankings from '@/components/rankings';
 import NativeAds from '@/components/ads/NativeAds';
 import HomeSlider from '@/components/sections/HomeSlider';
 import CategoryList from '@/components/sections/CategoryList';
 import HighlightContents from '@/components/sections/HighlightContents';
 // utils
 import { generateHref } from '@/lib/utils';
-import { type HomeData } from '@/actions/homeActions';
+import { type HomeData } from '@/actions/guest/home-actions';
 import getRedisClient, { getKeyWithNamespace } from '@/lib/redis';
 import { HOME_EX_TIME, NATIVE_ADS_ID, USER_CONTENTS_HOST } from '@/config';
 

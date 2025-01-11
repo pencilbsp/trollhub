@@ -2,11 +2,9 @@ import Link from 'next/link';
 import { Inter } from 'next/font/google';
 import { redirect } from 'next/navigation';
 
-import '@/globals.css';
-
 import authOptions from '@/lib/auth';
 import { getServerSession } from 'next-auth';
-import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeProvider } from '@/components/theme-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 

@@ -1,0 +1,14 @@
+[Unit]
+Description=Trollhub
+After=network.target
+
+[Service]
+Type=simple
+User=user
+WorkingDirectory=/home/user/trollhub
+ExecStart=/home/user/.bun/bin/bun start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+

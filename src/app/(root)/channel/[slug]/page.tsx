@@ -6,12 +6,12 @@ import { ShareIcon, ThumbsUpIcon } from 'lucide-react';
 
 import { avatarNameFallback } from '@/lib/utils';
 import { INIT_TAKE_CONTENT, SITE_NAME, SITE_URL } from '@/config';
-import { getCreator, getCreatorWithContent } from '@/actions/creatorAction';
+import { getCreator, getCreatorWithContent } from '@/actions/guest/creator-action';
 
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import LoadMoreContent from '@/components/sections/LoadMoreContent';
 import HighlightContents from '@/components/sections/HighlightContents';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface Props {
     params: { slug: string };

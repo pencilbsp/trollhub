@@ -6,7 +6,7 @@ import useTable from '@/hooks/useTable';
 import { chaptersFetcher } from '@/lib/fetcher';
 import { DataTableToolbar } from './data-table-toolbar';
 import { DataTablePagination } from './data-table-pagination';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface DataTableProps<TData, TValue> {
     fetcher: any;

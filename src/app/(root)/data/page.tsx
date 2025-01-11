@@ -2,7 +2,7 @@ import { chaptersMapTable } from '@/lib/utils';
 import DataTable from '@/components/data-table';
 import { chaptersFetcher } from '@/lib/fetcher';
 import { columns } from '@/app/(root)/data/columns';
-import { getChapters } from '@/actions/chapterActions';
+import { getChapters } from '@/actions/guest/chapter-actions';
 
 export default async function DataPage() {
     const data = await getChapters(

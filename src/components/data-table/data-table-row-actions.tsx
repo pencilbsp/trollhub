@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Row } from '@tanstack/react-table';
 import { PlayIcon } from 'lucide-react';
 
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 
 interface DataTableRowActionsProps<TData> {
     row: Row<TData>;

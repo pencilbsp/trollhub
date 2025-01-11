@@ -7,7 +7,7 @@ import { useRef, useState } from 'react';
 import { LazyLoadImage, LazyLoadImageProps } from 'react-lazy-load-image-component';
 
 import { cn } from '@/lib/utils';
-import ImagePlaceholder from './ImagePlaceholder';
+import ImagePlaceholder from './image-placeholder';
 
 // ----------------------------------------------------------------------
 

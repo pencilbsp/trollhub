@@ -10,9 +10,9 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 import { cn } from '@/lib/utils';
-import { type HighlightContent } from '@/actions/homeActions';
+import { type HighlightContent } from '@/actions/guest/home-actions';
 
-import { ContentVertical } from '@/components/ContentCard';
+import { ContentVertical } from '@/components/content-card';
 
 interface Props {
     title: string;

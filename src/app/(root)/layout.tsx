@@ -1,3 +1,5 @@
+import 'globals.css';
+
 import { Fragment } from 'react';
 import Script from 'next/script';
 import dynamic from 'next/dynamic';
@@ -6,22 +8,21 @@ import { headers } from 'next/headers';
 import { Inter } from 'next/font/google';
 import { getServerSession } from 'next-auth/next';
 
-import StoreProvider from '../StoreProvider';
+import StoreProvider from '@/app/StoreProvider';
 
-import '@/globals.css';
 // context
 import authOptions from '@/lib/auth';
 import SettingsProvider from '@/contexts/SettingsContext';
 // components
-import Header from '@/components/Header';
-import SettingsDialog from '@/components/SettingsDialog';
-import { ThemeProvider } from '@/components/ThemeProvider';
+import Header from '@/components/header';
+import SettingsDialog from '@/components/settings-dialog';
+import { ThemeProvider } from '@/components/theme-provider';
 import { NextAuthProvider } from '@/components/sections/AuthProvider';
 
 const PTOAds = dynamic(() => import('@/components/ads/PTOAds'));
 const FlyiconAds = dynamic(() => import('@/components/ads/FlyiconAds'));
 
-import GlobalNoti from '@/components/GlobalNoti';
+import GlobalNoti from '@/components/global-noti';
 import { PTO_ADS_ID, METADATA_BASE, FLYICON_ADS_ID, GA_MEASUREMENT_ID, GALAKSION_ADS_SRC } from '@/config';
 
 const inter = Inter({ subsets: ['latin'] });

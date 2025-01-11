@@ -1,5 +1,5 @@
-import { Spinner } from '@/components/ui/Spinner';
-import { TextShimmer } from '@/components/ui/TextShimmer';
+import { Spinner } from '@/components/ui/spinner';
+import { TextShimmer } from '@/components/ui/text-shimmer';
 
 export default function Loading() {
     return (

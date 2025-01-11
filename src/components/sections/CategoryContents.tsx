@@ -5,10 +5,10 @@ import { useInView } from 'react-intersection-observer';
 import { Fragment, useEffect, useTransition } from 'react';
 
 import { INIT_TAKE_CONTENT } from '@/config';
-import { type CategoryContent, getContentsByCategoryId } from '@/actions/contentActions';
+import { type CategoryContent, getContentsByCategoryId } from '@/actions/guest/content-actions';
 
-import { TextShimmer } from '@/components/ui/TextShimmer';
-import { ContentHorizontal } from '@/components/ContentCard';
+import { TextShimmer } from '@/components/ui/text-shimmer';
+import { ContentHorizontal } from '@/components/content-card';
 
 interface Props {
     id: string;

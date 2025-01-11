@@ -3,7 +3,7 @@
 import { PaginationState } from '@tanstack/react-table';
 
 import { chaptersMapTable } from './utils';
-import { getChapters } from '@/actions/chapterActions';
+import { getChapters } from '@/actions/guest/chapter-actions';
 
 export const chaptersFetcher = async ({ pageSize, pageIndex }: PaginationState) => {
     const chapter = await getChapters(

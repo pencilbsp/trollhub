@@ -3,7 +3,7 @@
 import useSWR from 'swr';
 import { useMemo, useState } from 'react';
 
-import { getRequestedChapters } from '@/actions/chapterActions';
+import { getRequestedChapters } from '@/actions/guest/chapter-actions';
 
 const step = 12;
 

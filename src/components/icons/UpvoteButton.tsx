@@ -3,7 +3,7 @@
 import { motion, useAnimation } from 'motion/react';
 
 import { cn } from '@/lib/utils';
-import { Button, type ButtonProps } from '@/components/ui/Button';
+import { Button, type ButtonProps } from '@/components/ui/button';
 
 interface Props extends ButtonProps {
     width?: number;

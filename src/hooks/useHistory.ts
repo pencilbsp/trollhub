@@ -2,7 +2,7 @@
 
 import useSWR from 'swr';
 import { useEffect, useRef, useTransition } from 'react';
-import { History, HistoryData, deleteHistory, getUserHistories } from '@/actions/historyActions';
+import { History, HistoryData, deleteHistory, getUserHistories } from '@/actions/guest/history-actions';
 
 const fetcher = (_: string) => getUserHistories();
 

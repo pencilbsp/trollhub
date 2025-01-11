@@ -5,3 +5,5 @@ bun.lockb
 
 public/
 node_modules/
+
+cmd5x.js

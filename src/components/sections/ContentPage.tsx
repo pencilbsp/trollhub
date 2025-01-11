@@ -4,16 +4,16 @@ import Image from 'next/image';
 import numeral from '@/lib/format-number';
 import { avatarNameFallback, formatDate, generateHref } from '@/lib/utils';
 
-import { Content } from '@/actions/contentActions';
+import { Content } from '@/actions/guest/content-actions';
 import { ContentStatus, ContentType } from '@prisma/client';
 
-import { Card } from '@/components/ui/Card';
-import CommentList from '@/components/CommentList';
+import { Card } from '@/components/ui/card';
+import CommentList from '@/components/comment-list';
 import ChapterTable from '@/components/sections/ChapterTable';
 import { ReportButton } from '@/components/icons/ReportButton';
 import { UpvoteButton } from '@/components/icons/UpvoteButton';
 import { SubcribeButton } from '@/components/icons/SubcribeButton';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface Props {
     data: Content;

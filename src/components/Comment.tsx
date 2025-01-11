@@ -5,11 +5,11 @@ import { memo, useEffect, useRef, useState, useTransition } from 'react';
 
 import useComment, { type Comment } from '@/hooks/useComment';
 import { avatarNameFallback, cn, formatToNow } from '@/lib/utils';
-import { deleteComment, getComments, likeComment } from '@/actions/commentActions';
+import { deleteComment, getComments, likeComment } from '@/actions/guest/comment-actions';
 
-import CommentEditor from '@/components/CommentEditor';
-import { TextShimmer } from '@/components/ui/TextShimmer';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import CommentEditor from '@/components/comment-editor';
+import { TextShimmer } from '@/components/ui/text-shimmer';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface Props {
     index: number;

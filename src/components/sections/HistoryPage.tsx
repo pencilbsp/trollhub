@@ -1,11 +1,11 @@
 'use client';
 
-import { HistoryData } from '@/actions/historyActions';
+import { HistoryData } from '@/actions/guest/history-actions';
 
 import useHistory from '@/hooks/useHistory';
-import { Button } from '@/components/ui/Button';
-import { Spinner } from '@/components/ui/Spinner';
-import HistoryGroup from '@/components/HistoryGroup';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
+import HistoryGroup from '@/components/history-group';
 
 interface Props {
     data?: HistoryData;

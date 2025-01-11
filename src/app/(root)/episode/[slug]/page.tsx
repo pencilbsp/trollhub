@@ -8,16 +8,16 @@ import { SITE_URL } from '@/config';
 import numeral from '@/lib/format-number';
 import { PageParams } from '@/types/page';
 import updateView from '@/lib/update-view';
-import { getEpisode } from '@/actions/episodeActions';
+import { getEpisode } from '@/actions/guest/episode-actions';
 import { avatarNameFallback, formatDate, getSlugId } from '@/lib/utils';
 
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import VideoView from '@/components/VideoView';
-import CommentList from '@/components/CommentList';
-import { PlayerLoading } from '@/components/VideoPlayer';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import VideoView from '@/components/video-view';
+import CommentList from '@/components/comment-list';
+import { PlayerLoading } from '@/components/video-player';
 import ChapterTable from '@/components/sections/ChapterTable';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
     const episodeId = getSlugId(params.slug);

@@ -7,7 +7,7 @@ import { Input } from '../ui/input';
 
 import { TabletSmartphoneIcon } from 'lucide-react';
 import { cn, formatDate, generateHref } from '@/lib/utils';
-import { type ChapterList } from '@/actions/contentActions';
+import { type ChapterList } from '@/actions/guest/content-actions';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
 interface Props {
