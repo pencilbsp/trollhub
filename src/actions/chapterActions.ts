@@ -70,16 +70,17 @@ export async function getChapter(id: string) {
 export async function getChapters(where: any, options: any = { take: 12, skip: 0, orderBy: { createdAt: 'desc' } }) {
     const redis = await getRedisClient();
     const redisKey = getKeyWithNamespace(where.contentId || where.id, 'chapters');
-    let result = await redis.json<any>(redisKey);
+
+    const get = prisma.chapter.findMany({ where, ...chapterQuery(options) });
+
+    type Result = { data: Awaited<typeof get>; total: number };
+
+    let result = await redis.json<Result>(redisKey);
 
     if (!result) {
-        const data = await prisma.chapter.findMany({
-            where,
-            ...chapterQuery(options),
-        });
-        const total = await prisma.chapter.count({ where });
-
+        const [data, total] = await Promise.all([get, prisma.chapter.count({ where })]);
         result = { data, total };
+
         await redis.set(redisKey, JSON.stringify(result), { EX: METADATA_EX_TIME });
     }
 
