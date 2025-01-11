@@ -17,10 +17,10 @@ import SettingsProvider from '@/contexts/SettingsContext';
 import Header from '@/components/header';
 import SettingsDialog from '@/components/settings-dialog';
 import { ThemeProvider } from '@/components/theme-provider';
-import { NextAuthProvider } from '@/components/sections/AuthProvider';
+import { NextAuthProvider } from '@/components/sections/auth-provider';
 
-const PTOAds = dynamic(() => import('@/components/ads/PTOAds'));
-const FlyiconAds = dynamic(() => import('@/components/ads/FlyiconAds'));
+const PTOAds = dynamic(() => import('@/components/ads/pto-ads'));
+const FlyiconAds = dynamic(() => import('@/components/ads/flyicon-ads'));
 
 import GlobalNoti from '@/components/global-noti';
 import { PTO_ADS_ID, METADATA_BASE, FLYICON_ADS_ID, GA_MEASUREMENT_ID, GALAKSION_ADS_SRC } from '@/config';

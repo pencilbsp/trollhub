@@ -9,8 +9,8 @@ import { INIT_TAKE_CONTENT, SITE_NAME, SITE_URL } from '@/config';
 import { getCreator, getCreatorWithContent } from '@/actions/guest/creator-action';
 
 import { Button } from '@/components/ui/button';
-import LoadMoreContent from '@/components/sections/LoadMoreContent';
-import HighlightContents from '@/components/sections/HighlightContents';
+import LoadMoreContent from '@/components/sections/load-more-content';
+import HighlightContents from '@/components/sections/highlight-contents';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface Props {

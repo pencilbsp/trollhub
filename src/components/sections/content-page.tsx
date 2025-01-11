@@ -9,10 +9,10 @@ import { ContentStatus, ContentType } from '@prisma/client';
 
 import { Card } from '@/components/ui/card';
 import CommentList from '@/components/comment-list';
-import ChapterTable from '@/components/sections/ChapterTable';
-import { ReportButton } from '@/components/icons/ReportButton';
-import { UpvoteButton } from '@/components/icons/UpvoteButton';
-import { SubcribeButton } from '@/components/icons/SubcribeButton';
+import ChapterTable from '@/components/sections/chapter-table';
+import { ReportButton } from '@/components/icons/report-button';
+import { UpvoteButton } from '@/components/icons/upvote-button';
+import { SubcribeButton } from '@/components/icons/subcribe-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface Props {

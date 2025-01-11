@@ -1,14 +1,9 @@
 export const INIT_CHAPTER = 8;
 export const INIT_TAKE_CONTENT = 8;
 
-const devMode = process.env.NODE_ENV !== 'production';
-
 export const SITE_NAME = 'Trollhub';
 export const SITE_URL = new URL(process.env.NEXT_PUBLIC_SITE_URL!);
 
-// export const USER_CONTENTS_HOST = devMode
-//   ? process.env.NEXT_PUBLIC_USER_CONTENTS_HOST
-//   : `https://usercontents.${SITE_URL.hostname}`;
 export const USER_CONTENTS_HOST = process.env.NEXT_PUBLIC_USER_CONTENTS_HOST!;
 
 export const STATIC_HOST = process.env.NEXT_PUBLIC_STATIC_HOST;

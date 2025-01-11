@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 
 import { PageParams } from '@/types/page';
 import { getContentsByCategoryId } from '@/actions/guest/content-actions';
-import CategoryContents from '@/components/sections/CategoryContents';
+import CategoryContents from '@/components/sections/category-contents';
 
 export default async function CategoryPage({ params }: PageParams) {
     const categoryId = params.slug.slice(-24);

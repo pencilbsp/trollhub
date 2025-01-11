@@ -3,8 +3,8 @@
 import { useSearchParams } from 'next/navigation';
 import { LiteralUnion, signIn } from 'next-auth/react';
 
-import MetaIcon from '@/components/icons/MetaIcon';
-import GoogleIcon from '@/components/icons/GoogleIcon';
+import MetaIcon from '@/components/icons/meta-icon';
+import GoogleIcon from '@/components/icons/google-icon';
 import { BuiltInProviderType } from 'next-auth/providers/index';
 
 export default function LoginPage() {

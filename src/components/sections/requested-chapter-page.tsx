@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Session } from 'next-auth';
 import { ChevronLeft, ChevronRight, ListFilter } from 'lucide-react';
 
-import { DropdownMenu, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuCheckboxItem } from '@/components/ui/DropdownMenu';
+import { DropdownMenu, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -21,7 +21,7 @@ import { avatarNameFallback, formatDate } from '@/lib/utils';
 import useRequestedChapters from '@/hooks/useRequestedChapters';
 
 import { filterable } from '@/config';
-import SpinerIcon from '../icons/SpinerIcon';
+import SpinerIcon from '@/components/icons/spiner-icon';
 
 type Props = {
     session: Session | null;

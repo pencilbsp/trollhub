@@ -17,7 +17,7 @@ import { PlayerError, PlayerInterface, PlayerSource } from '@/types/other';
 import { Button } from './ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const JWPlayer = dynamic(() => import('@/components/jwplayer'), {
+const JWPlayer = dynamic(() => import('@/components/jw-player'), {
     loading: () => <PlayerLoading />,
 });
 

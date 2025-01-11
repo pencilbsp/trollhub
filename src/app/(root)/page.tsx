@@ -1,8 +1,8 @@
 import Rankings from '@/components/rankings';
-import NativeAds from '@/components/ads/NativeAds';
-import HomeSlider from '@/components/sections/HomeSlider';
-import CategoryList from '@/components/sections/CategoryList';
-import HighlightContents from '@/components/sections/HighlightContents';
+import NativeAds from '@/components/ads/native-ads';
+import HomeSlider from '@/components/sections/home-slider';
+import CategoryList from '@/components/sections/category-list';
+import HighlightContents from '@/components/sections/highlight-contents';
 // utils
 import { generateHref } from '@/lib/utils';
 import { type HomeData } from '@/actions/guest/home-actions';

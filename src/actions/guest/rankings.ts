@@ -1,7 +1,7 @@
 'use server';
 
-import prisma from '../lib/prisma';
-import { getContentMostViews } from '../lib/update-view';
+import prisma from '@/lib/prisma';
+import { getContentMostViews } from '@/lib/update-view';
 
 export default async function getRankingContents(queryString: string) {
     try {

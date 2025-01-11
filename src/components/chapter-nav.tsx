@@ -17,9 +17,9 @@ import useOffSetTop from '@/hooks/useOffSetTop';
 import useResponsive from '@/hooks/useResponsive';
 
 import { createHistory } from '@/actions/guest/history-actions';
-import ChapterIcon from '@/components/icons/ChapterIcon';
-import ChapterList from '@/components/sections/ChapterList';
-import CircleProgressIcon from '@/components/icons/CircleProgressIcon';
+import ChapterIcon from '@/components/icons/chapter-icon';
+import ChapterList from '@/components/sections/chapter-list';
+import CircleProgressIcon from '@/components/icons/circle-progress-icon';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipArrow, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 

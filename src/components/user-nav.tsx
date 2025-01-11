@@ -16,7 +16,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuShortcut,
     DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenu';
+} from '@/components/ui/dropdown-menu';
 import { SettingTrigger } from './settings-dialog';
 
 export function UserNav({ user }: { user: User }) {

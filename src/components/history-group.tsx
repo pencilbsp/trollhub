@@ -9,7 +9,7 @@ import { cn, formatDate, formatToNow, generateHref } from '@/lib/utils';
 
 import Thumbnail from './thumbnail';
 import { Button } from './ui/button';
-import { DeleteButton } from './icons/DeleteButton';
+import { DeleteButton } from './icons/delete-button';
 
 type Props = {
     name: string;

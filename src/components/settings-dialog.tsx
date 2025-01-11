@@ -6,7 +6,7 @@ import useSettings from '@/hooks/useSettings';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectItem, SelectGroup, SelectValue, SelectTrigger, SelectContent } from '@/components/ui/select';
-import { DropdownMenuItem, DropdownMenuShortcut } from '@/components/ui/DropdownMenu';
+import { DropdownMenuItem, DropdownMenuShortcut } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogTitle, DialogHeader, DialogContent } from '@/components/ui/dialog';
 
 export function SettingTrigger() {

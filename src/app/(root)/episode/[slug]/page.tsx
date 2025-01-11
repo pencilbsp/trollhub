@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import VideoView from '@/components/video-view';
 import CommentList from '@/components/comment-list';
 import { PlayerLoading } from '@/components/video-player';
-import ChapterTable from '@/components/sections/ChapterTable';
+import ChapterTable from '@/components/sections/chapter-table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
