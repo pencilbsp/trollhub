@@ -69,7 +69,7 @@ export async function getChapter(id: string) {
 
 export async function getChapters(where: any, options: any = { take: 12, skip: 0, orderBy: { createdAt: 'desc' } }) {
     const redis = await getRedisClient();
-    const redisKey = getKeyWithNamespace(where.id, 'chapters');
+    const redisKey = getKeyWithNamespace(where.contentId || where.id, 'chapters');
     let result = await redis.json<any>(redisKey);
 
     if (!result) {
