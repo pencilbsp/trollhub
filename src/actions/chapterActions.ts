@@ -68,14 +68,22 @@ export async function getChapter(id: string) {
 }
 
 export async function getChapters(where: any, options: any = { take: 12, skip: 0, orderBy: { createdAt: 'desc' } }) {
-    // console.log(options)
-    const data = await prisma.chapter.findMany({
-        where,
-        ...chapterQuery(options),
-    });
+    const redis = await getRedisClient();
+    const redisKey = getKeyWithNamespace(where.id, 'chapters');
+    let result = await redis.json<any>(redisKey);
 
-    const total = await prisma.chapter.count({ where });
-    return { data, total };
+    if (!result) {
+        const data = await prisma.chapter.findMany({
+            where,
+            ...chapterQuery(options),
+        });
+        const total = await prisma.chapter.count({ where });
+
+        result = { data, total };
+        await redis.set(redisKey, JSON.stringify(result), { EX: METADATA_EX_TIME });
+    }
+
+    return result;
 }
 
 export async function getChapterMetadata(id: string): Promise<Metadata | null> {
