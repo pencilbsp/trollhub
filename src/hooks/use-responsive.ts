@@ -1,4 +1,4 @@
-import useMediaQuery from './useMediaQuery';
+import useMediaQuery from './use-media-query';
 import tailwindConfig from '../../tailwind.config.js';
 import resolveConfig from 'tailwindcss/resolveConfig';
 import { ScreensConfig } from 'tailwindcss/types/config';

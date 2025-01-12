@@ -2,7 +2,7 @@
 
 import { HistoryData } from '@/actions/guest/history-actions';
 
-import useHistory from '@/hooks/useHistory';
+import useHistory from '@/hooks/use-history';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import HistoryGroup from '@/components/history-group';

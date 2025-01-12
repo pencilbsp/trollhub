@@ -1,10 +1,29 @@
+'use client';
+
+import { toast } from 'sonner';
+import { useSearchParams } from 'next/navigation';
+import { type LiteralUnion, signIn } from 'next-auth/react';
+import { BuiltInProviderType } from 'next-auth/providers/index';
+
 import { cn } from '@/lib/utils';
+import { DASHBOARD_PATH } from '@/config';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get('next') || DASHBOARD_PATH.root;
+
+    const handleLogin = async (providerName: LiteralUnion<BuiltInProviderType>) => {
+        try {
+            await signIn(providerName, { callbackUrl });
+        } catch (error: any) {
+            toast.error(error.message);
+        }
+    };
+
     return (
         <div className={cn('flex flex-col gap-6', className)} {...props}>
             <Card>
@@ -31,15 +50,9 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                             <Button type="submit" className="w-full">
                                 Login
                             </Button>
-                            <Button variant="outline" className="w-full">
+                            <Button variant="outline" className="w-full" onClick={() => handleLogin('google')}>
                                 Login with Google
                             </Button>
-                        </div>
-                        <div className="mt-4 text-center text-sm">
-                            Don&apos;t have an account?{' '}
-                            <a href="#" className="underline underline-offset-4">
-                                Sign up
-                            </a>
                         </div>
                     </form>
                 </CardContent>

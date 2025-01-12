@@ -61,3 +61,13 @@ export const filterable = [
         disabled: (type: string) => type === 'own',
     },
 ];
+
+export const ROOT_PATH = {
+    root: '/',
+    login: '/login',
+};
+
+export const DASHBOARD_PATH = {
+    root: '/dashboard',
+    login: '/dashboard/login',
+};

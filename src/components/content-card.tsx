@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 
 import numeral from '@/lib/format-number';
-import useSettings from '@/hooks/useSettings';
+import useSettings from '@/hooks/use-settings';
 import { CategoryContent } from '@/actions/guest/content-actions';
 import { avatarNameFallback, cn, formatToNow, generateHref } from '@/lib/utils';
 import { Content as IContent, Creator, ContentStatus, ContentType } from '@prisma/client';

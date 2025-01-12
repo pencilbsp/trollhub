@@ -3,7 +3,7 @@
 import { ReactNode, createContext, useState } from 'react';
 
 import { PlayerInterface } from '@/types/other';
-import useLocalStorage from '@/hooks/useLocalStorage';
+import useLocalStorage from '@/hooks/use-local-storage';
 
 const defaultSettings: {
     open: boolean;
@@ -24,13 +24,9 @@ const initialState = {
 
 export const SettingsContext = createContext(initialState);
 
-type Props = {
-    children: ReactNode;
-};
-
-export default function SettingsProvider({ children }: Props) {
+export default function SettingsProvider({ children }: { children: ReactNode }) {
     const [open, setOpen] = useState(false);
-    const [settings, setSettings] = useLocalStorage('settings', {
+    const [settings, setSettings] = useLocalStorage('ROOT_SETTINGS', {
         playerInterface: initialState.playerInterface,
         showAdultContent: initialState.showAdultContent,
     });

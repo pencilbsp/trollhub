@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import React, { useState } from 'react';
 import { EyeOffIcon } from 'lucide-react';
-import useSettings from '@/hooks/useSettings';
+import useSettings from '@/hooks/use-settings';
 
 type SupportRatio = '16/9' | '1/1' | 'auto';
 

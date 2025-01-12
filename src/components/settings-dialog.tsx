@@ -2,7 +2,7 @@
 
 import { BoltIcon } from 'lucide-react';
 
-import useSettings from '@/hooks/useSettings';
+import useSettings from '@/hooks/use-settings';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectItem, SelectGroup, SelectValue, SelectTrigger, SelectContent } from '@/components/ui/select';

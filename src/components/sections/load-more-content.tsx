@@ -2,7 +2,7 @@
 
 import LoadingButton from '@/components/loading-button';
 import { ContentVertical } from '@/components/content-card';
-import useCreatorContents from '@/hooks/useCreatorContents';
+import useCreatorContents from '@/hooks/use-creator-contents';
 
 type Props = {
     skip: number;

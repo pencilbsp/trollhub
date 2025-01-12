@@ -11,10 +11,10 @@ import { ArrowUpIcon, ListIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { cn } from '@/lib/utils';
-import useHistory from '@/hooks/useHistory';
-import useChapters from '@/hooks/useChapters';
-import useOffSetTop from '@/hooks/useOffSetTop';
-import useResponsive from '@/hooks/useResponsive';
+import useHistory from '@/hooks/use-history';
+import useChapters from '@/hooks/use-chapters';
+import useOffSetTop from '@/hooks/use-offset-top';
+import useResponsive from '@/hooks/use-responsive';
 
 import { createHistory } from '@/actions/guest/history-actions';
 import ChapterIcon from '@/components/icons/chapter-icon';

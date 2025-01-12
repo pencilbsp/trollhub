@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 
-import useComment from '@/hooks/useComment';
+import useComment from '@/hooks/use-comment';
 
 import Empty from '@/components/ui/empty';
 import Comment from '@/components/comment';

@@ -7,7 +7,7 @@ import { ArrowRightIcon } from 'lucide-react';
 
 import { Button } from './ui/button';
 import { generateHref } from '@/lib/utils';
-import useChapters from '@/hooks/useChapters';
+import useChapters from '@/hooks/use-chapters';
 
 type Props = {
     chapterId: string;

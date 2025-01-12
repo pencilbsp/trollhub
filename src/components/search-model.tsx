@@ -11,8 +11,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Command, CommandItem, CommandList, CommandInput, CommandGroup, CommandEmpty, CommandSeparator } from '@/components/ui/search-form';
 
-import useKeyPress from '@/hooks/useKeyPress';
-import useDebounce from '@/hooks/useDebounce';
+import useKeyPress from '@/hooks/use-key-press';
+import useDebounce from '@/hooks/use-debounce';
 
 import { avatarNameFallback, formatToNow } from '@/lib/utils';
 import getSearchResult, { SearchResult } from '@/actions/guest/get-search-result';

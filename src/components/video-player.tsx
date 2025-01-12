@@ -8,8 +8,8 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { RocketIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import useHistory from '@/hooks/useHistory';
-import useSettings from '@/hooks/useSettings';
+import useHistory from '@/hooks/use-history';
+import useSettings from '@/hooks/use-settings';
 import VidstackPlayer from './vidstack-player';
 import { createHistory } from '@/actions/guest/history-actions';
 import { PlayerError, PlayerInterface, PlayerSource } from '@/types/other';

@@ -18,7 +18,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { avatarNameFallback, formatDate } from '@/lib/utils';
-import useRequestedChapters from '@/hooks/useRequestedChapters';
+import useRequestedChapters from '@/hooks/use-requested-chapters';
 
 import { filterable } from '@/config';
 import SpinerIcon from '@/components/icons/spiner-icon';

@@ -3,7 +3,7 @@ import { User } from 'next-auth';
 import { ArrowLeft, CornerLeftDownIcon, HeartIcon } from 'lucide-react';
 import { memo, useEffect, useRef, useState, useTransition } from 'react';
 
-import useComment, { type Comment } from '@/hooks/useComment';
+import useComment, { type Comment } from '@/hooks/use-comment';
 import { avatarNameFallback, cn, formatToNow } from '@/lib/utils';
 import { deleteComment, getComments, likeComment } from '@/actions/guest/comment-actions';
 
@@ -121,7 +121,7 @@ const CommentItem = ({ comment, currentUser, showInput, onShowInput, contentId }
     return (
         <div className={cn('relative flex space-x-3', commentId && 'pl-12')}>
             <Avatar className={'border-2'} size={commentId ? 'lg' : 'default'}>
-                {user.image && <AvatarImage src={user.image} />}
+                <AvatarImage src={user.image} />
                 <AvatarFallback>{avatarNameFallback(user.name)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col w-full">

@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useSession } from 'next-auth/react';
 import { AudioWaveform, BookOpen, Bot, Command, GalleryVerticalEnd, SquareTerminal } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
@@ -9,7 +10,7 @@ import { TeamSwitcher } from '@/components/team-switcher';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar';
 
 // This is sample data.
-const data = {
+const sampleData = {
     user: {
         name: 'shadcn',
         email: 'm@example.com',
@@ -63,17 +64,21 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const { data } = useSession();
+
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
-                <TeamSwitcher teams={data.teams} />
+                <TeamSwitcher teams={sampleData.teams} />
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} />
+                <NavMain items={sampleData.navMain} />
             </SidebarContent>
-            <SidebarFooter>
-                <NavUser user={data.user} />
-            </SidebarFooter>
+            {data && (
+                <SidebarFooter>
+                    <NavUser user={data.user} />
+                </SidebarFooter>
+            )}
             <SidebarRail />
         </Sidebar>
     );

@@ -1,4 +1,5 @@
-import NextAuth, { AuthOptions } from 'next-auth';
+import { AuthOptions } from 'next-auth';
+import { UserRole } from '@prisma/client';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
 
@@ -27,6 +28,7 @@ const authOptions: AuthOptions = {
                 user: {
                     ...session.user,
                     id: user.id,
+                    role: user.role || UserRole.user,
                 },
             });
         },

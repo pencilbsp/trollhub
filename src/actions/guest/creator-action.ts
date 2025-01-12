@@ -39,15 +39,16 @@ async function getCreatorWithContent(userName: string) {
 }
 
 async function getCreator(userName: string) {
-    const creator = await prisma.creator.findUnique({
-        where: {
-            userName: '@' + userName,
-        },
-    });
+    userName = '@' + userName;
+    const result = await prisma.creator.findUnique({ where: { userName } });
+    return result;
+}
 
-    return creator;
+async function getCreatorByIds(ids: string[]) {
+    const result = await prisma.creator.findMany({ where: { id: { in: ids } } });
+    return result;
 }
 
 export type CreatorContent = NonNullable<Awaited<ReturnType<typeof getCreatorWithContent>>>['contents'][number];
 
-export { getCreator, getCreatorWithContent };
+export { getCreator, getCreatorByIds, getCreatorWithContent };

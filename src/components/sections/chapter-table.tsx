@@ -10,7 +10,7 @@ import { ChapterList } from '@/actions/guest/content-actions';
 import numeral from '@/lib/format-number';
 import { cn, formatDate, generateHref } from '@/lib/utils';
 
-import useChapters from '@/hooks/useChapters';
+import useChapters from '@/hooks/use-chapters';
 
 import Empty from '@/components/ui/empty';
 import { Card } from '@/components/ui/card';

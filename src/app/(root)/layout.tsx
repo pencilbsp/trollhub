@@ -12,7 +12,7 @@ import StoreProvider from '@/app/StoreProvider';
 
 // context
 import authOptions from '@/lib/auth';
-import SettingsProvider from '@/contexts/SettingsContext';
+import SettingsProvider from '@/contexts/settings-context';
 // components
 import Header from '@/components/header';
 import SettingsDialog from '@/components/settings-dialog';

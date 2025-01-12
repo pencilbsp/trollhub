@@ -7,7 +7,7 @@ import { ContentType } from '@prisma/client';
 
 // Swiper components, modules and styles
 import { cn, generateHref } from '@/lib/utils';
-import useSettings from '@/hooks/useSettings';
+import useSettings from '@/hooks/use-settings';
 import { type HomeData } from '@/actions/guest/home-actions';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { Swiper as SwiperReact, SwiperSlide } from 'swiper/react';

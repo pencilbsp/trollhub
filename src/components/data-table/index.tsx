@@ -2,7 +2,7 @@
 
 import { ColumnDef, flexRender } from '@tanstack/react-table';
 
-import useTable from '@/hooks/useTable';
+import useTable from '@/hooks/use-table';
 import { chaptersFetcher } from '@/lib/fetcher';
 import { DataTableToolbar } from './data-table-toolbar';
 import { DataTablePagination } from './data-table-pagination';

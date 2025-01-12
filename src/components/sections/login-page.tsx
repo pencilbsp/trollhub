@@ -1,9 +1,9 @@
 'use client';
 
+import { toast } from 'sonner';
 import { useSearchParams } from 'next/navigation';
 import { LiteralUnion, signIn } from 'next-auth/react';
 
-import MetaIcon from '@/components/icons/meta-icon';
 import GoogleIcon from '@/components/icons/google-icon';
 import { BuiltInProviderType } from 'next-auth/providers/index';
 
@@ -14,8 +14,8 @@ export default function LoginPage() {
     const handleLogin = async (providerName: LiteralUnion<BuiltInProviderType>) => {
         try {
             await signIn(providerName, { callbackUrl });
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            toast.error(error.message);
         }
     };
 
@@ -29,13 +29,6 @@ export default function LoginPage() {
                 >
                     <GoogleIcon className="w-6 h-6 mr-2" />
                     <span>Tiếp tục với Google</span>
-                </button>
-                <button
-                    onClick={() => handleLogin('facebook')}
-                    className="flex items-center justify-center bg-primary-foreground rounded-lg h-12 hover:bg-accent transition-colors border"
-                >
-                    <MetaIcon className="w-6 h-6 mr-2" />
-                    <span>Tiếp tục với Facebook</span>
                 </button>
             </div>
         </main>
