@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { User } from 'next-auth';
 import { signOut } from 'next-auth/react';
+import { UserRole } from '@prisma/client';
 import { LogOutIcon, HistoryIcon } from 'lucide-react';
 
 import { avatarNameFallback } from '@/lib/utils';
@@ -18,6 +19,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SettingTrigger } from './settings-dialog';
+import { DASHBOARD_PATH } from '@/config';
 
 export function UserNav({ user }: { user: User }) {
     return (
@@ -41,7 +43,12 @@ export function UserNav({ user }: { user: User }) {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>Kênh của tôi</DropdownMenuItem>
+                    {user.role === UserRole.creator && <DropdownMenuItem>Kênh của tôi</DropdownMenuItem>}
+                    {user.role === UserRole.admin && (
+                        <DropdownMenuItem asChild>
+                            <Link href={DASHBOARD_PATH.root}>Trang quản lý</Link>
+                        </DropdownMenuItem>
+                    )}
 
                     <SettingTrigger />
 

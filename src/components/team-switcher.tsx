@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { CaretSortIcon, PlusIcon } from '@radix-ui/react-icons';
+import { CaretSortIcon, PlusIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
 import {
     DropdownMenu,
@@ -43,7 +43,7 @@ export function TeamSwitcher({
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg" align="start" side={isMobile ? 'bottom' : 'right'} sideOffset={4}>
-                        <DropdownMenuLabel className="text-xs text-muted-foreground">Teams</DropdownMenuLabel>
+                        <DropdownMenuLabel className="text-xs text-muted-foreground">Nhà sáng tạo gần đây</DropdownMenuLabel>
                         {teams.map((team, index) => (
                             <DropdownMenuItem key={team.name} onClick={() => setActiveTeam(team)} className="gap-2 p-2">
                                 <div className="flex size-6 items-center justify-center rounded-sm border">
@@ -56,9 +56,9 @@ export function TeamSwitcher({
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="gap-2 p-2">
                             <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                                <PlusIcon className="size-4" />
+                                <MagnifyingGlassIcon className="size-4" />
                             </div>
-                            <div className="font-medium text-muted-foreground">Add team</div>
+                            <div className="font-medium text-muted-foreground">Tìm kiếm nhà sáng tạo</div>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
