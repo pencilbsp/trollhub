@@ -1,8 +1,9 @@
 'use server';
 
+import slug from 'slug';
 import prisma from '@/lib/prisma';
 import { ContentStatus, ContentType } from '@prisma/client';
-import slug from 'slug';
+
 
 interface SearchProps {
     take?: number;

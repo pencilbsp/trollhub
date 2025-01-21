@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Inter } from 'next/font/google';
 import { UserRole } from '@prisma/client';
 import { redirect } from 'next/navigation';
@@ -15,7 +16,8 @@ import { DASHBOARD_PATH, ROOT_PATH } from '@/config';
 import { Separator } from '@/components/ui/separator';
 import { AppSidebar } from '@/components/app-sidebar';
 import { ThemeProvider } from '@/components/theme-provider';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import { QueryProvider } from '@/components/sections/query-provider';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -33,33 +35,35 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <html lang="vi" suppressHydrationWarning>
             <body className={inter.className}>
                 <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-                    <NextAuthProvider session={session}>
-                        <SidebarProvider>
-                            <CreatorProvider>
-                                <AppSidebar />
-                                <SidebarInset>
-                                    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                                        <div className="flex items-center gap-2 px-4">
-                                            <SidebarTrigger className="-ml-1" />
-                                            <Separator orientation="vertical" className="mr-2 h-4" />
-                                            <Breadcrumb>
-                                                <BreadcrumbList>
-                                                    <BreadcrumbItem className="hidden md:block">
-                                                        <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-                                                    </BreadcrumbItem>
-                                                    <BreadcrumbSeparator className="hidden md:block" />
-                                                    <BreadcrumbItem>
-                                                        <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                                                    </BreadcrumbItem>
-                                                </BreadcrumbList>
-                                            </Breadcrumb>
-                                        </div>
-                                    </header>
-                                    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
-                                </SidebarInset>
-                            </CreatorProvider>
-                        </SidebarProvider>
-                    </NextAuthProvider>
+                    <QueryProvider>
+                        <NextAuthProvider session={session}>
+                            <SidebarProvider>
+                                <CreatorProvider>
+                                    <AppSidebar />
+                                    <SidebarInset>
+                                        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                                            <div className="flex items-center gap-2 px-4">
+                                                <SidebarTrigger className="-ml-1" />
+                                                <Separator orientation="vertical" className="mr-2 h-4" />
+                                                <Breadcrumb>
+                                                    <BreadcrumbList>
+                                                        <BreadcrumbItem className="hidden md:block">
+                                                            <Link href={DASHBOARD_PATH.root}>Dashboard</Link>
+                                                        </BreadcrumbItem>
+                                                        <BreadcrumbSeparator className="hidden md:block" />
+                                                        <BreadcrumbItem>
+                                                            <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                                                        </BreadcrumbItem>
+                                                    </BreadcrumbList>
+                                                </Breadcrumb>
+                                            </div>
+                                        </header>
+                                        <div className="px-4 h-full overflow-hidden">{children}</div>
+                                    </SidebarInset>
+                                </CreatorProvider>
+                            </SidebarProvider>
+                        </NextAuthProvider>
+                    </QueryProvider>
                 </ThemeProvider>
             </body>
         </html>

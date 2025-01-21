@@ -17,6 +17,7 @@ import SettingsProvider from '@/contexts/settings-context';
 import Header from '@/components/header';
 import SettingsDialog from '@/components/settings-dialog';
 import { ThemeProvider } from '@/components/theme-provider';
+import { QueryProvider } from '@/components/sections/query-provider';
 import { NextAuthProvider } from '@/components/sections/auth-provider';
 
 const PTOAds = dynamic(() => import('@/components/ads/pto-ads'));
@@ -62,13 +63,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                 <>
                     <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
                     <Script id="google-analytics">
-                        {`
-                        window.dataLayer = window.dataLayer || [];
-                        function gtag(){dataLayer.push(arguments);}
-                        gtag('js', new Date());
-
-                        gtag('config', '${GA_MEASUREMENT_ID}');
-                        `}
+                        {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${GA_MEASUREMENT_ID}');`}
                     </Script>
                 </>
             )}
@@ -77,20 +72,22 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
                 {isGoogleBot && PTO_ADS_ID && <PTOAds id={PTO_ADS_ID} />}
                 {isGoogleBot && FLYICON_ADS_ID && <FlyiconAds id={FLYICON_ADS_ID} />}
 
-                <StoreProvider>
-                    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-                        <NextAuthProvider session={session}>
-                            <SettingsProvider>
-                                <SettingsDialog />
-                                <GlobalNoti />
-                                <div className="relative flex flex-col">
-                                    <Header />
-                                    {children}
-                                </div>
-                            </SettingsProvider>
-                        </NextAuthProvider>
-                    </ThemeProvider>
-                </StoreProvider>
+                <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+                    <StoreProvider>
+                        <QueryProvider>
+                            <NextAuthProvider session={session}>
+                                <SettingsProvider>
+                                    <SettingsDialog />
+                                    <GlobalNoti />
+                                    <div className="relative flex flex-col">
+                                        <Header />
+                                        {children}
+                                    </div>
+                                </SettingsProvider>
+                            </NextAuthProvider>
+                        </QueryProvider>
+                    </StoreProvider>
+                </ThemeProvider>
             </body>
         </html>
     );
