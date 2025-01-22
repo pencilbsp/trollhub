@@ -70,4 +70,5 @@ export const ROOT_PATH = {
 export const DASHBOARD_PATH = {
     root: '/dashboard',
     login: '/dashboard/login',
+    contents: '/dashboard/contents',
 };

@@ -1,16 +1,12 @@
 import slug from 'slug';
-
-import { vi } from 'date-fns/locale';
 import { twMerge } from 'tailwind-merge';
 import { type ClassValue, clsx } from 'clsx';
 import { Metadata, MetadataRoute } from 'next';
-import { differenceInDays, format, formatDistanceToNow } from 'date-fns';
 
 import prisma from './prisma';
 import { SITE_URL } from '@/config';
 import { ContentType } from '@prisma/client';
-import { type DateRange } from 'react-day-picker';
-import { Content } from '@/actions/guest/content-actions';
+import { type Content } from '@/actions/guest/content-actions';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -90,33 +86,6 @@ export function generateContentMetadata(data: Content): Metadata {
     };
 }
 
-export const formatToNow = (date: string | number | Date) => {
-    const now = new Date();
-    const daysDifference = differenceInDays(now, new Date(date));
-
-    if (daysDifference < 7) {
-        return formatDistanceToNow(new Date(date), {
-            locale: vi,
-            includeSeconds: true,
-            addSuffix: true,
-        });
-    } else {
-        return formatDate(date, 'HH:mm dd/MM/yyyy');
-    }
-};
-
-const isDateRange = (date: any): date is DateRange => {
-    return typeof date === 'object' && 'from' in date && 'to' in date;
-};
-
-export const formatDate = (date: string | number | Date | DateRange, fstring: string = 'HH:mm dd/MM/yyyy'): string => {
-    if (isDateRange(date)) {
-        return `${format(date.from || new Date(), fstring, { locale: vi })} - ${format(date.to || new Date(), fstring, { locale: vi })}`;
-    }
-
-    return format(new Date(date), fstring, { locale: vi });
-};
-
 export async function generateSitemap({ id, type, take }: { id: number; take: number; type: ContentType }): Promise<MetadataRoute.Sitemap> {
     const skip = id * take;
 
@@ -169,8 +138,14 @@ export function generateHref({ type, id, title, contentTitle }: any) {
     const titleSlug = slug(title?.trim() || '');
 
     if (!contentTitle) {
-        const path = type ? '/' + type + '/' : '';
-        return path + [titleSlug, id].join('-');
+        if (!type.endsWith('/')) type = type + '/';
+        if (!type.startsWith('/')) type = '/' + type;
+
+        const paths: string[] = [];
+        if (titleSlug) paths.push(titleSlug);
+        paths.push(id);
+
+        return type + paths.join('-');
     }
 
     const contentSlug = slug(contentTitle.trim());

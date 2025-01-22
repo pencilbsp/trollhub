@@ -58,7 +58,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                                                 </Breadcrumb>
                                             </div>
                                         </header>
-                                        <div className="h-full overflow-hidden px-4">{children}</div>
+                                        {children}
                                     </SidebarInset>
                                 </CreatorProvider>
                             </SidebarProvider>

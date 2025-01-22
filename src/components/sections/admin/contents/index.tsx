@@ -1,15 +1,18 @@
 'use client';
 
+import Link from 'next/link';
 import Image from 'next/image';
 import { ContentStatus } from '@prisma/client';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp, CircleAlert, Ellipsis, Plus, Trash, BookOpenText, ImageIcon, Clapperboard } from 'lucide-react';
-import { Row, ColumnDef, flexRender, SortingState, useReactTable, getCoreRowModel, getSortedRowModel, OnChangeFn } from '@tanstack/react-table';
+import { Row, ColumnDef, flexRender, SortingState, useReactTable, getCoreRowModel, getSortedRowModel } from '@tanstack/react-table';
 
+import { formatToNow } from '@/lib/date';
+import { DASHBOARD_PATH } from '@/config';
 import { ArrayElement } from '@/types/utils';
 import { getContents } from '@/actions/admin/content';
-import { avatarNameFallback, cn, formatToNow } from '@/lib/utils';
+import { avatarNameFallback, cn, generateHref } from '@/lib/utils';
 import { SearchArgs, type ContentFindManyArgs } from '@/lib/prisma';
 
 import {
@@ -38,6 +41,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Search, { type SearchFilter } from '@/components/sections/admin/contents/search';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
 
 export const args = {
     select: {
@@ -80,7 +84,7 @@ const columns: ColumnDef<Content>[] = [
             const Icon = row.original.type === 'movie' ? Clapperboard : row.original.type === 'novel' ? BookOpenText : ImageIcon;
 
             return (
-                <div className="flex max-w-lg items-center gap-3">
+                <Link className="flex max-w-lg items-center gap-3" href={generateHref({ type: DASHBOARD_PATH.contents, id: row.original.id })}>
                     <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded border">
                         <Image unoptimized src={row.original.thumbUrl!} width={40} height={40} alt={row.original.title} />
                     </div>
@@ -92,7 +96,7 @@ const columns: ColumnDef<Content>[] = [
                         <span className="mt-0.5 hidden text-xs text-muted-foreground lg:line-clamp-1">{row.original.akaTitle.join(', ')}</span>
                         <span className="mt-0.5 line-clamp-1 text-xs text-muted-foreground lg:hidden">{row.original.creator.name}</span>
                     </div>
-                </div>
+                </Link>
             );
         },
     },
@@ -178,8 +182,6 @@ export default function Contents() {
                     whereArgs.updatedAt = { gte: filter.updatedAtRange.from?.toISOString(), lte: filter.updatedAtRange.to?.toISOString() };
                 }
             }
-
-            console.log(whereArgs);
 
             const result = await getContents({ where: whereArgs, ...args, take, skip, orderBy });
 
