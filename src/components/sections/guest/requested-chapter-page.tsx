@@ -87,31 +87,31 @@ export default function RequestedChapterPage({ session }: Props) {
                 <TabsContent value={tab}>
                     <TooltipProvider>
                         <Card className="bg-card">
-                            <CardHeader className="flex-col items-start space-y-1.5 p-4 md:p-6 border-b">
+                            <CardHeader className="flex-col items-start space-y-1.5 border-b p-4 md:p-6">
                                 <CardTitle className="text-lg">Nội dung đã yêu cầu</CardTitle>
                                 <CardDescription>Xem lại các yêu cầu và trạng thái cập nhật</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 {isLoading && (
-                                    <div className="w-full flex flex-col justify-center items-center py-6 space-y-3">
+                                    <div className="flex w-full flex-col items-center justify-center space-y-3 py-6">
                                         <SpinerIcon />
                                         <p>Đang tải dữ liệu...</p>
                                     </div>
                                 )}
 
-                                {!isLoading && requests.length === 0 && <p className="text-center py-6">Không có dữ liệu.</p>}
+                                {!isLoading && requests.length === 0 && <p className="py-6 text-center">Không có dữ liệu.</p>}
 
                                 {!isLoading && requests.length > 0 && (
                                     <Table>
                                         <TableHeader>
                                             <TableRow>
-                                                <TableHead className="hidden w-[100px] sm:table-cell px-4 md:px-6">
+                                                <TableHead className="hidden w-[100px] px-4 sm:table-cell md:px-6">
                                                     <span className="sr-only">Image</span>
                                                 </TableHead>
                                                 <TableHead className="px-4 md:px-6">Tên</TableHead>
-                                                <TableHead className="text-right px-4 md:px-6">Trạng thái</TableHead>
-                                                <TableHead className="hidden md:table-cell text-right px-4 md:px-6">Người yêu cầu</TableHead>
-                                                <TableHead className="hidden lg:table-cell text-right px-4 md:px-6">Thời gian</TableHead>
+                                                <TableHead className="px-4 text-right md:px-6">Trạng thái</TableHead>
+                                                <TableHead className="hidden px-4 text-right md:table-cell md:px-6">Người yêu cầu</TableHead>
+                                                <TableHead className="hidden px-4 text-right md:px-6 lg:table-cell">Thời gian</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -119,20 +119,20 @@ export default function RequestedChapterPage({ session }: Props) {
                                                 const href = `/${type === 'movie' ? 'episode' : 'chapter'}/${slug(content.title || '')}-${cid}`;
                                                 return (
                                                     <TableRow key={id}>
-                                                        <TableCell className="hidden sm:table-cell px-4 md:px-6">
+                                                        <TableCell className="hidden px-4 sm:table-cell md:px-6">
                                                             <Image
                                                                 unoptimized
                                                                 width="56"
                                                                 height="56"
                                                                 alt="Product image"
                                                                 src={content.thumbUrl}
-                                                                className="aspect-square rounded-md object-cover border"
+                                                                className="aspect-square rounded-md border object-cover"
                                                             />
                                                         </TableCell>
                                                         <TableCell className="max-w-72 px-4 md:px-6">
                                                             <Link href={href}>
                                                                 <p className="truncate">{title}</p>
-                                                                <p className="font-medium text-base truncate">{content.title}</p>
+                                                                <p className="truncate text-base font-medium">{content.title}</p>
                                                             </Link>
                                                         </TableCell>
                                                         <TableCell align="right" className="px-4 md:px-6">
@@ -143,11 +143,11 @@ export default function RequestedChapterPage({ session }: Props) {
                                                                 {status}
                                                             </Badge>
                                                         </TableCell>
-                                                        <TableCell className="hidden md:table-cell px-4 md:px-6" align="right">
+                                                        <TableCell className="hidden px-4 md:table-cell md:px-6" align="right">
                                                             {user ? (
                                                                 <Tooltip>
                                                                     <TooltipTrigger asChild>
-                                                                        <Avatar className="w-8 h-8 hover:cursor-pointer">
+                                                                        <Avatar className="h-8 w-8 hover:cursor-pointer">
                                                                             <AvatarImage src={user.image} alt={user.name} />
                                                                             <AvatarFallback>{avatarNameFallback(user.name)}</AvatarFallback>
                                                                         </Avatar>
@@ -158,7 +158,7 @@ export default function RequestedChapterPage({ session }: Props) {
                                                                 count
                                                             )}
                                                         </TableCell>
-                                                        <TableCell className="hidden lg:table-cell px-4 md:px-6" align="right">
+                                                        <TableCell className="hidden px-4 md:px-6 lg:table-cell" align="right">
                                                             {createdAt && formatDate(createdAt)}
                                                         </TableCell>
                                                     </TableRow>
@@ -168,7 +168,7 @@ export default function RequestedChapterPage({ session }: Props) {
                                     </Table>
                                 )}
                             </CardContent>
-                            <CardFooter className="p-4 md:p-6 pt-0 border-t">
+                            <CardFooter className="border-t p-4 pt-0 md:p-6">
                                 <div className="text-sm text-muted-foreground">
                                     Hiển thị <strong>{`${start}-${end}`}</strong> của <strong>{total}</strong> yêu cầu
                                 </div>

@@ -27,22 +27,22 @@ export default function Header() {
 
     return (
         <Headroom
-            className="z-50 relative"
+            className="relative z-50"
             onPin={() => document.body.classList.add('header-pinned')}
             onUnpin={() => document.body.classList.remove('header-pinned')}
             onUnfix={() => document.body.classList.remove('header-pinned')}
         >
-            <header className="sticky top-0 flex flex-col justify-around items-center w-full bg-background/80 backdrop-blur-xl z-50">
+            <header className="sticky top-0 z-50 flex w-full flex-col items-center justify-around bg-background/80 backdrop-blur-xl">
                 <div className="container flex h-16 items-center px-4">
                     <div className="flex flex-1 items-center justify-between">
                         <Sheet open={isOpen} onOpenChange={setOpen}>
                             <SheetTrigger asChild>
-                                <button className="block md:hidden p-0 mr-3">
+                                <button className="mr-3 block p-0 md:hidden">
                                     <ViewVerticalIcon className="h-5 w-5" />
                                 </button>
                             </SheetTrigger>
                             <SheetContent side="left" className="flex flex-col justify-between">
-                                <nav className="flex flex-col gap-3 mt-6 text-lg">
+                                <nav className="mt-6 flex flex-col gap-3 text-lg">
                                     <NavLink onClick={() => setOpen(false)} Icon={HomeIcon} href="/">
                                         Trang chủ
                                     </NavLink>
@@ -53,10 +53,10 @@ export default function Header() {
                                         Dữ liệu
                                     </NavLink>
                                 </nav>
-                                <div className="flex w-full gap-x-3 justify-end">
+                                <div className="flex w-full justify-end gap-x-3">
                                     {!session.data && (
                                         <Button asChild>
-                                            <Link className=" flex-1" href="/login">
+                                            <Link className="flex-1" href="/login">
                                                 Đăng nhập
                                             </Link>
                                         </Button>
@@ -66,13 +66,13 @@ export default function Header() {
                             </SheetContent>
                         </Sheet>
 
-                        <nav className="gap-6 hidden md:flex">
+                        <nav className="hidden gap-6 md:flex">
                             <NavLink href="/">Trang chủ</NavLink>
                             <NavLink href="/requested">Nội dung đã yêu cầu</NavLink>
                             <NavLink href="/data">Dữ liệu</NavLink>
                         </nav>
 
-                        <div className="flex gap-3 w-full sm:w-auto">
+                        <div className="flex w-full gap-3 sm:w-auto">
                             <SearchModel />
 
                             <ToggleTheme />

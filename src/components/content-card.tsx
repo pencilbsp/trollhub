@@ -49,7 +49,7 @@ function ContentHorizontal({ data }: ContentHorizontalProps) {
     return (
         <Card className="w-full">
             <CardHeader className="p3 sm:p-6">
-                <Avatar className="w-10 h-10 border mr-2">
+                <Avatar className="mr-2 h-10 w-10 border">
                     {creator.avatar && <AvatarImage src={creator.avatar} />}
                     <AvatarFallback>{avatarNameFallback(creator.name)}</AvatarFallback>
                 </Avatar>
@@ -63,11 +63,11 @@ function ContentHorizontal({ data }: ContentHorizontalProps) {
             <CardContent>
                 <div className="px-3 sm:px-6">
                     <Link href={href}>
-                        <h3 className="font-semibold text-xl">{title}</h3>
+                        <h3 className="text-xl font-semibold">{title}</h3>
                     </Link>
                     {description && (
-                        <div className="flex flex-col relative">
-                            <div ref={descriptionRef} className="text-gray-700 dark:text-gray-400 mt-2 line-clamp-3">
+                        <div className="relative flex flex-col">
+                            <div ref={descriptionRef} className="mt-2 line-clamp-3 text-gray-700 dark:text-gray-400">
                                 {description}
                             </div>
                         </div>
@@ -75,15 +75,15 @@ function ContentHorizontal({ data }: ContentHorizontalProps) {
                 </div>
                 <Link href={href}>
                     <Thumbnail thumbUrl={thumbUrl!} alt={title} ratio="16/9" adultContent={adultContent}>
-                        <Badge className="bg-stone-950/30 backdrop-blur text-white border-none mb-3">
+                        <Badge className="mb-3 border-none bg-stone-950/30 text-white backdrop-blur">
                             <ContentIcon size={28} />
                         </Badge>
                         <Badge variant="destructive">{status === ContentStatus.complete ? 'Đã hoàn thành' : 'Đang xuất bản'}</Badge>
                     </Thumbnail>
                 </Link>
             </CardContent>
-            <CardFooter className="px3 sm:px-6 pb-3 sm:pb-6 mt-2 grid grid-cols-1 divide-y text-gray-700 dark:text-gray-400">
-                <div className="flex justify-between text-sm pb-2">
+            <CardFooter className="px3 mt-2 grid grid-cols-1 divide-y pb-3 text-gray-700 sm:px-6 sm:pb-6 dark:text-gray-400">
+                <div className="flex justify-between pb-2 text-sm">
                     <div className="flex gap-3">
                         <span>0 lượt thích</span>
                         <span>10 bình luận</span>
@@ -91,15 +91,15 @@ function ContentHorizontal({ data }: ContentHorizontalProps) {
                     <span>{numeral(view || 0).format('0.0a')} lượt xem</span>
                 </div>
                 <div className="grid grid-cols-3 gap-4 pt-2">
-                    <button className="flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-900 transition-colors rounded-md py-1.5">
+                    <button className="flex items-center justify-center rounded-md py-1.5 transition-colors hover:bg-gray-200 dark:hover:bg-gray-900">
                         <ThumbsUpIcon size={20} className="stroke-current" />
                         <span className="ml-2">Thích</span>
                     </button>
-                    <button className="flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-900 transition-colors rounded-md py-1.5">
+                    <button className="flex items-center justify-center rounded-md py-1.5 transition-colors hover:bg-gray-200 dark:hover:bg-gray-900">
                         <MessageCircleIcon size={20} className="stroke-current" />
                         <span className="ml-2">Bình luận</span>
                     </button>
-                    <button className="flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-900 transition-colors rounded-md py-1.5">
+                    <button className="flex items-center justify-center rounded-md py-1.5 transition-colors hover:bg-gray-200 dark:hover:bg-gray-900">
                         <ShareIcon size={20} className="stroke-current" />
                         <span className="ml-2">Chia sẻ</span>
                     </button>
@@ -122,37 +122,37 @@ function ContentVertical({ data }: ContentVerticalProps) {
         <Link href={href} className="group flex">
             <Card className="w-full">
                 <CardHeader>
-                    <Avatar className="w-8 h-8 border mr-1">
+                    <Avatar className="mr-1 h-8 w-8 border">
                         {creator.avatar && <AvatarImage src={creator.avatar} />}
                         <AvatarFallback>{avatarNameFallback(creator.name)}</AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col min-w-0">
+                    <div className="flex min-w-0 flex-col">
                         <span className="truncate text-sm">{creator.name}</span>
-                        <time className="truncate text-xs text-primary/75 font-light">{formatToNow(updatedAt)}</time>
+                        <time className="truncate text-xs font-light text-primary/75">{formatToNow(updatedAt)}</time>
                     </div>
                 </CardHeader>
 
-                <CardContent className="aspect-[3/4] relative rounded-lg overflow-hidden p-0">
-                    <Image unoptimized width={0} height={0} alt={title} sizes="100vw" src={thumbUrl!} className={cn('w-full h-full object-cover', isShow && 'blur-md')} />
+                <CardContent className="relative aspect-[3/4] overflow-hidden rounded-lg p-0">
+                    <Image unoptimized width={0} height={0} alt={title} sizes="100vw" src={thumbUrl!} className={cn('h-full w-full object-cover', isShow && 'blur-md')} />
                     {isShow && (
-                        <div className="absolute inset-0 p-3 flex flex-col justify-center items-center text-muted font-light">
-                            <EyeOffIcon className="cursor-pointer w-4 h-4" />
-                            <span className="text-xs text-center mt-2">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-3 font-light text-muted">
+                            <EyeOffIcon className="h-4 w-4 cursor-pointer" />
+                            <span className="mt-2 text-center text-xs">
                                 Hình ảnh chứa
                                 <br />
                                 nội dung nhạy cảm
                             </span>
                         </div>
                     )}
-                    <div className="absolute inset-0 p-2 flex flex-col items-start justify-end gap-2">
-                        <Badge className="bg-stone-950/30 backdrop-blur text-white border-none">
-                            <ContentIcon className="w-5 h-5" />
+                    <div className="absolute inset-0 flex flex-col items-start justify-end gap-2 p-2">
+                        <Badge className="border-none bg-stone-950/30 text-white backdrop-blur">
+                            <ContentIcon className="h-5 w-5" />
                         </Badge>
                         <Badge variant="destructive">{status === ContentStatus.complete ? 'Đã hoàn thành' : 'Đang xuất bản'}</Badge>
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <h3 className="line-clamp-2 font-bold group-hover:text-blue-500 transition-colors min-h-[2lh]">{title}</h3>
+                    <h3 className="line-clamp-2 min-h-[2lh] font-bold transition-colors group-hover:text-blue-500">{title}</h3>
                 </CardFooter>
             </Card>
         </Link>

@@ -9,13 +9,15 @@ import { MouseEvent, useEffect, useState, useTransition } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Command, CommandItem, CommandList, CommandInput, CommandGroup, CommandEmpty, CommandSeparator } from '@/components/ui/search-form';
+import { Command, CommandItem, CommandList, CommandInput, CommandGroup, CommandEmpty, CommandSeparator } from '@/components/ui/command';
 
-import useKeyPress from '@/hooks/use-key-press';
 import useDebounce from '@/hooks/use-debounce';
+import useKeyPress from '@/hooks/use-key-press';
 
 import { avatarNameFallback, formatToNow } from '@/lib/utils';
 import getSearchResult, { SearchResult } from '@/actions/guest/get-search-result';
+import { SearchIcon } from 'lucide-react';
+import { Spinner } from './ui/spinner';
 
 const defaultState: SearchResult = { contents: [], creators: [] };
 
@@ -60,7 +62,7 @@ export default function SearchModel() {
 
     return (
         <Dialog open={isOpen} onOpenChange={setOpen}>
-            <DialogTrigger className="inline-flex items-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50 border bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 relative justify-start text-sm text-muted-foreground sm:pr-12 w-full sm:w-64">
+            <DialogTrigger className="relative inline-flex h-9 w-full items-center justify-start rounded-md border bg-transparent px-4 py-2 text-sm text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50 sm:w-64 sm:pr-12">
                 <span className="hidden lg:inline-flex">Tìm kiếm kênh, nội dung...</span>
                 <span className="inline-flex lg:hidden">Tìm kiếm...</span>
                 <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] opacity-100 sm:flex">
@@ -68,30 +70,38 @@ export default function SearchModel() {
                 </kbd>
             </DialogTrigger>
 
-            <DialogContent className="h-full sm:h-auto p-0 overflow-hidden">
+            <DialogContent className="h-full overflow-hidden p-0 sm:h-auto">
                 <Command shouldFilter={false} className="bg-transparent">
-                    <CommandInput isLoading={isPending} onValueChange={handleSearch} placeholder="Tìm kiếm kênh, nội dung..." />
+                    <CommandInput
+                        isLoading={isPending}
+                        onValueChange={handleSearch}
+                        wrapperClassName="px-4 py-1.5"
+                        placeholder="Tìm kiếm kênh, nội dung..."
+                        icon={<SearchIcon className="h-6 w-6" />}
+                        loading={<Spinner size="md" className="bg-current" />}
+                        className="text-lg outline-none placeholder:text-lg placeholder:text-current"
+                    />
                     {result.contents.length > 0 || result.creators.length > 0 ? (
-                        <CommandList>
+                        <CommandList className="px-2 py-1">
                             {result.contents.length > 0 && (
-                                <CommandGroup heading="Nội dung">
+                                <CommandGroup className="[&_[cmdk-group-heading]]:text-sm" heading="Nội dung">
                                     {result.contents.map(({ id, title, thumbUrl, akaTitle, type, creator, updatedAt }) => {
                                         const href = `/${type}/${slug(title)}-${id}`;
                                         return (
                                             <Link key={id} href={href} onClick={(e) => handleGoto(e)}>
                                                 <CommandItem value={href} className="cursor-pointer" onSelect={handleSelect}>
-                                                    <div className="w-12 h-12 mr-2 flex-shrink-0">
+                                                    <div className="mr-2 h-12 w-12 flex-shrink-0">
                                                         <Image
                                                             width={0}
                                                             height={0}
                                                             alt={title}
                                                             sizes="100vh"
                                                             src={thumbUrl}
-                                                            className="w-full h-full border rounded object-cover"
+                                                            className="h-full w-full rounded border object-cover"
                                                         />
                                                     </div>
 
-                                                    <div className="flex flex-col min-w-0">
+                                                    <div className="flex min-w-0 flex-col">
                                                         <h5 className="truncate font-bold">{title}</h5>
                                                         <span className="truncate text-xs">{akaTitle?.[0]}</span>
                                                         <span className="truncate text-xs text-muted-foreground">
@@ -109,11 +119,11 @@ export default function SearchModel() {
                             {result.creators.length > 0 && (
                                 <>
                                     <CommandSeparator />
-                                    <CommandGroup heading="Kênh">
+                                    <CommandGroup className="[&_[cmdk-group-heading]]:text-sm" heading="Kênh">
                                         {result.creators.map(({ id, name, avatar, userName }) => (
                                             <Link key={id} href={`/channel/${(userName as string).slice(1)}`} onClick={handleGoto}>
                                                 <CommandItem className="cursor-pointer">
-                                                    <Avatar className="w-12 h-12 border mr-2">
+                                                    <Avatar className="mr-2 h-12 w-12 border">
                                                         <AvatarImage src={avatar} />
                                                         <AvatarFallback>{avatarNameFallback(name)}</AvatarFallback>
                                                     </Avatar>
@@ -129,8 +139,8 @@ export default function SearchModel() {
                             )}
                         </CommandList>
                     ) : (
-                        <CommandList>
-                            <CommandEmpty>Không tìm thấy kết quả phù hợp.</CommandEmpty>
+                        <CommandList className="px-2 py-1">
+                            <CommandEmpty className="text-base">Không tìm thấy kết quả phù hợp.</CommandEmpty>
                         </CommandList>
                     )}
                 </Command>

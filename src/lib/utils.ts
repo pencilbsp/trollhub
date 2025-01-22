@@ -1,14 +1,15 @@
 import slug from 'slug';
 
-import vi from 'date-fns/locale/vi';
+import { vi } from 'date-fns/locale';
 import { twMerge } from 'tailwind-merge';
 import { type ClassValue, clsx } from 'clsx';
 import { Metadata, MetadataRoute } from 'next';
-import { format, formatDistanceToNow } from 'date-fns';
+import { differenceInDays, format, formatDistanceToNow } from 'date-fns';
 
 import prisma from './prisma';
 import { SITE_URL } from '@/config';
 import { ContentType } from '@prisma/client';
+import { type DateRange } from 'react-day-picker';
 import { Content } from '@/actions/guest/content-actions';
 
 export function cn(...inputs: ClassValue[]) {
@@ -89,16 +90,31 @@ export function generateContentMetadata(data: Content): Metadata {
     };
 }
 
-export const formatToNow = (data: string | number | Date) => {
-    return formatDistanceToNow(new Date(data), {
-        locale: vi,
-        includeSeconds: true,
-        addSuffix: true,
-    });
+export const formatToNow = (date: string | number | Date) => {
+    const now = new Date();
+    const daysDifference = differenceInDays(now, new Date(date));
+
+    if (daysDifference < 7) {
+        return formatDistanceToNow(new Date(date), {
+            locale: vi,
+            includeSeconds: true,
+            addSuffix: true,
+        });
+    } else {
+        return formatDate(date, 'HH:mm dd/MM/yyyy');
+    }
 };
 
-export const formatDate = (data: string | number | Date, fstring: string = 'HH:mm dd/MM/yyyy') => {
-    return format(new Date(data), fstring, { locale: vi });
+const isDateRange = (date: any): date is DateRange => {
+    return typeof date === 'object' && 'from' in date && 'to' in date;
+};
+
+export const formatDate = (date: string | number | Date | DateRange, fstring: string = 'HH:mm dd/MM/yyyy'): string => {
+    if (isDateRange(date)) {
+        return `${format(date.from || new Date(), fstring, { locale: vi })} - ${format(date.to || new Date(), fstring, { locale: vi })}`;
+    }
+
+    return format(new Date(date), fstring, { locale: vi });
 };
 
 export async function generateSitemap({ id, type, take }: { id: number; take: number; type: ContentType }): Promise<MetadataRoute.Sitemap> {

@@ -16,9 +16,9 @@ export default function HistoryPage({ data }: Props) {
 
     return (
         <div className="container p-2 sm:px-8 xl:max-w-7xl">
-            <div className="grid grid-cols-4 gap-6 w-full p-2">
-                <div className="flex flex-col gap-4 col-span-4 xl:col-span-3">
-                    <h1 className="font-bold text-2xl uppercase text-blue-500">Nhật ký xem ({total})</h1>
+            <div className="grid w-full grid-cols-4 gap-6 p-2">
+                <div className="col-span-4 flex flex-col gap-4 xl:col-span-3">
+                    <h1 className="text-2xl font-bold uppercase text-blue-500">Nhật ký xem ({total})</h1>
 
                     <div className="flex flex-col">
                         {Array.from(histories).map(([key, data], index) => {

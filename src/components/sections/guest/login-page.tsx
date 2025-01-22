@@ -20,14 +20,14 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="container py-6 flex flex-col items-center justify-center flex-grow">
-            <h1 className="font-bold text-center text-3xl">Đăng nhập vào Trollhub</h1>
-            <div className="flex flex-col mt-10 max-w-xs w-full gap-3">
+        <main className="container flex flex-grow flex-col items-center justify-center py-6">
+            <h1 className="text-center text-3xl font-bold">Đăng nhập vào Trollhub</h1>
+            <div className="mt-10 flex w-full max-w-xs flex-col gap-3">
                 <button
                     onClick={() => handleLogin('google')}
-                    className="flex items-center justify-center bg-primary-foreground rounded-lg h-12 hover:bg-accent transition-colors border"
+                    className="flex h-12 items-center justify-center rounded-lg border bg-primary-foreground transition-colors hover:bg-accent"
                 >
-                    <GoogleIcon className="w-6 h-6 mr-2" />
+                    <GoogleIcon className="mr-2 h-6 w-6" />
                     <span>Tiếp tục với Google</span>
                 </button>
             </div>

@@ -24,13 +24,13 @@ interface Props {
 
 export default function HighlightContents({ title, moreLink, data, swiper, className }: Props) {
     return (
-        <div className={cn('flex flex-col w-full', className)}>
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="font-bold uppercase text-2xl">{title}</h2>
+        <div className={cn('flex w-full flex-col', className)}>
+            <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-2xl font-bold uppercase">{title}</h2>
                 {moreLink && (
-                    <Link href={moreLink} className="flex items-center hover:text-blue-500 transition-colors">
+                    <Link href={moreLink} className="flex items-center transition-colors hover:text-blue-500">
                         <span className="mr-1">Xem tất cả</span>
-                        <ArrowRightIcon className="w-5 h-5 fill-current" />
+                        <ArrowRightIcon className="h-5 w-5 fill-current" />
                     </Link>
                 )}
             </div>
@@ -45,7 +45,7 @@ export default function HighlightContents({ title, moreLink, data, swiper, class
                         ))}
                 </SwiperReact>
             ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-2 xl:gap-4 w-full">
+                <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 md:gap-2 lg:grid-cols-4 xl:gap-4">
                     {data && data.map((content) => <ContentVertical key={content.id} data={content} />)}
                 </div>
             )}

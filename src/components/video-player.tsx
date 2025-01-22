@@ -73,8 +73,8 @@ export default function VideoPlayer({ vid, sources, contentId, thumbnails, defau
             {!error && playerInterface === 'jwplayer' && <JWPlayer config={{}} source={source} onError={setError} currentTime={time.current} onTime={(t) => (time.current = t)} />}
 
             {sources.length > 0 && (
-                <div className="px-4 sm:px-0 flex flex-col sm:flex-row gap-2 sm:items-center justify-between">
-                    <div className="font-medium md:text-lg flex items-center gap-1.5">
+                <div className="flex flex-col justify-between gap-2 px-4 sm:flex-row sm:items-center sm:px-0">
+                    <div className="flex items-center gap-1.5 font-medium md:text-lg">
                         <RocketIcon className="h-4 md:h-5" />
                         <span>Chọn nguồn phát</span>
                     </div>
@@ -86,7 +86,7 @@ export default function VideoPlayer({ vid, sources, contentId, thumbnails, defau
                             setSource(findSource(sources, newValue));
                         }}
                     >
-                        <TabsList className="grid grid-cols-2 h-8 p-0 px-1 py-1 sm:flex">
+                        <TabsList className="grid h-8 grid-cols-2 p-0 px-1 py-1 sm:flex">
                             {sources.map((source) => {
                                 return (
                                     <TabsTrigger key={source.key} value={source.key} className="h-[1.45rem] rounded-sm px-2 text-xs">
@@ -107,7 +107,7 @@ export default function VideoPlayer({ vid, sources, contentId, thumbnails, defau
  * -----------------------------------------------------------------------------------------------*/
 
 function PlayerBox({ children, className }: { children: ReactNode; className?: string }) {
-    return <div className={cn('w-full flex flex-col items-center justify-center aspect-video border border-dashed p-4', className)}>{children}</div>;
+    return <div className={cn('flex aspect-video w-full flex-col items-center justify-center border border-dashed p-4', className)}>{children}</div>;
 }
 
 export function PlayerLoading({ className }: { className?: string }) {
@@ -128,7 +128,7 @@ export function VideoPlayerError({ message, buttonText, buttonIcon, onClick, chi
         <div>
             {message && (
                 <PlayerBox className={className}>
-                    <p className="mb-3 text-base md:text-lg text-center">{message}</p>
+                    <p className="mb-3 text-center text-base md:text-lg">{message}</p>
                     {children ? (
                         children
                     ) : buttonText ? (

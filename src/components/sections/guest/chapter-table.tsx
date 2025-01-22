@@ -44,10 +44,10 @@ export default function ChapterTable({ data, contentId, createdAt, currentId, co
 
     return (
         <div>
-            <div className="flex items-center justify-between space-x-1 mb-4">
-                <h3 className="font-bold text-xl uppercase truncate">{contentType === 'movie' ? 'Danh sách tập' : 'Danh sách chương'}</h3>
+            <div className="mb-4 flex items-center justify-between space-x-1">
+                <h3 className="truncate text-xl font-bold uppercase">{contentType === 'movie' ? 'Danh sách tập' : 'Danh sách chương'}</h3>
                 <Select defaultValue={createdAt} onValueChange={handleSort}>
-                    <SelectTrigger className="w-28 h-8">
+                    <SelectTrigger className="h-8 w-28">
                         <SelectValue placeholder="Sắp xếp" />
                     </SelectTrigger>
                     <SelectContent align="end">
@@ -63,8 +63,8 @@ export default function ChapterTable({ data, contentId, createdAt, currentId, co
                             <TableHeader className="sticky top-0 mx-4">
                                 <TableRow>
                                     <TableHead>Tên</TableHead>
-                                    {!hiddenColumns.includes('update') && <TableHead className="text-right truncate">Cập nhật</TableHead>}
-                                    {!hiddenColumns.includes('view') && <TableHead className="text-right truncate">Lượt xem</TableHead>}
+                                    {!hiddenColumns.includes('update') && <TableHead className="truncate text-right">Cập nhật</TableHead>}
+                                    {!hiddenColumns.includes('view') && <TableHead className="truncate text-right">Lượt xem</TableHead>}
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -151,14 +151,14 @@ function ChapterRow({ href, isActive, mobileOnly, title, view, hiddenColumns, cr
 
     return (
         <TableRow ref={rowRef}>
-            <TableCell className="font-medium font-mono max-w-md">
-                <Link href={href} className={cn('flex items-center max-w-full', isActive && 'text-blue-500')}>
+            <TableCell className="max-w-md font-mono font-medium">
+                <Link href={href} className={cn('flex max-w-full items-center', isActive && 'text-blue-500')}>
                     <div className="flex overflow-hidden">
                         <span className="truncate">{title.trim()}</span>
-                        {mobileOnly && <TabletSmartphoneIcon size={16} className="ml-2 text-red-400 inline-block flex-shrink-0" />}
+                        {mobileOnly && <TabletSmartphoneIcon size={16} className="ml-2 inline-block flex-shrink-0 text-red-400" />}
                     </div>
                     {isActive && (
-                        <Badge variant="outline" className="ml-2 px-1.5 font-sans border-blue-500/70 bg-blue-500/90 text-background shrink-0">
+                        <Badge variant="outline" className="ml-2 shrink-0 border-blue-500/70 bg-blue-500/90 px-1.5 font-sans text-background">
                             Đang xem
                         </Badge>
                     )}
@@ -166,10 +166,10 @@ function ChapterRow({ href, isActive, mobileOnly, title, view, hiddenColumns, cr
             </TableCell>
             {!hiddenColumns!.includes('update') && (
                 <TableCell className="text-right">
-                    <time className="font-mono font-light text-sm truncate">{formatDate(createdAt)}</time>
+                    <time className="truncate font-mono text-sm font-light">{formatDate(createdAt)}</time>
                 </TableCell>
             )}
-            {!hiddenColumns!.includes('update') && <TableCell className="font-mono text-right">{numeral(view || 0).format('0.0a')}</TableCell>}
+            {!hiddenColumns!.includes('update') && <TableCell className="text-right font-mono">{numeral(view || 0).format('0.0a')}</TableCell>}
         </TableRow>
     );
 }

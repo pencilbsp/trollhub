@@ -37,7 +37,7 @@ const CommentEditorInput = forwardRef<HTMLTextAreaElement, Props>(({ field, plac
     };
 
     return (
-        <div className="flex flex-col w-full rounded-2xl bg-card p-3 relative border border-border">
+        <div className="relative flex w-full flex-col rounded-2xl border border-border bg-card p-3">
             {isSubmitting && <BorderTrail size={120} className="bg-gradient-to-l from-blue-200 via-blue-500 to-blue-200 dark:from-blue-400 dark:via-blue-500 dark:to-blue-700" />}
             <textarea
                 rows={1}
@@ -46,14 +46,14 @@ const CommentEditorInput = forwardRef<HTMLTextAreaElement, Props>(({ field, plac
                 onKeyDown={handleKeyDown}
                 onInput={adjustTextareaHeight}
                 placeholder={placeholder || 'Thêm bình luận của bạn...'}
-                className="outline-none bg-transparent focus:outline-none active:outline-none resize-none w-full"
+                className="w-full resize-none bg-transparent outline-none focus:outline-none active:outline-none"
             />
-            <div className="flex w-full justify-between items-center mt-2">
+            <div className="mt-2 flex w-full items-center justify-between">
                 <div className="flex items-center gap-x-2">{/* Buttons */}</div>
                 <button
                     type="submit"
                     disabled={isSubmitting || !isDirty || !field.value.trim()}
-                    className="relative cursor-pointer disabled:cursor-default rounded-full bg-foreground text-background disabled:opacity-50 w-8 h-8 p-1.5 flex items-center justify-center"
+                    className="relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-foreground p-1.5 text-background disabled:cursor-default disabled:opacity-50"
                 >
                     <ArrowUpIcon strokeWidth={3} />
                 </button>

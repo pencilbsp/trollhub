@@ -35,21 +35,34 @@ export const getModel = (modelName: Prisma.ModelName) => {
     return model;
 };
 
-export const convertPrismaToMongoOperators = (where: any): any => {
+const switchType = (value: any, type: string) => {
+    switch (type) {
+        case 'DateTime':
+            return {
+                $dateFromString: {
+                    dateString: new Date(value).toISOString(),
+                },
+            };
+        case 'ObjectId':
+            return { $oid: value };
+        default:
+            return value;
+    }
+};
+
+export const convertOperators = (where: any, type: string): any => {
     if (Array.isArray(where)) {
-        // Nếu là mảng, duyệt qua từng phần tử
-        return where.map(convertPrismaToMongoOperators);
+        return where.map((i) => convertOperators(i, type));
     } else if (typeof where === 'object' && where !== null) {
-        // Nếu là object, duyệt qua từng key
-        const converted: any = {};
+        const converted: Record<string, any> = {};
         for (const key in where) {
             if (key === 'in') {
-                converted['$in'] = convertPrismaToMongoOperators(where[key]);
+                converted['$in'] = convertOperators(where[key], type);
             } else if (key === 'notIn') {
-                converted['$nin'] = convertPrismaToMongoOperators(where[key]);
+                converted['$nin'] = convertOperators(where[key], type);
             } else if (key === 'contains') {
                 converted['$regex'] = where[key];
-                converted['$options'] = 'i'; // Không phân biệt chữ hoa/chữ thường
+                converted['$options'] = 'i';
             } else if (key === 'startsWith') {
                 converted['$regex'] = `^${where[key]}`;
                 converted['$options'] = 'i';
@@ -57,30 +70,28 @@ export const convertPrismaToMongoOperators = (where: any): any => {
                 converted['$regex'] = `${where[key]}$`;
                 converted['$options'] = 'i';
             } else if (key === 'lt') {
-                converted['$lt'] = where[key]; // Nhỏ hơn
+                converted['$lt'] = where[key];
             } else if (key === 'lte') {
-                converted['$lte'] = where[key]; // Nhỏ hơn hoặc bằng
+                converted['$lte'] = where[key];
             } else if (key === 'gt') {
-                converted['$gt'] = where[key]; // Lớn hơn
+                converted['$gt'] = where[key];
             } else if (key === 'gte') {
-                converted['$gte'] = where[key]; // Lớn hơn hoặc bằng
+                converted['$gte'] = where[key];
             } else if (typeof where[key] === 'object') {
-                // Đệ quy nếu giá trị là một object
-                converted[key] = convertPrismaToMongoOperators(where[key]);
+                converted[key] = convertOperators(where[key], type);
             } else {
-                // Copy các key khác không cần chuyển đổi
                 converted[key] = where[key];
             }
         }
         return converted;
     }
-    // Trả về giá trị nguyên bản nếu không phải object hoặc array
-    return where;
+    return switchType(where, type);
 };
 
 export const prepareAggregate = (args: SearchArgs, model: ReturnType<typeof getModel>) => {
     const { where = {}, take, skip, orderBy } = args;
 
+    const exprCondition: Record<string, any> = {};
     const matchCondition: Record<string, any> = {};
 
     if (where.search) {
@@ -94,29 +105,28 @@ export const prepareAggregate = (args: SearchArgs, model: ReturnType<typeof getM
         if (index < 0) continue;
 
         const field = model.fields[index];
-        const value = where[key as keyof CountArgs['where']];
+        const fieldKey = field.dbName || field.name;
         const nativeType = field.nativeType?.[0] || field.type;
+        const value = where[key as keyof CountArgs['where']] as any;
 
-        switch (typeof value) {
-            case 'object':
-                matchCondition[field.dbName || field.name] = convertPrismaToMongoOperators(value);
-                break;
-
-            case 'number':
-            case 'string':
-            case 'bigint':
-                if (nativeType === 'String' || nativeType === 'Int') {
-                    matchCondition[field.dbName || field.name] = value;
-                } else if (nativeType === 'ObjectId') {
-                    matchCondition[field.dbName || field.name] = { $oid: value };
-                } else if (nativeType === 'DateTime') {
-                    matchCondition[field.dbName || field.name] = { $oid: value };
+        if (nativeType === 'DateTime') {
+            if (value instanceof Date || typeof value !== 'object') {
+                exprCondition['$eq'] = [`$${fieldKey}`, switchType(value, nativeType)];
+            } else {
+                exprCondition['$and'] = exprCondition['$and'] || [];
+                for (const [operator, val] of Object.entries(value)) {
+                    exprCondition['$and'].push({ [`$${operator}`]: [`$${fieldKey}`, switchType(val, nativeType)] });
                 }
-                break;
+            }
 
-            default:
-                break;
+            continue;
         }
+
+        matchCondition[fieldKey] = convertOperators(value, nativeType);
+    }
+
+    if (Object.keys(exprCondition).length > 0) {
+        matchCondition.$expr = exprCondition;
     }
 
     const pipeline: object[] = [{ $match: matchCondition }];
@@ -164,7 +174,7 @@ async function search<T, A>(this: T, args?: Prisma.Exact<A, SearchArgs>): Promis
 
         if (Array.isArray(data) && data.length > 0) {
             const ids = data.map((i) => i['_id']['$oid']);
-            const result = await (context as any).findMany({ where: { id: { in: ids } }, ...others });
+            const result = await (context as any).findMany({ where: { id: { in: ids } }, orderBy, ...others });
             return { data: result, total };
         }
     }

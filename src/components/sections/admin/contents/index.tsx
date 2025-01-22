@@ -2,15 +2,15 @@
 
 import Image from 'next/image';
 import { ContentStatus } from '@prisma/client';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import { ChevronDown, ChevronUp, CircleAlert, CircleX, Ellipsis, Plus, Trash, Search } from 'lucide-react';
-import { Row, FilterFn, ColumnDef, flexRender, SortingState, useReactTable, getCoreRowModel, getSortedRowModel, OnChangeFn } from '@tanstack/react-table';
+import { ChevronDown, ChevronUp, CircleAlert, Ellipsis, Plus, Trash, BookOpenText, ImageIcon, Clapperboard } from 'lucide-react';
+import { Row, ColumnDef, flexRender, SortingState, useReactTable, getCoreRowModel, getSortedRowModel, OnChangeFn } from '@tanstack/react-table';
 
-import { cn, formatDate } from '@/lib/utils';
 import { ArrayElement } from '@/types/utils';
-import { type SearchArgs } from '@/lib/prisma';
 import { getContents } from '@/actions/admin/content';
+import { avatarNameFallback, cn, formatToNow } from '@/lib/utils';
+import { SearchArgs, type ContentFindManyArgs } from '@/lib/prisma';
 
 import {
     AlertDialog,
@@ -28,49 +28,35 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
     DropdownMenu,
-    DropdownMenuSub,
     DropdownMenuItem,
     DropdownMenuGroup,
-    DropdownMenuPortal,
     DropdownMenuTrigger,
     DropdownMenuContent,
     DropdownMenuShortcut,
     DropdownMenuSeparator,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import Search, { type SearchFilter } from '@/components/sections/admin/contents/search';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-// Custom filter function for multi-column searching
-const multiColumnFilterFn: FilterFn<Item> = (row, columnId, filterValue) => {
-    const searchableRowContent = `${row.original.title} ${row.original.id}`.toLowerCase();
-    const searchTerm = (filterValue ?? '').toLowerCase();
-    return searchableRowContent.includes(searchTerm);
-};
-
-const statusFilterFn: FilterFn<Item> = (row, columnId, filterValue: string[]) => {
-    if (!filterValue?.length) return true;
-    const status = row.getValue(columnId) as string;
-    return filterValue.includes(status);
-};
-
-const args = {
+export const args = {
     select: {
         id: true,
         fid: true,
+        type: true,
         title: true,
         status: true,
         thumbUrl: true,
         akaTitle: true,
         updatedAt: true,
+        creator: { select: { name: true, avatar: true, userName: true } },
         chapter: { orderBy: { createdAt: 'desc' }, take: 1, select: { title: true, id: true } },
     },
 } as const satisfies SearchArgs;
 
-type Item = ArrayElement<NonNullable<Awaited<ReturnType<typeof getContents<typeof args>>>['data']>>;
+export type Content = ArrayElement<NonNullable<Awaited<ReturnType<typeof getContents<typeof args>>>['data']>>;
 
-const columns: ColumnDef<Item>[] = [
+const columns: ColumnDef<Content>[] = [
     {
         size: 28,
         id: 'select',
@@ -90,35 +76,49 @@ const columns: ColumnDef<Item>[] = [
         header: 'Tên',
         enableHiding: false,
         accessorKey: 'title',
-        filterFn: multiColumnFilterFn,
-        cell: ({ row }) => (
-            <div className="flex items-center gap-3 max-w-md">
-                <div className="rounded overflow-hidden border flex-shrink-0 w-10 h-10">
-                    <Image unoptimized src={row.original.thumbUrl!} width={40} height={40} alt={row.original.title} />
+        cell: ({ row }) => {
+            const Icon = row.original.type === 'movie' ? Clapperboard : row.original.type === 'novel' ? BookOpenText : ImageIcon;
+
+            return (
+                <div className="flex max-w-lg items-center gap-3">
+                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded border">
+                        <Image unoptimized src={row.original.thumbUrl!} width={40} height={40} alt={row.original.title} />
+                    </div>
+                    <div>
+                        <div className="flex items-center">
+                            <Icon width={18} className="flex-shrink-0" />
+                            <p className="ml-1 line-clamp-1 text-base font-medium">{row.original.title}</p>
+                        </div>
+                        <span className="mt-0.5 hidden text-xs text-muted-foreground lg:line-clamp-1">{row.original.akaTitle.join(', ')}</span>
+                        <span className="mt-0.5 line-clamp-1 text-xs text-muted-foreground lg:hidden">{row.original.creator.name}</span>
+                    </div>
                 </div>
-                <div>
-                    <p className="font-medium line-clamp-1">{row.original.title}</p>
-                    <span className="mt-0.5 text-xs text-muted-foreground line-clamp-1">{row.original.akaTitle.join(', ')}</span>
-                </div>
-            </div>
-        ),
+            );
+        },
     },
     {
         size: 80,
         header: 'Trạng thái',
         accessorKey: 'status',
-        filterFn: statusFilterFn,
         meta: { className: 'hidden md:table-cell' },
         cell: ({ row }) => <Badge className={cn(row.original.status === ContentStatus.complete && 'bg-muted-foreground/60 text-primary-foreground')}>{row.original.status}</Badge>,
     },
     {
         enableSorting: false,
-        accessorKey: 'chapter',
-        header: 'Chap mới nhất',
+        accessorKey: 'creator',
+        header: 'Nhà sáng tạo',
         meta: { className: 'hidden lg:table-cell' },
         cell: ({ row }) => {
-            const chapter = row.original.chapter[0];
-            return chapter ? <div className="line-clamp-1">{chapter.title}</div> : null;
+            const creator = row.original.creator;
+            return (
+                <div className="flex items-center">
+                    <Avatar className="h-8 w-8 border">
+                        {creator.avatar && <AvatarImage src={creator.avatar} />}
+                        <AvatarFallback>{avatarNameFallback(creator.name)}</AvatarFallback>
+                    </Avatar>
+                    <span className="ml-2 line-clamp-1">{creator.name}</span>
+                </div>
+            );
         },
     },
     {
@@ -126,7 +126,13 @@ const columns: ColumnDef<Item>[] = [
         header: 'Cập nhật lần cuối',
         meta: { className: 'hidden sm:table-cell' },
         cell: ({ row }) => {
-            return <span className="font-mono truncate max-w-32">{formatDate(row.original.updatedAt)}</span>;
+            const latest = row.original.chapter[0];
+            return (
+                <div className="flex max-w-xs flex-col gap-1">
+                    {latest && <span className="line-clamp-1">{latest.title}</span>}
+                    <span className="font-mono">{formatToNow(row.original.updatedAt)}</span>
+                </div>
+            );
         },
     },
     {
@@ -138,28 +144,44 @@ const columns: ColumnDef<Item>[] = [
     },
 ];
 
-export default function Component() {
-    const id = useId();
-
-    const inputRef = useRef<HTMLInputElement>(null);
+export default function Contents() {
     //we need a reference to the scrolling element for logic down below
     const tableContainerRef = useRef<HTMLDivElement>(null);
 
     const [take] = useState(20);
     const [search, setSearch] = useState('');
+    const [filter, setFilter] = useState<SearchFilter | null>(null);
 
     const [sorting, setSorting] = useState<SortingState>([{ id: 'updatedAt', desc: true }]);
 
     const { data, isFetching, fetchNextPage } = useInfiniteQuery({
-        queryKey: [
-            'admin_contents',
-            search,
-            sorting, //refetch when sorting changes
-        ],
+        queryKey: ['admin_contents', { search, sorting, filter }],
         queryFn: async ({ pageParam = 0 }) => {
             const skip = pageParam * take;
             const orderBy = { [sorting[0].id]: sorting[0].desc ? 'desc' : 'asc' };
-            const result = await getContents({ where: { search }, ...args, take, skip, orderBy });
+
+            const whereArgs: ContentFindManyArgs['where'] = { search };
+            if (filter) {
+                if (filter.status.length > 0) {
+                    whereArgs.status = { in: filter.status };
+                }
+
+                if (filter.type.length > 0) {
+                    whereArgs.type = { in: filter.type };
+                }
+
+                if (filter.creator) {
+                    whereArgs.creatorId = { in: [filter.creator.id] };
+                }
+
+                if (filter.updatedAtRange) {
+                    whereArgs.updatedAt = { gte: filter.updatedAtRange.from?.toISOString(), lte: filter.updatedAtRange.to?.toISOString() };
+                }
+            }
+
+            console.log(whereArgs);
+
+            const result = await getContents({ where: whereArgs, ...args, take, skip, orderBy });
 
             if (result.error) throw new Error(result.error.message);
             return result;
@@ -194,68 +216,31 @@ export default function Component() {
         fetchMoreOnBottomReached(tableContainerRef.current);
     }, [fetchMoreOnBottomReached]);
 
-    //scroll to top of table when sorting changes
-    const handleSortingChange: OnChangeFn<SortingState> = (updater) => {
-        setSorting(updater);
-    };
-
     const table = useReactTable({
         data: flatData,
         columns,
         state: {
             sorting,
         },
+        debugTable: true,
+        manualSorting: true,
+        onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        onSortingChange: handleSortingChange,
-        manualSorting: true,
-        debugTable: true,
     });
 
     return (
-        <div className="flex flex-col space-y-4 h-full">
-            {/* Filters */}
-            <div className="flex flex-col sm:flex-row flex-wrap md:items-center justify-between gap-3">
-                <div className="flex flex-col sm:flex-row items-center gap-3">
-                    {/* Filter by name or email */}
-                    <div className="relative flex-1">
-                        <Input
-                            ref={inputRef}
-                            id={`${id}-input`}
-                            aria-label="Tìm kiếm..."
-                            placeholder="Tìm kiếm..."
-                            onChange={(e) => setSearch(e.target.value)}
-                            value={(table.getColumn('name')?.getFilterValue() ?? '') as string}
-                            className={cn('peer min-w-60 ps-9', Boolean(table.getColumn('name')?.getFilterValue()) && 'pe-9')}
-                        />
-                        <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
-                            <Search size={16} strokeWidth={2} aria-hidden="true" />
-                        </div>
-                        {Boolean(table.getColumn('name')?.getFilterValue()) && (
-                            <button
-                                className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-                                aria-label="Clear filter"
-                                onClick={() => {
-                                    table.getColumn('name')?.setFilterValue('');
-                                    if (inputRef.current) {
-                                        inputRef.current.focus();
-                                    }
-                                }}
-                            >
-                                <CircleX size={16} strokeWidth={2} aria-hidden="true" />
-                            </button>
-                        )}
-                    </div>
-                </div>
+        <div className="flex h-full flex-col space-y-4">
+            <div className="flex justify-between gap-3">
+                <Search onFilterChange={setFilter} onSearchChange={setSearch} />
                 <div className="flex items-center gap-3">
-                    {/* Delete button */}
                     {table.getSelectedRowModel().rows.length > 0 && (
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button variant="outline">
-                                    <Trash className="-ms-1 me-2 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />
-                                    Delete
-                                    <span className="-me-1 ms-3 inline-flex h-5 max-h-full items-center rounded border border-border bg-background px-1 font-[inherit] text-[0.625rem] font-medium text-muted-foreground/70">
+                                    <Trash className="opacity-60" size={16} aria-hidden="true" />
+                                    <span className="hidden md:inline-block">Xoá</span>
+                                    <span className="inline-flex h-5 max-h-full items-center rounded border border-border bg-background px-1 font-[inherit] text-[0.625rem] font-medium text-muted-foreground/70">
                                         {table.getSelectedRowModel().rows.length}
                                     </span>
                                 </Button>
@@ -263,7 +248,7 @@ export default function Component() {
                             <AlertDialogContent>
                                 <div className="flex flex-col gap-2 max-sm:items-center sm:flex-row sm:gap-4">
                                     <div className="flex size-9 shrink-0 items-center justify-center rounded-full border border-border" aria-hidden="true">
-                                        <CircleAlert className="opacity-80" size={16} strokeWidth={2} />
+                                        <CircleAlert className="opacity-80" size={16} />
                                     </div>
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -282,14 +267,13 @@ export default function Component() {
                     )}
                     {/* Add user button */}
                     <Button variant="outline">
-                        <Plus className="-ms-1 me-2 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />
-                        Add user
+                        <Plus className="opacity-60" size={16} aria-hidden="true" />
+                        <span className="hidden sm:inline-block">Thêm nội dung</span>
                     </Button>
                 </div>
             </div>
 
-            {/* Table */}
-            <div onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)} ref={tableContainerRef} className="relative w-full overflow-auto flex-1">
+            <div onScroll={(e) => fetchMoreOnBottomReached(e.currentTarget)} ref={tableContainerRef} className="relative w-full flex-1 overflow-auto">
                 <Table className="border-separate border-spacing-0 [&_td]:border-border [&_tfoot_td]:border-t [&_th]:border-b [&_th]:border-border [&_tr:not(:last-child)_td]:border-b [&_tr]:border-none">
                     <TableHeader className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm">
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -303,19 +287,12 @@ export default function Component() {
                                                         header.column.getCanSort() && 'flex h-full cursor-pointer select-none items-center justify-between gap-2 truncate',
                                                     )}
                                                     onClick={header.column.getToggleSortingHandler()}
-                                                    onKeyDown={(e) => {
-                                                        // Enhanced keyboard handling for sorting
-                                                        if (header.column.getCanSort() && (e.key === 'Enter' || e.key === ' ')) {
-                                                            e.preventDefault();
-                                                            header.column.getToggleSortingHandler()?.(e);
-                                                        }
-                                                    }}
                                                     tabIndex={header.column.getCanSort() ? 0 : undefined}
                                                 >
                                                     {flexRender(header.column.columnDef.header, header.getContext())}
                                                     {{
-                                                        asc: <ChevronUp className="shrink-0 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />,
-                                                        desc: <ChevronDown className="shrink-0 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />,
+                                                        asc: <ChevronUp className="shrink-0 opacity-60" size={16} aria-hidden="true" />,
+                                                        desc: <ChevronDown className="shrink-0 opacity-60" size={16} aria-hidden="true" />,
                                                     }[header.column.getIsSorted() as string] ?? null}
                                                 </div>
                                             ) : (
@@ -354,53 +331,38 @@ export default function Component() {
     );
 }
 
-function RowActions({ row }: { row: Row<Item> }) {
+function RowActions({ row }: { row: Row<Content> }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <div className="flex justify-end">
                     <Button size="icon" variant="ghost" className="shadow-none" aria-label="Edit item">
-                        <Ellipsis size={16} strokeWidth={2} aria-hidden="true" />
+                        <Ellipsis size={16} aria-hidden="true" />
                     </Button>
                 </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
-                        <span>Edit</span>
+                        <span>Chỉnh sửa</span>
                         <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <span>Duplicate</span>
-                        <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
-                    </DropdownMenuItem>
+
+                    <DropdownMenuItem>Quản lý chap</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuItem>
-                        <span>Archive</span>
+                        <span>Lưu trữ</span>
                         <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
                     </DropdownMenuItem>
-                    <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>More</DropdownMenuSubTrigger>
-                        <DropdownMenuPortal>
-                            <DropdownMenuSubContent>
-                                <DropdownMenuItem>Move to project</DropdownMenuItem>
-                                <DropdownMenuItem>Move to folder</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>Advanced options</DropdownMenuItem>
-                            </DropdownMenuSubContent>
-                        </DropdownMenuPortal>
-                    </DropdownMenuSub>
+                    <DropdownMenuItem>Đẩy lên nổi bật</DropdownMenuItem>
                 </DropdownMenuGroup>
+
                 <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <DropdownMenuItem>Share</DropdownMenuItem>
-                    <DropdownMenuItem>Add to favorites</DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
+
                 <DropdownMenuItem className="text-destructive focus:text-destructive">
-                    <span>Delete</span>
+                    <span>Xoá</span>
                     <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
                 </DropdownMenuItem>
             </DropdownMenuContent>

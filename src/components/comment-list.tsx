@@ -28,9 +28,9 @@ export default function CommentList({ contentId }: Props) {
     return (
         <div>
             <div className="flex items-center justify-between">
-                <h3 className="font-bold text-xl uppercase">Bình luận</h3>
+                <h3 className="text-xl font-bold uppercase">Bình luận</h3>
                 <Select defaultValue={sort} onValueChange={sortComment}>
-                    <SelectTrigger className="w-28 h-8">
+                    <SelectTrigger className="h-8 w-28">
                         <SelectValue placeholder="Sắp xếp" />
                     </SelectTrigger>
                     <SelectContent align="end">
@@ -42,7 +42,7 @@ export default function CommentList({ contentId }: Props) {
             <div className="mt-4">
                 {session && <CommentEditor user={session.user} contentId={contentId} />}
 
-                <div className="flex flex-col space-y-5 my-4">
+                <div className="my-4 flex flex-col space-y-5">
                     {comments.length > 0 ? (
                         comments.map((comment, index) => <Comment index={index} key={comment.id} comment={comment} contentId={contentId} currentUser={session?.user} />)
                     ) : (
@@ -50,12 +50,12 @@ export default function CommentList({ contentId }: Props) {
                     )}
                 </div>
 
-                <div className="flex w-full flex-col justify-center items-center mt-4">
+                <div className="mt-4 flex w-full flex-col items-center justify-center">
                     {isLoading ? (
                         <TextShimmer>Đang tải bình luận...</TextShimmer>
                     ) : (
                         isMore && (
-                            <Button onClick={loadMoreComments} variant="outline" className="py-1 px-4">
+                            <Button onClick={loadMoreComments} variant="outline" className="px-4 py-1">
                                 Tải thêm bình luận
                             </Button>
                         )

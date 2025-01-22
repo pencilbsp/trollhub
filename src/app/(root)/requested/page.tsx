@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 
 import authOptions from '@/lib/auth';
 // components
-import RequestedChapterPage from '@/components/sections/requested-chapter-page';
+import RequestedChapterPage from '@/components/sections/guest/requested-chapter-page';
 
 export async function generateMetadata(): Promise<Metadata> {
     return {

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, Fragment, ChangeEvent } from 'react';
 
-import { Input } from '../ui/input';
+import { Input } from '../../ui/input';
 
 import { TabletSmartphoneIcon } from 'lucide-react';
 import { cn, formatDate, generateHref } from '@/lib/utils';
@@ -31,14 +31,14 @@ export default function ChapterList({ chapters, contentTitle, currentId, onFilte
     return (
         <Fragment>
             <div className="m-4">
-                <h4 className="font-bold text-xl uppercase">Danh sách chương</h4>
-                <div className="mt-2 relative">
-                    <MagnifyingGlassIcon className="ml-2 h-5 w-5 opacity-50 absolute top-1/2 -translate-y-1/2" />
+                <h4 className="text-xl font-bold uppercase">Danh sách chương</h4>
+                <div className="relative mt-2">
+                    <MagnifyingGlassIcon className="absolute top-1/2 ml-2 h-5 w-5 -translate-y-1/2 opacity-50" />
                     <Input onChange={onFilter} className="pl-8" placeholder="Tìm kiếm chương..." />
                 </div>
             </div>
-            <div className="max-h-80 w-full overflow-y-auto mb-3">
-                <ul className="px-3 w-full text-sm font-mono flex flex-col divide-y" ref={liRef}>
+            <div className="mb-3 max-h-80 w-full overflow-y-auto">
+                <ul className="flex w-full flex-col divide-y px-3 font-mono text-sm" ref={liRef}>
                     {chapters.map((chap) => {
                         const { id, title, type, createdAt, mobileOnly } = chap;
                         const isCurrent = id === currentId;
@@ -46,12 +46,12 @@ export default function ChapterList({ chapters, contentTitle, currentId, onFilte
 
                         return (
                             <li key={id} data-active={isCurrent} className={cn('hover:bg-foreground/10', isCurrent && 'bg-foreground/10 text-blue-500')}>
-                                <Link href={href} className="flex justify-between p-2 gap-x-4">
+                                <Link href={href} className="flex justify-between gap-x-4 p-2">
                                     <div className="flex overflow-hidden">
                                         <span className="truncate">{title?.trim()}</span>
-                                        {mobileOnly && <TabletSmartphoneIcon size={16} className="ml-2 text-red-400 inline-block flex-shrink-0" />}
+                                        {mobileOnly && <TabletSmartphoneIcon size={16} className="ml-2 inline-block flex-shrink-0 text-red-400" />}
                                     </div>
-                                    <time className="font-mono font-light text-sm flex-shrink-0">{formatDate(createdAt)}</time>
+                                    <time className="flex-shrink-0 font-mono text-sm font-light">{formatDate(createdAt)}</time>
                                 </Link>
                             </li>
                         );

@@ -30,7 +30,7 @@ export default async function VideoView(prop: Props) {
     return (
         <Fragment>
             {sources?.providers?.length ? (
-                <div className="-mx-4 sm:mx-0 sm:w-full overflow-hidden" suppressHydrationWarning>
+                <div className="-mx-4 overflow-hidden sm:mx-0 sm:w-full" suppressHydrationWarning>
                     <VideoPlayer vid={prop.vid} contentId={prop.contentId} playerInterface="jwplayer" sources={sources.providers} defaultSource={sources.default} />
                 </div>
             ) : (

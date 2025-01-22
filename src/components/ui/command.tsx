@@ -1,11 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { type DialogProps } from '@radix-ui/react-dialog';
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { SearchIcon } from 'lucide-react';
 import { Command as CommandPrimitive } from 'cmdk';
+import { type DialogProps } from '@radix-ui/react-dialog';
 
 import { cn } from '@/lib/utils';
+import { Spinner } from '@/components/ui/spinner';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 const Command = React.forwardRef<React.ElementRef<typeof CommandPrimitive>, React.ComponentPropsWithoutRef<typeof CommandPrimitive>>(({ className, ...props }, ref) => (
@@ -27,21 +28,50 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
     );
 };
 
-const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Input>, React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>>(
-    ({ className, ...props }, ref) => (
-        <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
-            <MagnifyingGlassIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-            <CommandPrimitive.Input
-                ref={ref}
-                className={cn(
-                    'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
-                    className,
-                )}
-                {...props}
-            />
-        </div>
-    ),
+interface LoadingCommandPrimitiveInput extends React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input> {
+    isLoading?: boolean;
+    icon?: React.ReactNode;
+    iconClassName?: string;
+    loading?: React.ReactNode;
+    wrapperClassName?: string;
+}
+
+const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Input>, LoadingCommandPrimitiveInput>(
+    ({ className, isLoading, loading, icon, iconClassName, wrapperClassName, ...props }, ref) => {
+        const Icon = icon || <SearchIcon className="h-4 w-4" />;
+        const Loading = loading || <Spinner size="sm" className="bg-current" />;
+
+        return (
+            <div className={cn('flex items-center border-b px-3', wrapperClassName)} cmdk-input-wrapper="">
+                <div className={cn('mr-2 flex h-6 w-6 shrink-0 items-center justify-center', iconClassName)}>{isLoading ? Loading : Icon}</div>
+                <CommandPrimitive.Input
+                    ref={ref}
+                    className={cn(
+                        'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+                        className,
+                    )}
+                    {...props}
+                />
+            </div>
+        );
+    },
 );
+
+// const CommandInput = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Input>, React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>>(
+//     ({ className, ...props }, ref) => (
+//         <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
+//             <SearchIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+//             <CommandPrimitive.Input
+//                 ref={ref}
+//                 className={cn(
+//                     'flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+//                     className,
+//                 )}
+//                 {...props}
+//             />
+//         </div>
+//     ),
+// );
 
 CommandInput.displayName = CommandPrimitive.Input.displayName;
 
@@ -51,9 +81,9 @@ const CommandList = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Li
 
 CommandList.displayName = CommandPrimitive.List.displayName;
 
-const CommandEmpty = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Empty>, React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>>((props, ref) => (
-    <CommandPrimitive.Empty ref={ref} className="py-6 text-center text-sm" {...props} />
-));
+const CommandEmpty = React.forwardRef<React.ElementRef<typeof CommandPrimitive.Empty>, React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>>(
+    ({ className, ...props }, ref) => <CommandPrimitive.Empty ref={ref} className={cn('py-6 text-center text-sm', className)} {...props} />,
+);
 
 CommandEmpty.displayName = CommandPrimitive.Empty.displayName;
 

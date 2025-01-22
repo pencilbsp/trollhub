@@ -14,9 +14,9 @@ export default function LoadMoreContent({ creatorId, skip, take }: Props) {
     const { contents, loadMore, hasMore, isLoading } = useCreatorContents(creatorId, take, skip);
 
     return (
-        <div className="flex flex-col items-center mt-4 w-full gap-y-6">
+        <div className="mt-4 flex w-full flex-col items-center gap-y-6">
             {contents.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-2 xl:gap-4 w-full">
+                <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 md:gap-2 lg:grid-cols-4 xl:gap-4">
                     {contents.map((content: any) => (
                         <ContentVertical key={content.id} data={content} />
                     ))}

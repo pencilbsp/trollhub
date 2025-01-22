@@ -18,7 +18,7 @@ import useResponsive from '@/hooks/use-responsive';
 
 import { createHistory } from '@/actions/guest/history-actions';
 import ChapterIcon from '@/components/icons/chapter-icon';
-import ChapterList from '@/components/sections/chapter-list';
+import ChapterList from '@/components/sections/guest/chapter-list';
 import CircleProgressIcon from '@/components/icons/circle-progress-icon';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipArrow, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -79,13 +79,13 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
                 {drawer ? (
                     <Drawer.Root>
                         <Drawer.Trigger asChild>
-                            <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-500/25 transition-colors">
+                            <button className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-gray-500/25">
                                 <ListIcon size={20} />
                             </button>
                         </Drawer.Trigger>
                         <Drawer.Portal>
                             <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-                            <Drawer.Content className="backdrop-blur bg-background/75 flex flex-col rounded-t-[10px] mt-24 fixed bottom-0 left-0 right-0">
+                            <Drawer.Content className="fixed bottom-0 left-0 right-0 mt-24 flex flex-col rounded-t-[10px] bg-background/75 backdrop-blur">
                                 <ChapterList
                                     currentId={id}
                                     // @ts-ignore
@@ -100,7 +100,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
                 ) : (
                     <Popover>
                         <PopoverTrigger asChild>
-                            <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-500/25 transition-colors">
+                            <button className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-gray-500/25">
                                 <ListIcon size={20} />
                             </button>
                         </PopoverTrigger>
@@ -108,7 +108,7 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
                             align="start"
                             sideOffset={26}
                             alignOffset={-12}
-                            className="rounded-xl shadow w-[540px]  p-0 overflow-hidden backdrop-blur-xl bg-background/80"
+                            className="w-[540px] overflow-hidden rounded-xl bg-background/80 p-0 shadow backdrop-blur-xl"
                         >
                             <ChapterList
                                 currentId={id}
@@ -122,37 +122,37 @@ export default function ChapterNav({ id, title, contentTitle, contentId, content
                 )}
             </nav>
 
-            <div className="h-8 mr-2 ml-1 w-[1px] bg-gray-400/25 hidden md:block"></div>
+            <div className="ml-1 mr-2 hidden h-8 w-[1px] bg-gray-400/25 md:block"></div>
 
-            <ChapterIcon className="hidden lg:block mr-3" />
-            <div className="flex items-center gap-3 w-full overflow-hidden">
-                <div className="flex-shrink-0 flex-grow w-full">
+            <ChapterIcon className="mr-3 hidden lg:block" />
+            <div className="flex w-full items-center gap-3 overflow-hidden">
+                <div className="w-full flex-shrink-0 flex-grow">
                     <Link href={href}>
                         <h2 className="truncate text-sm md:text-base">{contentTitle}</h2>
                     </Link>
-                    <h1 className="truncate text-foreground/60 text-xs md:text-sm">{title}</h1>
+                    <h1 className="truncate text-xs text-foreground/60 md:text-sm">{title}</h1>
                 </div>
             </div>
 
-            <div className="flex-shrink-0 flex-grow ml-auto mr-3 flex-col items-end hidden md:flex">
+            <div className="ml-auto mr-3 hidden flex-shrink-0 flex-grow flex-col items-end md:flex">
                 <p>{percent.toFixed(0)}%</p>
-                <p className="text-foreground/60 text-sm font-light">
+                <p className="text-sm font-light text-foreground/60">
                     {/* @ts-ignore */}
                     {total - chapterIdx}/{total} chương
                 </p>
             </div>
 
-            <div className="flex-shrink-0 flex-grow flex items-center aspect-square w-6 md:w-8">
+            <div className="flex aspect-square w-6 flex-shrink-0 flex-grow items-center md:w-8">
                 <CircleProgressIcon value={percent} />
             </div>
 
-            <div className="h-8 mr-1 ml-2 w-[1px] bg-gray-400/25 hidden md:block"></div>
+            <div className="ml-2 mr-1 hidden h-8 w-[1px] bg-gray-400/25 md:block"></div>
 
             <Tooltip>
                 <TooltipTrigger asChild>
                     <button
                         onClick={() => scrollToTop(true)}
-                        className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-500/25 transition-colors flex-shrink-0"
+                        className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full transition-colors hover:bg-gray-500/25"
                     >
                         <ArrowUpIcon size={20} />
                     </button>

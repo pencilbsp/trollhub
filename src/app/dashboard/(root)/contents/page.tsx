@@ -1,5 +1,5 @@
-import Component from '@/components/comp-485';
+import Contents from '@/components/sections/admin/contents/index';
 
 export default async function DashboardContents() {
-    return <Component />;
+    return <Contents />;
 }

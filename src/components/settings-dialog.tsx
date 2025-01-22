@@ -27,20 +27,20 @@ export default function SettingsDialog() {
 
     return (
         <Dialog open={open} onOpenChange={toggleOpenSetting}>
-            <DialogContent className="sm:max-w-sm p-0">
-                <DialogHeader className="p-4 border-b">
+            <DialogContent className="p-0 sm:max-w-sm">
+                <DialogHeader className="border-b p-4">
                     <DialogTitle>Cài đặt</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4 p-4">
-                    <div className="flex justify-between items-center space-x-2">
+                    <div className="flex items-center justify-between space-x-2">
                         <Label htmlFor="sendEmailNotification">Nhận thông báo qua email</Label>
                         <Switch id="sendEmailNotification" disabled />
                     </div>
-                    <div className="flex justify-between items-center space-x-2">
+                    <div className="flex items-center justify-between space-x-2">
                         <Label htmlFor="showAdultContent">Hiển thị ảnh chứa nội dung nhạy cảm</Label>
                         <Switch id="showAdultContent" checked={showAdultContent} onCheckedChange={toggleShowAdultContent} />
                     </div>
-                    <div className="flex justify-between items-center space-x-2">
+                    <div className="flex items-center justify-between space-x-2">
                         <Label htmlFor="playerInterface" className="flex-shrink-0">
                             Giao diện trình phát video
                         </Label>

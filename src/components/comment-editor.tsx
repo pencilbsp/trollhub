@@ -11,7 +11,7 @@ import useComment from '@/hooks/use-comment';
 import { createComment } from '@/actions/guest/comment-actions';
 import { avatarNameFallback, cn } from '@/lib/utils';
 
-import FormProvider from '@/components/form-provider';
+import { Form } from '@/components/ui/form';
 import CommentEditorInput from '@/components/comment-editor-input';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
@@ -52,19 +52,19 @@ const CommentEditor = forwardRef<HTMLTextAreaElement, Props>(({ user, contentId,
     };
 
     return (
-        <FormProvider className="flex space-x-3" methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <Avatar className={cn('border-2', avatarSize === 'small' ? 'w-8 h-8' : 'w-10 h-10')}>
+        <Form className="flex space-x-3" methods={methods} onSubmit={handleSubmit(onSubmit)}>
+            <Avatar className={cn('border-2', avatarSize === 'small' ? 'h-8 w-8' : 'h-10 w-10')}>
                 <AvatarImage src={user.image} alt={user.name} />
                 <AvatarFallback>{avatarNameFallback(user.name)}</AvatarFallback>
             </Avatar>
 
             <Controller
-                disabled={!user}
                 name="text"
+                disabled={!user}
                 control={control}
                 render={({ field }) => <CommentEditorInput field={{ ...field }} placeholder={placeholder} ref={ref} onSubmit={onSubmit} />}
             />
-        </FormProvider>
+        </Form>
     );
 });
 

@@ -48,7 +48,7 @@ function Comment({ comment, currentUser, contentId }: Props) {
             </div>
 
             {currentUser && showInput && (
-                <div className="pl-12 relative">
+                <div className="relative pl-12">
                     <CommentEditor ref={replyRef} commentId={id} avatarSize="small" user={currentUser} contentId={contentId} placeholder="Phản hồi của bạn..." />
                 </div>
             )}
@@ -57,18 +57,18 @@ function Comment({ comment, currentUser, contentId }: Props) {
                 replies.map((reply: any) => <CommentItem key={reply.id} comment={reply} contentId={contentId} showInput={showInput} currentUser={currentUser} />)}
 
             {replyCount - replies.length > 0 && (
-                <div className={cn('pl-12 relative text-sm text-primary/70', showInput && 'pb-2')}>
+                <div className={cn('relative pl-12 text-sm text-primary/70', showInput && 'pb-2')}>
                     {isLoading ? (
                         <TextShimmer
                             duration={1}
                             as="button"
-                            className="flex items-center hover:underline relative before:content-[''] before:inline-block before:w-8 before:h-[1px] before:bg-border before:mr-2"
+                            className="relative flex items-center before:mr-2 before:inline-block before:h-[1px] before:w-8 before:bg-border before:content-[''] hover:underline"
                         >
                             {`Xem thêm ${replyCount - replies.length} phản hồi...`}
                         </TextShimmer>
                     ) : (
                         <button
-                            className="flex items-center hover:underline relative before:content-[''] before:inline-block before:w-8 before:h-[1px] before:bg-border before:mr-2"
+                            className="relative flex items-center before:mr-2 before:inline-block before:h-[1px] before:w-8 before:bg-border before:content-[''] hover:underline"
                             onClick={handleLoadReplies}
                         >
                             {`Xem thêm ${replyCount - replies.length} phản hồi`}
@@ -124,25 +124,25 @@ const CommentItem = ({ comment, currentUser, showInput, onShowInput, contentId }
                 <AvatarImage src={user.image} />
                 <AvatarFallback>{avatarNameFallback(user.name)}</AvatarFallback>
             </Avatar>
-            <div className="flex flex-col w-full">
-                <span className="font-bold text-sm text-primary/70">{user.name}</span>
+            <div className="flex w-full flex-col">
+                <span className="text-sm font-bold text-primary/70">{user.name}</span>
 
                 <p>{text}</p>
 
-                <div className="flex justify-between w-full">
-                    <div className="flex items-center mt-1 space-x-3 text-sm md:space-x-4 font-light">
+                <div className="flex w-full justify-between">
+                    <div className="mt-1 flex items-center space-x-3 text-sm font-light md:space-x-4">
                         <span className="truncate font-light text-primary/70">{formatToNow(createdAt)}</span>
                         {currentUser && !commentId && (
-                            <button onClick={onShowInput} className="flex items-center flex-shrink-0 text-primary">
-                                {currentUser && showInput ? <CornerLeftDownIcon className="w-4 mr-1" /> : <ArrowLeft className="w-4 mr-1" />}
+                            <button onClick={onShowInput} className="flex flex-shrink-0 items-center text-primary">
+                                {currentUser && showInput ? <CornerLeftDownIcon className="mr-1 w-4" /> : <ArrowLeft className="mr-1 w-4" />}
                                 Phản hồi
                             </button>
                         )}
                     </div>
 
-                    <div className="rounded-full px-2 border flex items-center">
+                    <div className="flex items-center rounded-full border px-2">
                         <button disabled={!currentUser} onClick={handleLikeCommnet} className="flex items-center text-primary/70">
-                            <HeartIcon className={cn('w-4 mr-1', isLiked && 'fill-rose-500 stroke-rose-400')} />
+                            <HeartIcon className={cn('mr-1 w-4', isLiked && 'fill-rose-500 stroke-rose-400')} />
                             {totalLike}
                         </button>
                     </div>

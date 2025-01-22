@@ -51,7 +51,7 @@ export default function RequestDialog() {
                     </DialogDescription>
                 </DialogHeader>
 
-                <form className="flex w-full items-center space-x-2 mt-4" onSubmit={onSubmit}>
+                <form className="mt-4 flex w-full items-center space-x-2" onSubmit={onSubmit}>
                     <Input name="url" placeholder="Link Fuhu video, comic, novel hoặc chanel" disabled={pending} />
                     <LoadingButton type="submit" disabled={pending} isLoading={pending} className="flex-shrink-0" loadingText="Đang xử lý...">
                         Gửi yêu cầu

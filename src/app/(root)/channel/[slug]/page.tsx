@@ -9,8 +9,8 @@ import { INIT_TAKE_CONTENT, SITE_NAME, SITE_URL } from '@/config';
 import { getCreator, getCreatorWithContent } from '@/actions/guest/creator-action';
 
 import { Button } from '@/components/ui/button';
-import LoadMoreContent from '@/components/sections/load-more-content';
-import HighlightContents from '@/components/sections/highlight-contents';
+import LoadMoreContent from '@/components/sections/guest/load-more-content';
+import HighlightContents from '@/components/sections/guest/highlight-contents';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface Props {
@@ -48,19 +48,19 @@ export default async function ChannelPage({ params }: Props) {
 
     return (
         <div className="container p-2 sm:px-8 xl:max-w-7xl">
-            <div className="grid grid-cols-3 gap-6 w-full p-2">
-                <div className="flex flex-col col-span-3 lg:col-span-2">
-                    <div className="w-full aspect-[21/9] rounded-xl overflow-hidden border">
-                        {creator.cover && <Image unoptimized width={0} height={0} sizes="100vh" alt={creator.name} src={creator.cover} className="w-full h-full object-cover" />}
+            <div className="grid w-full grid-cols-3 gap-6 p-2">
+                <div className="col-span-3 flex flex-col lg:col-span-2">
+                    <div className="aspect-[21/9] w-full overflow-hidden rounded-xl border">
+                        {creator.cover && <Image unoptimized width={0} height={0} sizes="100vh" alt={creator.name} src={creator.cover} className="h-full w-full object-cover" />}
                     </div>
 
-                    <div className="flex flex-col items-center sm:items-start sm:flex-row border-b pb-3">
-                        <Avatar className="w-32 h-32 border-2 border-blue-500 -mt-16 sm:-mt-6 bg-background">
+                    <div className="flex flex-col items-center border-b pb-3 sm:flex-row sm:items-start">
+                        <Avatar className="-mt-16 h-32 w-32 border-2 border-blue-500 bg-background sm:-mt-6">
                             <AvatarImage src={creator.avatar!} />
                             <AvatarFallback>{avatarNameFallback(creator.name)}</AvatarFallback>
                         </Avatar>
-                        <div className="mt-3 pl-4 w-full flex flex-col gap-1">
-                            <h1 className="font-bold text-2xl">{creator.name}</h1>
+                        <div className="mt-3 flex w-full flex-col gap-1 pl-4">
+                            <h1 className="text-2xl font-bold">{creator.name}</h1>
                             <div className="text-foreground/80">
                                 <span>{creator.userName}</span>
                                 <span className="px-1">&#8226;</span>
@@ -74,7 +74,7 @@ export default async function ChannelPage({ params }: Props) {
                             </div>
                             <p className="text-foreground/70">{creator.bio}</p>
 
-                            <div className="flex items-center justify-end text-foreground/70 text-sm mt-1 space-x-3">
+                            <div className="mt-1 flex items-center justify-end space-x-3 text-sm text-foreground/70">
                                 <Button variant="outline">
                                     <ThumbsUpIcon size={20} className="stroke-current" />
                                     <span className="ml-2">Theo dõi</span>

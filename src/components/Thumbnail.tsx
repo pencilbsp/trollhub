@@ -49,7 +49,7 @@ export default function Thumbnail({ thumbUrl, alt, className, ratio, adultConten
     }, [className]);
 
     return (
-        <div className={cn(['w-full relative mt-6 z-10', getAspectRatio(ratio), filteredClassName])}>
+        <div className={cn(['relative z-10 mt-6 w-full', getAspectRatio(ratio), filteredClassName])}>
             <div
                 className={cn('absolute inset-0 blur-lg')}
                 style={{
@@ -63,19 +63,19 @@ export default function Thumbnail({ thumbUrl, alt, className, ratio, adultConten
                 height={0}
                 loading="lazy"
                 src={thumbHdUrl}
-                className={cn('w-full h-full object-contain relative', obClassName, isShow && 'blur-md')}
+                className={cn('relative h-full w-full object-contain', obClassName, isShow && 'blur-md')}
             />
             {isShow && (
-                <div className="absolute inset-0 p-3 flex flex-col justify-center items-center text-muted font-light">
-                    <EyeOffIcon className="cursor-pointer w-4 h-4" />
-                    <span className="text-xs text-center mt-2">
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-3 font-light text-muted">
+                    <EyeOffIcon className="h-4 w-4 cursor-pointer" />
+                    <span className="mt-2 text-center text-xs">
                         Hình ảnh chứa
                         <br />
                         nội dung nhạy cảm
                     </span>
                 </div>
             )}
-            {children && <div className="flex flex-col items-end absolute top-0 right-5">{children}</div>}
+            {children && <div className="absolute right-5 top-0 flex flex-col items-end">{children}</div>}
         </div>
     );
 }

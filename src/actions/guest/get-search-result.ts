@@ -4,7 +4,6 @@ import slug from 'slug';
 import prisma from '@/lib/prisma';
 import { ContentStatus, ContentType } from '@prisma/client';
 
-
 interface SearchProps {
     take?: number;
     skip?: number;

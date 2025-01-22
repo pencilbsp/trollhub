@@ -17,8 +17,8 @@ import SettingsProvider from '@/contexts/settings-context';
 import Header from '@/components/header';
 import SettingsDialog from '@/components/settings-dialog';
 import { ThemeProvider } from '@/components/theme-provider';
-import { QueryProvider } from '@/components/sections/query-provider';
-import { NextAuthProvider } from '@/components/sections/auth-provider';
+import { QueryProvider } from '@/components/sections/guest/query-provider';
+import { NextAuthProvider } from '@/components/auth-provider';
 
 const PTOAds = dynamic(() => import('@/components/ads/pto-ads'));
 const FlyiconAds = dynamic(() => import('@/components/ads/flyicon-ads'));

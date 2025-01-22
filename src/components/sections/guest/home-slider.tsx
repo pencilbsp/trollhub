@@ -43,9 +43,9 @@ export default function HomeSlider({ data }: Props) {
                 const isShow = adultContent && !showAdultContent;
 
                 return (
-                    <SwiperSlide key={id} className="w-full aspect-[21/10]">
+                    <SwiperSlide key={id} className="aspect-[21/10] w-full">
                         <Link href={href} passHref>
-                            <div className="w-full h-full absolute left-0 top-0 flex justify-center">
+                            <div className="absolute left-0 top-0 flex h-full w-full justify-center">
                                 <div
                                     className="absolute inset-0 blur-lg"
                                     style={{
@@ -55,11 +55,11 @@ export default function HomeSlider({ data }: Props) {
                                 <Image unoptimized width={0} height={0} src={image} alt={title} sizes="100vw" className={cn('absolute h-full w-auto', isShow && 'blur-lg')} />
                             </div>
 
-                            <div className="h-full w-full absolute left-0 top-0 bg-black opacity-20" />
-                            <div className="relative z-10 h-full flex items-end p-4 sm:p-8">
-                                <div className="flex flex-col mb-2">
-                                    <p className="text-xl sm:text-2xl lg:text-4xl font-bold text-white hover:underline">{title}</p>
-                                    {tagline && <p className="text-md sm:text-xl lg:text-2xl font-semibold text-white sm:pt-2">{tagline}</p>}
+                            <div className="absolute left-0 top-0 h-full w-full bg-black opacity-20" />
+                            <div className="relative z-10 flex h-full items-end p-4 sm:p-8">
+                                <div className="mb-2 flex flex-col">
+                                    <p className="text-xl font-bold text-white hover:underline sm:text-2xl lg:text-4xl">{title}</p>
+                                    {tagline && <p className="text-md font-semibold text-white sm:pt-2 sm:text-xl lg:text-2xl">{tagline}</p>}
                                 </div>
                             </div>
                         </Link>

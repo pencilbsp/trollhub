@@ -44,7 +44,7 @@ export default function Rankings() {
     return (
         <div>
             <div className="flex">
-                <h2 className="font-bold uppercase text-2xl truncate">BXH Hôm Nay</h2>
+                <h2 className="truncate text-2xl font-bold uppercase">BXH Hôm Nay</h2>
 
                 <Pagination className="ml-auto mr-0 w-auto">
                     <PaginationContent>
@@ -67,7 +67,7 @@ export default function Rankings() {
             <Card className="mt-4">
                 <CardContent className="grid gap-4 py-4">
                     {isLoading && (
-                        <div className="w-full flex justify-center items-center">
+                        <div className="flex w-full items-center justify-center">
                             <Spinner size="lg" />
                         </div>
                     )}
@@ -82,7 +82,7 @@ export default function Rankings() {
                             return (
                                 <div key={id} className="pl-4">
                                     <Link href={href} className="flex gap-3">
-                                        <div className="w-12 h-12 flex-shrink-0">
+                                        <div className="h-12 w-12 flex-shrink-0">
                                             <Image
                                                 unoptimized
                                                 width={0}
@@ -90,12 +90,12 @@ export default function Rankings() {
                                                 sizes="100vh"
                                                 alt={title}
                                                 src={thumbUrl}
-                                                className="w-full h-full border rounded-md object-cover"
+                                                className="h-full w-full rounded-md border object-cover"
                                             />
                                         </div>
-                                        <div className={cn('flex justify-between items-center pb-1.5 w-full pr-4 space-x-2', index !== data.data.length - 1 && 'border-b')}>
-                                            <p className="line-clamp-2 font-medium group-hover:text-blue-500 transition-colors">{title}</p>
-                                            <div className="ml-auto text-green-500 flex-shrink-0">+{numeral(view || 0).format('0.0a')}</div>
+                                        <div className={cn('flex w-full items-center justify-between space-x-2 pb-1.5 pr-4', index !== data.data.length - 1 && 'border-b')}>
+                                            <p className="line-clamp-2 font-medium transition-colors group-hover:text-blue-500">{title}</p>
+                                            <div className="ml-auto flex-shrink-0 text-green-500">+{numeral(view || 0).format('0.0a')}</div>
                                         </div>
                                     </Link>
                                 </div>

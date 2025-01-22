@@ -11,11 +11,11 @@ interface Props {
 export default function CategoryList({ data }: Props) {
     return (
         <div>
-            <h2 className="font-bold uppercase text-2xl">Tất cả thể loại</h2>
+            <h2 className="text-2xl font-bold uppercase">Tất cả thể loại</h2>
             <div className="mt-4">
                 {data.map(({ id, title }) => (
                     <Link key={id} href={`/the-loai/${slug(title)}-${id}`}>
-                        <Button variant="outline" className="mr-2 mb-2">
+                        <Button variant="outline" className="mb-2 mr-2">
                             {title}
                         </Button>
                     </Link>

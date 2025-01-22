@@ -35,7 +35,7 @@ export default function Image({ ratio, tmpRatio, className, effect = 'blur', dis
     const aspectRatio = ratio || tmpRatio;
 
     return (
-        <div ref={wrapperRef} style={aspectRatio && { paddingTop: getRatio(aspectRatio) }} className={cn('w-full h-full relative p-0', className)}>
+        <div ref={wrapperRef} style={aspectRatio && { paddingTop: getRatio(aspectRatio) }} className={cn('relative h-full w-full p-0', className)}>
             {loading && <ImagePlaceholder />}
             <LazyLoadImage onLoad={onLoad} wrapperClassName="lazy-wrapper" effect={disabledEffect ? undefined : effect} placeholder={<ImagePlaceholder />} {...other} />
         </div>

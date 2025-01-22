@@ -7,7 +7,7 @@ import { getServerSession } from 'next-auth';
 import '@/globals.css';
 
 import CreatorProvider from '@/contexts/creator-context';
-import { NextAuthProvider } from '@/components/sections/auth-provider';
+import { NextAuthProvider } from '@/components/auth-provider';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
 import authOptions from '@/lib/auth';
@@ -16,7 +16,7 @@ import { DASHBOARD_PATH, ROOT_PATH } from '@/config';
 import { Separator } from '@/components/ui/separator';
 import { AppSidebar } from '@/components/app-sidebar';
 import { ThemeProvider } from '@/components/theme-provider';
-import { QueryProvider } from '@/components/sections/query-provider';
+import { QueryProvider } from '@/components/sections/guest/query-provider';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -58,7 +58,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                                                 </Breadcrumb>
                                             </div>
                                         </header>
-                                        <div className="px-4 h-full overflow-hidden">{children}</div>
+                                        <div className="h-full overflow-hidden px-4">{children}</div>
                                     </SidebarInset>
                                 </CreatorProvider>
                             </SidebarProvider>
