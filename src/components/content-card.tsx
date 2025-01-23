@@ -3,19 +3,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
+import { Content as IContent, Creator, ContentStatus, ContentType } from '@prisma/client';
 import { FilmIcon, ShareIcon, ImageIcon, EyeOffIcon, ThumbsUpIcon, BookOpenTextIcon, MessageCircleIcon } from 'lucide-react';
 
-import Thumbnail from './thumbnail';
 import { Badge } from '@/components/ui/badge';
+import Thumbnail from '@/components/thumbnail';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 
+import { formatToNow } from '@/lib/date';
 import numeral from '@/lib/format-number';
 import useSettings from '@/hooks/use-settings';
-import { CategoryContent } from '@/actions/guest/content-actions';
-import { avatarNameFallback, cn, formatToNow, generateHref } from '@/lib/utils';
-import { Content as IContent, Creator, ContentStatus, ContentType } from '@prisma/client';
 import { HighlightContent } from '@/actions/guest/home-actions';
+import { CategoryContent } from '@/actions/guest/content-actions';
+import { avatarNameFallback, cn, generateHref } from '@/lib/utils';
 
 function getContentIcon(type: ContentType) {
     if (type === ContentType.movie) return FilmIcon;
@@ -82,7 +83,7 @@ function ContentHorizontal({ data }: ContentHorizontalProps) {
                     </Thumbnail>
                 </Link>
             </CardContent>
-            <CardFooter className="px3 mt-2 grid grid-cols-1 divide-y pb-3 text-gray-700 sm:px-6 sm:pb-6 dark:text-gray-400">
+            <CardFooter className="px3 mt-2 grid grid-cols-1 divide-y pb-3 text-gray-700 dark:text-gray-400 sm:px-6 sm:pb-6">
                 <div className="flex justify-between pb-2 text-sm">
                     <div className="flex gap-3">
                         <span>0 lượt thích</span>

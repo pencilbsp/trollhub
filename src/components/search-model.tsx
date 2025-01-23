@@ -4,9 +4,11 @@ import slug from 'slug';
 import Link from 'next/link';
 import Image from 'next/image';
 import { UAParser } from 'ua-parser-js';
+import { SearchIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { MouseEvent, useEffect, useState, useTransition } from 'react';
 
+import { Spinner } from '@/components/ui/spinner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Command, CommandItem, CommandList, CommandInput, CommandGroup, CommandEmpty, CommandSeparator } from '@/components/ui/command';
@@ -14,10 +16,9 @@ import { Command, CommandItem, CommandList, CommandInput, CommandGroup, CommandE
 import useDebounce from '@/hooks/use-debounce';
 import useKeyPress from '@/hooks/use-key-press';
 
-import { avatarNameFallback, formatToNow } from '@/lib/utils';
+import { formatToNow } from '@/lib/date';
+import { avatarNameFallback } from '@/lib/utils';
 import getSearchResult, { SearchResult } from '@/actions/guest/get-search-result';
-import { SearchIcon } from 'lucide-react';
-import { Spinner } from './ui/spinner';
 
 const defaultState: SearchResult = { contents: [], creators: [] };
 
