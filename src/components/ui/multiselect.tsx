@@ -509,11 +509,11 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
               }}
               placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? "" : placeholder}
               className={cn(
-                "flex-1 bg-transparent outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed",
+                "flex-1 bg-transparent outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed min-w-[80px] w-full px-2 py-1",
                 {
-                  "w-full": hidePlaceholderWhenSelected,
+                  // "w-full": hidePlaceholderWhenSelected,
                   "px-3 py-2": selected.length === 0,
-                  "ml-1": selected.length !== 0,
+                  // "ml-1": selected.length !== 0,
                 },
                 inputProps?.className,
               )}
@@ -568,7 +568,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     {CreatableItem()}
                     {!selectFirstItem && <CommandItem value="-" className="hidden" />}
                     {Object.entries(selectables).map(([key, dropdowns]) => (
-                      <CommandGroup key={key} heading={key} className="h-full overflow-auto">
+                      <CommandGroup key={key} heading={key} className="h-full overflow-auto p-1">
                         <>
                           {dropdowns.map((option) => {
                             return (
@@ -591,7 +591,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                                   onChange?.(newOptions);
                                 }}
                                 className={cn(
-                                  "cursor-pointer",
+                                  "cursor-pointer rounded-sm",
                                   option.disable && "cursor-not-allowed opacity-50",
                                 )}
                               >

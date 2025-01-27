@@ -14,8 +14,8 @@ interface Props extends Omit<MDEditorProps, 'value'> {
     value: string | null;
 }
 
-const MDEditor = forwardRef<HTMLDivElement, Props>(({ value, ...props }: Props, ref) => {
-    return <Editor value={value as string} {...props} ref={ref} />;
+const MDEditor = forwardRef<HTMLDivElement, Props>(({ value, ...props }: Props, _) => {
+    return <Editor value={value as string} {...props} />;
 });
 
 MDEditor.displayName = 'MDEditor';
