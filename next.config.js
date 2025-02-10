@@ -30,11 +30,7 @@ const nextConfig = {
             {
                 source: '/comic/:path*',
                 destination: '/comic/:path*',
-            },
-            {
-                source: '/api/prv-dash/:path*',
-                destination: `${process.env.STREAME_DASH_API}/:path*`,
-            },
+            }
         ];
     },
 };
